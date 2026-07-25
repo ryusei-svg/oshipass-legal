@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>学会ポケット Web版｜タイテグリッド</title>
+  <meta name="description" content="学会・研究大会のプログラムをタイムテーブル形式で見られる非公式アプリ「学会ポケット」のWeb版です。">
+  <link rel="icon" href="../assets/favicon-32.png" sizes="32x32">
+  <link rel="apple-touch-icon" href="../assets/icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#0f766e">
+  <link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+  <div class="gp-shell">
+    <header class="gp-header">
+      <div class="gp-header-inner">
+        <span class="gp-app-name">学会ポケット</span>
+        <span class="gp-web-badge">Web版</span>
+      </div>
+      <nav class="gp-day-tabs" id="day-tabs" aria-label="日程切り替え"></nav>
+    </header>
+
+    <main class="gp-main" id="grid-root">
+      <p class="gp-status" id="grid-status">プログラム情報を読み込んでいます…</p>
+      <div class="tt-viewport" id="grid-container"></div>
+    </main>
+
+    <footer class="gp-footer">
+      <p class="gp-footer-notice">
+        <button type="button" id="gp-about-trigger" class="gp-about-trigger">本アプリは大会主催者・運営とは関係のない非公式アプリです。</button>
+        <span id="gp-event-name"></span>の掲載情報は公式サイトの発表をもとに作成しています。最新かつ正確な情報は必ず公式サイトをご確認ください。
+      </p>
+      <p class="gp-footer-links">
+        <a id="gp-official-link" href="#" target="_blank" rel="noopener"></a>
+      </p>
+    </footer>
+  </div>
+
+  <script type="module" src="assets/js/main.js"></script>
+</body>
+</html>

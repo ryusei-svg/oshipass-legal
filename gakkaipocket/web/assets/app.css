@@ -1,0 +1,978 @@
+/* ===================================================================
+   app.css — 学会ポケット Web版 (W1: アプリシェル + タイテグリッド + 詳細シート)
+   既存LP(assets/styles.css / landing.css)のトーン(ディープティール系・信頼感)を継承。
+   外部フォント・CDNは使用せず、システムフォントのみ。
+   =================================================================== */
+
+:root {
+  color-scheme: light;
+
+  --accent: #0f766e;
+  --accent-dark: #0b5a54;
+  --navy: #10302c;
+  --ink: #1c2624;
+  --muted: #5f6d6a;
+  --line: #dde7e5;
+  --surface: #ffffff;
+  --background: #f4f9f8;
+  --cream: #eefbf8;
+
+  /* 1分あたりのピクセル数。assets/js/grid.js の MIN_PX と必ず同じ値にすること。 */
+  --min-px: 2.4px;
+
+  /* session_kind の色分け。落ち着いた配色でまとめ、彩度を抑えている。 */
+  --kc-lecture: #0f766e;
+  --kbg-lecture: rgba(15, 118, 110, 0.1);
+  --kc-symposium: #3d6b8f;
+  --kbg-symposium: rgba(61, 107, 143, 0.1);
+  --kc-oral: #5f7a63;
+  --kbg-oral: rgba(95, 122, 99, 0.09);
+  --kc-poster: #a06a3a;
+  --kbg-poster: rgba(160, 106, 58, 0.1);
+  --kc-luncheon: #a9832f;
+  --kbg-luncheon: rgba(169, 131, 47, 0.1);
+  --kc-ceremony: #10302c;
+  --kbg-ceremony: rgba(16, 48, 44, 0.09);
+  --kc-other: #6b7573;
+  --kbg-other: rgba(107, 117, 115, 0.09);
+
+  --mark-heart: #b3435f;
+  --mark-star: #b8862c;
+
+  --estimated-color: #8a6d3b;
+  --estimated-bg: rgba(138, 109, 59, 0.12);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+a { color: var(--accent-dark); }
+
+button:focus-visible,
+a:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid rgba(15, 118, 110, 0.4);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------------ */
+/* アプリシェル全体レイアウト                                              */
+/* ------------------------------------------------------------------ */
+
+.gp-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.gp-header {
+  flex: none;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+
+.gp-header-inner {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: calc(10px + env(safe-area-inset-top)) calc(14px + env(safe-area-inset-right)) 8px
+    calc(14px + env(safe-area-inset-left));
+}
+
+.gp-app-name {
+  color: var(--navy);
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.gp-web-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--kbg-lecture);
+  color: var(--accent-dark);
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+}
+
+.gp-day-tabs {
+  display: flex;
+  gap: 6px;
+  padding: 0 calc(10px + env(safe-area-inset-right)) 10px calc(10px + env(safe-area-inset-left));
+  overflow-x: auto;
+}
+
+.gp-day-tab {
+  flex: none;
+  padding: 7px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--background);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.gp-day-tab.is-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
+}
+
+/* ------------------------------------------------------------------ */
+/* メイン(グリッド領域)                                                   */
+/* ------------------------------------------------------------------ */
+
+.gp-main {
+  flex: 1 1 auto;
+  min-height: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.gp-status {
+  margin: 0;
+  padding: 28px 16px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13.5px;
+}
+
+.tt-viewport {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--surface);
+  padding-right: env(safe-area-inset-right);
+  padding-left: env(safe-area-inset-left);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.tt-viewport:empty { display: none; }
+
+.tt-grid {
+  position: relative;
+  display: grid;
+}
+
+/* --- ヘッダー行(施設グループ / レーン名) --- */
+
+.tt-corner {
+  position: sticky;
+  z-index: 30;
+  background: var(--surface);
+}
+
+.tt-corner-top {
+  top: 0;
+  left: 0;
+  border-bottom: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+}
+
+.tt-corner-mid {
+  top: 32px;
+  left: 0;
+  border-bottom: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+}
+
+.tt-venue-head {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+  border-bottom: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+  background: var(--cream);
+  color: var(--navy);
+  font-size: 11.5px;
+  font-weight: 800;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tt-lane-head {
+  position: sticky;
+  top: 32px;
+  z-index: 19;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 11.5px;
+  font-weight: 700;
+  line-height: 1.3;
+  text-align: center;
+}
+
+/* --- 時刻ガター(左固定) --- */
+
+.tt-gutter-body {
+  position: sticky;
+  left: 0;
+  z-index: 15;
+  background: var(--surface);
+  border-right: 1px solid var(--line);
+}
+
+.tt-time-label {
+  position: absolute;
+  left: 0;
+  right: 4px;
+  transform: translateY(-50%);
+  text-align: right;
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.tt-time-label.is-hour {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--navy);
+}
+
+/* --- レーン本体(セッションブロックを絶対配置) --- */
+
+.tt-lane-body {
+  position: relative;
+  border-right: 1px solid var(--line);
+  background-image:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(16, 48, 44, 0.14) 0,
+      rgba(16, 48, 44, 0.14) 1px,
+      transparent 1px,
+      transparent calc(var(--min-px) * 60)
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      rgba(16, 48, 44, 0.055) 0,
+      rgba(16, 48, 44, 0.055) 1px,
+      transparent 1px,
+      transparent calc(var(--min-px) * 30)
+    );
+}
+
+/* --- session_kind ごとの色。--kind-color/--kind-bg をクラス側で定義し、
+      .tt-act / .sd-kind-badge の両方から参照する(色定義の重複を避ける)。 --- */
+
+.kind-lecture   { --kind-color: var(--kc-lecture);   --kind-bg: var(--kbg-lecture); }
+.kind-symposium { --kind-color: var(--kc-symposium); --kind-bg: var(--kbg-symposium); }
+.kind-oral      { --kind-color: var(--kc-oral);      --kind-bg: var(--kbg-oral); }
+.kind-poster    { --kind-color: var(--kc-poster);    --kind-bg: var(--kbg-poster); }
+.kind-luncheon  { --kind-color: var(--kc-luncheon);  --kind-bg: var(--kbg-luncheon); }
+.kind-ceremony  { --kind-color: var(--kc-ceremony);  --kind-bg: var(--kbg-ceremony); }
+.kind-other     { --kind-color: var(--kc-other);     --kind-bg: var(--kbg-other); }
+
+.tt-act {
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  overflow: hidden;
+  padding: 5px 7px 4px;
+  border-left: 4px solid var(--kind-color);
+  border-radius: 7px;
+  background: var(--kind-bg);
+  box-shadow: 0 1px 2px rgba(16, 48, 44, 0.08);
+  cursor: pointer;
+  transition: box-shadow 120ms ease, transform 120ms ease;
+}
+
+.tt-act:hover {
+  box-shadow: 0 5px 14px rgba(16, 48, 44, 0.18);
+  transform: translateY(-1px);
+}
+
+.tt-act-title {
+  font-size: 11.5px;
+  font-weight: 800;
+  color: var(--navy);
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.tt-act-meta {
+  margin-top: 2px;
+  font-size: 10px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tt-act-chair {
+  margin-top: 1px;
+  font-size: 9.5px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tt-mark-badge {
+  position: absolute;
+  top: 3px;
+  right: 5px;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.tt-act.is-marked-heart {
+  outline: 2px solid var(--mark-heart);
+  outline-offset: -2px;
+}
+.tt-act.is-marked-heart .tt-mark-badge { color: var(--mark-heart); }
+
+.tt-act.is-marked-star {
+  outline: 2px solid var(--mark-star);
+  outline-offset: -2px;
+}
+.tt-act.is-marked-star .tt-mark-badge { color: var(--mark-star); }
+
+/* 自身は未マークだが子演題がマークされている場合は破線で区別する */
+.tt-act.is-marked-child {
+  outline-style: dashed;
+}
+
+/* ------------------------------------------------------------------ */
+/* フッター(非公式明示・法務)                                             */
+/* ------------------------------------------------------------------ */
+
+.gp-footer {
+  flex: none;
+  padding: 12px calc(16px + env(safe-area-inset-right)) calc(14px + env(safe-area-inset-bottom))
+    calc(16px + env(safe-area-inset-left));
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 11.5px;
+  line-height: 1.7;
+}
+
+.gp-footer-notice { margin: 0 0 4px; }
+.gp-footer-notice strong { color: var(--accent-dark); }
+
+.gp-footer-links { margin: 0; }
+.gp-footer-links a {
+  color: var(--accent-dark);
+  font-weight: 700;
+  text-decoration: none;
+}
+.gp-footer-links a:hover { text-decoration: underline; }
+
+/* ------------------------------------------------------------------ */
+/* セッション詳細シート(モバイル: 下からのシート / PC: 中央モーダル)          */
+/* ------------------------------------------------------------------ */
+
+body.sd-open { overflow: hidden; }
+
+.sd-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(16, 48, 44, 0.45);
+}
+
+.sd-sheet {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  max-height: 86vh;
+  max-height: 86dvh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: calc(20px + env(safe-area-inset-top)) calc(18px + env(safe-area-inset-right))
+    calc(26px + env(safe-area-inset-bottom)) calc(18px + env(safe-area-inset-left));
+  border-radius: 18px 18px 0 0;
+  background: var(--surface);
+  box-shadow: 0 -12px 40px rgba(16, 48, 44, 0.28);
+}
+
+.sd-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 50%;
+  background: var(--cream);
+  color: var(--navy);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+.sd-close:hover { background: var(--line); }
+
+.sd-header {
+  padding-right: 40px;
+  margin-bottom: 14px;
+}
+
+.sd-kind-badge {
+  display: inline-flex;
+  padding: 3px 10px;
+  margin-bottom: 8px;
+  border-radius: 999px;
+  background: var(--kind-bg);
+  color: var(--kind-color);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.sd-title {
+  margin: 0 0 6px;
+  color: var(--navy);
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.sd-code {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.sd-mark-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--background);
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.sd-mark-btn--session {
+  width: 44px;
+  height: 44px;
+  font-size: 20px;
+}
+
+.sd-mark-btn--presentation {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  font-size: 16px;
+  align-self: center;
+}
+
+.sd-mark-btn.mark-heart {
+  border-color: var(--mark-heart);
+  color: var(--mark-heart);
+  background: rgba(179, 67, 95, 0.08);
+}
+
+.sd-mark-btn.mark-star {
+  border-color: var(--mark-star);
+  color: var(--mark-star);
+  background: rgba(184, 134, 44, 0.08);
+}
+
+.sd-info {
+  margin: 0 0 18px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--background);
+}
+
+.sd-info-row {
+  display: flex;
+  gap: 10px;
+  font-size: 13px;
+  padding: 3px 0;
+}
+
+.sd-info-row dt {
+  flex: none;
+  width: 3.6em;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.sd-info-row dd {
+  margin: 0;
+  color: var(--ink);
+}
+
+.sd-presentations-title {
+  margin: 0 0 10px;
+  color: var(--navy);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.sd-pres-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sd-pres-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+}
+
+.sd-pres-row:first-child { border-top: none; }
+
+.sd-pres-code {
+  flex: none;
+  width: 4.4em;
+  padding-top: 1px;
+  color: var(--accent-dark);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.sd-pres-body { flex: 1 1 auto; min-width: 0; }
+
+.sd-pres-time {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.sd-badge-estimated {
+  display: inline-flex;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--estimated-bg);
+  color: var(--estimated-color);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.sd-pres-title {
+  margin-top: 2px;
+  color: var(--ink);
+  font-size: 13.5px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.sd-pres-presenter {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.sd-share-btn {
+  display: block;
+  width: 100%;
+  margin: 0 0 18px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--background);
+  color: var(--accent-dark);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+}
+.sd-share-btn:hover { background: var(--cream); }
+.sd-share-btn.is-copied {
+  border-color: var(--accent);
+  background: var(--kbg-lecture);
+  color: var(--accent-dark);
+}
+
+/* ------------------------------------------------------------------ */
+/* このアプリについて モーダル(about.js)。sd-sheet の見た目を流用する。    */
+/* ------------------------------------------------------------------ */
+
+.sd-sheet--about .about-body p {
+  margin: 0 0 14px;
+  font-size: 13.5px;
+  line-height: 1.85;
+  color: var(--ink);
+}
+.sd-sheet--about .about-body strong { color: var(--navy); }
+.sd-sheet--about .about-body a { color: var(--accent-dark); font-weight: 700; }
+
+.about-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  margin: 4px 0 16px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--background);
+}
+.about-links a { font-size: 13px; }
+
+.about-contact {
+  color: var(--muted) !important;
+  font-size: 12.5px !important;
+}
+
+.gp-about-trigger {
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: none;
+  color: var(--accent-dark);
+  font-weight: 800;
+  font-size: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+.gp-about-trigger:hover { color: var(--navy); }
+
+/* ------------------------------------------------------------------ */
+/* ナビ(検索・マイタイテ)タブ / ページ共通スクロールコンテナ               */
+/* ------------------------------------------------------------------ */
+
+.gp-nav-action { display: inline-flex; align-items: center; gap: 4px; }
+
+.gp-page-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px;
+  background: var(--surface);
+}
+
+/* ------------------------------------------------------------------ */
+/* 検索ページ(search.js)                                                */
+/* ------------------------------------------------------------------ */
+
+.gp-search { max-width: 720px; margin: 0 auto; }
+
+.gp-search-bar { margin-bottom: 12px; }
+
+.gp-search-input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--background);
+  color: var(--ink);
+  /* iOSでフォーカス時に自動ズームされないよう16px以上にする */
+  font-size: 16px;
+}
+.gp-search-input:focus-visible {
+  outline: 3px solid rgba(15, 118, 110, 0.3);
+  outline-offset: 1px;
+}
+
+.gp-search-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.gp-filter-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.gp-chip {
+  padding: 5px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.gp-chip.is-active {
+  background: var(--kind-bg, var(--kbg-lecture));
+  border-color: var(--kind-color, var(--accent));
+  color: var(--kind-color, var(--accent-dark));
+}
+
+.gp-search-hint {
+  margin: 20px 0;
+  color: var(--muted);
+  font-size: 13px;
+  text-align: center;
+}
+
+.gp-result {
+  position: relative;
+  margin-bottom: 12px;
+  border-left: 4px solid var(--kind-color);
+  border-radius: 10px;
+  background: var(--kind-bg);
+  overflow: hidden;
+}
+
+/* 「詳細を開く」用の実体<button>。マークボタンは.gp-resultの兄弟要素として
+   別に配置しており(button内buttonのネストを避けるため)、絶対配置の基準は
+   親の .gp-result 側になる。 */
+.gp-result-head {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 100%;
+  padding: 12px 40px 12px 12px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.gp-result-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 700;
+}
+.gp-result-kind { color: var(--kind-color); }
+
+.gp-result-title {
+  color: var(--navy);
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.gp-result-venue {
+  color: var(--muted);
+  font-size: 11.5px;
+}
+
+.gp-result > .sd-mark-btn,
+.gp-mytaite-row > .sd-mark-btn {
+  position: absolute;
+  top: 10px;
+  right: 8px;
+}
+
+.gp-result-category {
+  color: var(--muted);
+}
+
+.gp-result-pres-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: var(--surface);
+}
+
+.gp-result-pres-row {
+  position: relative;
+  border-top: 1px solid var(--line);
+}
+
+/* 「詳細を開く」用の実体<button>。マークボタンは.gp-result-pres-rowの兄弟要素として
+   別に配置している(button内buttonのネストを避けるため)。 */
+.gp-result-pres-btn {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  padding: 10px 40px 10px 16px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.gp-result-pres-title {
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.gp-result-pres-presenter {
+  color: var(--muted);
+  font-size: 11.5px;
+}
+
+.gp-result-pres-row > .sd-mark-btn {
+  position: absolute;
+  top: 8px;
+  right: 6px;
+}
+
+/* ------------------------------------------------------------------ */
+/* マイタイテページ(mytaite.js)                                        */
+/* ------------------------------------------------------------------ */
+
+.gp-mytaite { max-width: 720px; margin: 0 auto; }
+
+.gp-empty {
+  margin: 32px 0;
+  color: var(--muted);
+  font-size: 13.5px;
+  text-align: center;
+  line-height: 1.8;
+}
+
+.gp-mytaite-day-title {
+  margin: 22px 0 10px;
+  color: var(--navy);
+  font-size: 14px;
+  font-weight: 800;
+}
+.gp-mytaite-day-title:first-child { margin-top: 0; }
+
+.gp-mytaite-list { display: flex; flex-direction: column; gap: 8px; }
+
+.gp-mytaite-row {
+  position: relative;
+  border-left: 4px solid var(--kind-color);
+  border-radius: 10px;
+  background: var(--kind-bg);
+  overflow: hidden;
+}
+
+/* 「詳細を開く」用の実体<button>。マークボタンは.gp-mytaite-rowの兄弟要素として
+   別に配置している(button内buttonのネストを避けるため)。 */
+.gp-mytaite-btn {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  width: 100%;
+  padding: 10px 48px 10px 12px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.gp-mytaite-time {
+  flex: none;
+  width: 4.6em;
+  padding-top: 1px;
+  color: var(--navy);
+  font-size: 12px;
+  font-weight: 800;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.gp-mytaite-body { flex: 1 1 auto; min-width: 0; }
+
+.gp-mytaite-venue {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.gp-mytaite-title {
+  color: var(--navy);
+  font-size: 13.5px;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.gp-mytaite-sub {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 11.5px;
+}
+
+.gp-mytaite-warning {
+  margin-top: 4px;
+  color: var(--estimated-color);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.gp-mytaite-promo {
+  margin-top: 28px;
+  padding: 18px 20px;
+  border-radius: 14px;
+  background: var(--cream);
+  text-align: center;
+}
+.gp-mytaite-promo p {
+  margin: 0 0 10px;
+  color: var(--navy);
+  font-size: 13px;
+  font-weight: 700;
+}
+.gp-mytaite-promo-link {
+  display: inline-flex;
+  padding: 9px 18px;
+  border-radius: 999px;
+  background: var(--navy);
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* レスポンシブ(PC: 中央モーダル)                                        */
+/* ------------------------------------------------------------------ */
+
+@media (min-width: 760px) {
+  .gp-header-inner { padding: 14px 22px 10px; }
+  .gp-day-tabs { padding: 0 18px 14px; }
+
+  .sd-overlay { align-items: center; padding: 24px; }
+  .sd-sheet {
+    max-height: 82vh;
+    border-radius: 20px;
+    padding: 28px 30px 32px;
+  }
+  .sd-close { top: 16px; right: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tt-act { transition: none; }
+}

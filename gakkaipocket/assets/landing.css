@@ -1,0 +1,384 @@
+/* ===================================================================
+   landing.css — 学会ポケット トップページ専用スタイル
+   このファイルは index.html からのみ読み込まれます。
+   法務3ページ (about / privacy-policy / terms-of-service) は
+   styles.css のみを参照しており、本ファイルの影響を受けません。
+   =================================================================== */
+
+:root {
+  --lp-teal: #0f766e;
+  --lp-teal-light: #14b8a6;
+  --lp-navy: #17233c;
+  --lp-cream: #fff8f0;
+  --lp-muted: #5c6577;
+  --lp-line: rgba(23, 35, 60, 0.09);
+  --lp-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Times New Roman", serif;
+}
+
+/* --- 見出し用の明朝体アクセント（外部フォント不使用・システムフォントのみ） --- */
+.lp-serif {
+  font-family: var(--lp-serif);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.lp-main { display: block; }
+
+/* ------------------------------------------------------------------ */
+/* Hero                                                                 */
+/* ------------------------------------------------------------------ */
+
+.lp-hero {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 340px);
+  align-items: center;
+  gap: 40px;
+  padding: clamp(36px, 6vw, 64px) clamp(28px, 6vw, 64px);
+  border-radius: 36px;
+  background:
+    radial-gradient(circle at 14px 14px, rgba(15, 118, 110, 0.14) 1.6px, transparent 1.7px) 0 0 / 26px 26px,
+    linear-gradient(150deg, var(--lp-cream), #ffffff 62%);
+  box-shadow: 0 24px 60px rgba(23, 35, 60, 0.1);
+  isolation: isolate;
+}
+
+.lp-hero::before {
+  content: "";
+  position: absolute;
+  top: -120px;
+  right: -100px;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(20, 184, 166, 0.28), rgba(20, 184, 166, 0) 70%);
+  z-index: -1;
+}
+
+.lp-eyebrow {
+  margin: 0 0 14px;
+  color: var(--lp-teal);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.lp-name {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0 0 18px;
+}
+
+.lp-name-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 13px;
+  box-shadow: 0 8px 18px rgba(23, 35, 60, 0.18);
+  flex: none;
+}
+
+.lp-hero h1 {
+  margin: 0;
+  color: var(--lp-navy);
+  font-size: clamp(28px, 5.4vw, 38px);
+  line-height: 1.2;
+}
+
+.lp-hero-tagline {
+  margin: 0 0 16px;
+  color: var(--lp-teal);
+  font-family: var(--lp-serif);
+  font-weight: 600;
+  font-size: clamp(20px, 3.4vw, 26px);
+  line-height: 1.5;
+}
+
+.lp-hero-lead {
+  margin: 0 0 30px;
+  max-width: 46ch;
+  color: var(--lp-muted);
+  font-size: 15px;
+}
+
+.lp-store {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+}
+
+.lp-badge-link {
+  display: inline-flex;
+  padding: 12px;
+  margin: -12px;
+  border-radius: 16px;
+  line-height: 0;
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+.lp-badge-link:hover { transform: translateY(-2px); }
+
+.lp-badge-link:focus-visible {
+  outline: 3px solid rgba(15, 118, 110, 0.4);
+  outline-offset: 3px;
+}
+
+.lp-badge-link img {
+  display: block;
+  height: 52px;
+  width: auto;
+}
+
+.lp-store-note {
+  margin: 0;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(23, 35, 60, 0.06);
+  color: var(--lp-muted);
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.lp-hero-art {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 220px;
+}
+
+.lp-hero-art-shot {
+  position: absolute;
+  width: 132px;
+  border-radius: 20px;
+  box-shadow: 0 22px 44px rgba(23, 35, 60, 0.22);
+  transform: rotate(7deg) translate(46px, 6px);
+  border: 5px solid var(--lp-navy);
+}
+
+.lp-hero-art-icon {
+  position: relative;
+  width: 118px;
+  height: 118px;
+  border-radius: 30px;
+  box-shadow: 0 20px 40px rgba(23, 35, 60, 0.22);
+  transform: rotate(-6deg) translate(-30px, 0);
+}
+
+/* ------------------------------------------------------------------ */
+/* Notice（非公式アプリの明示）                                          */
+/* ------------------------------------------------------------------ */
+
+.lp-notice {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-top: 22px;
+  padding: 20px 24px;
+  border: 1px solid rgba(15, 118, 110, 0.28);
+  border-radius: 20px;
+  background: rgba(15, 118, 110, 0.07);
+}
+
+.lp-notice-icon {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+  color: var(--lp-teal);
+}
+
+.lp-notice p {
+  margin: 0;
+  color: var(--lp-navy);
+  font-size: 13.5px;
+  line-height: 1.85;
+}
+
+.lp-notice strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--lp-teal);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+}
+
+/* ------------------------------------------------------------------ */
+/* Section 共通                                                         */
+/* ------------------------------------------------------------------ */
+
+.lp-section {
+  margin-top: 64px;
+}
+
+.lp-section-head {
+  margin: 0 0 30px;
+  text-align: center;
+}
+
+.lp-section-eyebrow {
+  display: block;
+  margin: 0 0 8px;
+  color: var(--lp-teal);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.lp-section-title {
+  margin: 0;
+  color: var(--lp-navy);
+  font-family: var(--lp-serif);
+  font-weight: 600;
+  font-size: clamp(22px, 4vw, 30px);
+}
+
+/* ------------------------------------------------------------------ */
+/* Showcase（スクリーンショット）                                        */
+/* ------------------------------------------------------------------ */
+
+.lp-showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.lp-shot {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.lp-shot:nth-child(2) { transform: translateY(22px); }
+.lp-shot:nth-child(4) { transform: translateY(22px); }
+
+.lp-phone {
+  width: 100%;
+  aspect-ratio: 600 / 1304;
+  overflow: hidden;
+  border-radius: 26px;
+  border: 6px solid var(--lp-navy);
+  box-shadow: 0 18px 36px rgba(23, 35, 60, 0.18);
+  background: var(--lp-navy);
+}
+
+.lp-phone img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.lp-shot figcaption {
+  margin-top: 16px;
+  color: var(--lp-navy);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.lp-shot-num {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--lp-teal-light);
+  font-family: var(--lp-serif);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+}
+
+/* ------------------------------------------------------------------ */
+/* Features                                                             */
+/* ------------------------------------------------------------------ */
+
+.lp-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lp-feature {
+  padding: 26px 24px;
+  border: 1px solid rgba(23, 35, 60, 0.07);
+  border-radius: 22px;
+  background: #ffffff;
+  box-shadow: 0 10px 26px rgba(23, 35, 60, 0.05);
+}
+
+.lp-feature-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  margin-bottom: 14px;
+  border-radius: 13px;
+  background: rgba(15, 118, 110, 0.1);
+  color: var(--lp-teal);
+}
+
+.lp-feature-icon svg { width: 22px; height: 22px; }
+
+.lp-feature h3 {
+  margin: 0 0 6px;
+  color: var(--lp-navy);
+  font-size: 15.5px;
+}
+
+.lp-feature p {
+  margin: 0;
+  color: var(--lp-muted);
+  font-size: 13px;
+  line-height: 1.75;
+}
+
+/* ------------------------------------------------------------------ */
+/* Legal cards ヘッダー（カード自体は共通 .cards / .card を流用）           */
+/* ------------------------------------------------------------------ */
+
+.lp-legal { margin-top: 64px; }
+
+/* ------------------------------------------------------------------ */
+/* Responsive                                                           */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 860px) {
+  .lp-feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 700px) {
+  .lp-hero {
+    grid-template-columns: 1fr;
+    padding: 30px 24px;
+    border-radius: 28px;
+  }
+
+  .lp-hero-art { display: none; }
+
+  .lp-store { justify-content: center; }
+  .lp-hero-lead { max-width: none; }
+
+  .lp-showcase-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 16px; }
+  .lp-shot:nth-child(2),
+  .lp-shot:nth-child(4) { transform: translateY(22px); }
+
+  .lp-feature-grid { grid-template-columns: 1fr; }
+
+  .lp-section { margin-top: 48px; }
+}
+
+@media (max-width: 420px) {
+  .lp-showcase-grid { grid-template-columns: 1fr; }
+  .lp-shot:nth-child(2),
+  .lp-shot:nth-child(4) { transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-badge-link { transition: none; }
+}

@@ -58,6 +58,8 @@ button:focus-visible {
   color: var(--navy);
   font-weight: 800;
   text-decoration: none;
+  white-space: nowrap;
+  flex: 0 0 auto;
 }
 
 .brand img {
@@ -261,7 +263,10 @@ h1, h2, h3 { color: var(--navy); }
 .site-footer a { color: var(--muted); }
 
 @media (max-width: 700px) {
-  .header-inner { align-items: flex-start; }
+  .header-inner { align-items: center; gap: 12px; }
+  .brand { font-size: 15px; }
+  .brand img { width: 30px; height: 30px; }
+  .nav a { font-size: 12px; }
   .nav { gap: 8px 12px; }
   .hero { grid-template-columns: 1fr; padding: 30px 24px; text-align: center; }
   .hero img { grid-row: 1; max-height: 96px; margin: 0 auto; }

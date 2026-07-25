@@ -382,3 +382,8 @@
 @media (prefers-reduced-motion: reduce) {
   .lp-badge-link { transition: none; }
 }
+
+/* ヒーロー見出しは語の途中で折り返さないよう、読点で明示的に改行する */
+.lp-hero-tagline span {
+  display: block;
+}

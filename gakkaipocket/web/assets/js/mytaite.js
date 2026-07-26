@@ -3,7 +3,10 @@
 import { h, formatTime, bus } from "./util.js";
 import { kindMeta, findLaneForAct } from "./catalog.js";
 import { listMarks } from "./marks.js";
+import { getNote } from "./notes.js";
 import { buildMarkButton } from "./session-detail.js";
+
+const EMPTY_TEXT = "グリッドや検索から♡☆でマークするか、メモを書くとここに表示されます。";
 
 /**
  * マイタイテページを描画する。
@@ -20,22 +23,12 @@ export function renderMytaitePage(container, model, { onSelectAct }) {
   function build() {
     wrap.textContent = "";
     const marks = new Map(listMarks());
-
-    if (marks.size === 0) {
-      wrap.appendChild(
-        h("p", {
-          className: "gp-empty",
-          text: "グリッドや検索から♡☆でマークするとここに表示されます。",
-        })
-      );
-      appendPromo(wrap);
-      return;
-    }
+    const eventId = model.event.id;
 
     let anyRendered = false;
 
     for (const day of model.days) {
-      const entries = collectEntries(day, marks);
+      const entries = collectEntries(day, marks, eventId);
       if (!entries.length) continue;
       anyRendered = true;
 
@@ -50,12 +43,7 @@ export function renderMytaitePage(container, model, { onSelectAct }) {
     }
 
     if (!anyRendered) {
-      wrap.appendChild(
-        h("p", {
-          className: "gp-empty",
-          text: "グリッドや検索から♡☆でマークするとここに表示されます。",
-        })
-      );
+      wrap.appendChild(h("p", { className: "gp-empty", text: EMPTY_TEXT }));
     }
 
     appendPromo(wrap);
@@ -65,25 +53,34 @@ export function renderMytaitePage(container, model, { onSelectAct }) {
 
   const onMarksChanged = () => build();
   bus.on("marks-changed", onMarksChanged);
+  bus.on("notes-changed", onMarksChanged);
 
   return {
     destroy() {
       bus.off("marks-changed", onMarksChanged);
+      bus.off("notes-changed", onMarksChanged);
     },
   };
 }
 
-function collectEntries(day, marks) {
+/**
+ * マーク済み、またはメモがあるセッション・演題を収集する。
+ * メモだけあってマーク(♡☆)が無い項目も一覧に混ぜ込む(そうしないとメモに
+ * 辿り着けなくなるため)。並び順は既存どおり時刻順のまま(sortTimeでソート)。
+ */
+function collectEntries(day, marks, eventId) {
   const entries = [];
 
   for (const act of day.acts) {
     const actMark = marks.get(act.id);
-    if (actMark) {
+    const actNote = getNote(eventId, act.id, null);
+    if (actMark || actNote) {
       entries.push({
         key: `act:${act.id}`,
         markTargetId: act.id,
         markKind: "session",
         markValue: actMark,
+        noteText: actNote ? actNote.text : null,
         act,
         day,
         presentation: null,
@@ -95,13 +92,15 @@ function collectEntries(day, marks) {
 
     for (const p of act.presentations || []) {
       const pMark = marks.get(p.id);
-      if (!pMark) continue;
+      const pNote = getNote(eventId, act.id, p.id);
+      if (!pMark && !pNote) continue;
       const sortTime = p.estimated_start ? new Date(p.estimated_start) : act.startDate;
       entries.push({
         key: `pr:${p.id}`,
         markTargetId: p.id,
         markKind: "presentation",
         markValue: pMark,
+        noteText: pNote ? pNote.text : null,
         act,
         day,
         presentation: p,
@@ -171,6 +170,12 @@ function buildEntryRow(entry, hasOverlap, onSelectAct) {
   );
   if (hasOverlap) {
     body.appendChild(h("div", { className: "gp-mytaite-warning", text: "時間が重なっています" }));
+  }
+  if (entry.noteText) {
+    // マークが無くメモだけの項目は、控えめに「メモ」ラベルを添えて見分けられるようにする
+    // (CSS側の ::before で付与するため、ユーザー入力のテキストとは分離している)。
+    const noteClass = entry.markValue ? "gp-mytaite-note-preview" : "gp-mytaite-note-preview has-no-mark";
+    body.appendChild(h("div", { className: noteClass, text: entry.noteText }));
   }
   openBtn.appendChild(body);
 

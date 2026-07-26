@@ -197,6 +197,7 @@ function handleRoute() {
         day: found.day,
         artistsById: model.artistsById,
         venuesById: model.venuesById,
+        eventId: model.event.id,
       },
       {
         onClose() {

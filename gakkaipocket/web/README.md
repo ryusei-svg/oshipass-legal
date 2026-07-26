@@ -5,6 +5,7 @@
 - `index.html` / `manifest.webmanifest` / `sw.js` … アプリシェル
 - `assets/js/*.js` … 各ページ・機能のモジュール(ES modules)
 - カタログJSON(`../catalog/index.json` 等)は同一オリジンの親ディレクトリから fetch する
+- メモ機能(♡☆マークとは別に自由記述できるメモ)は localStorage キー `gp:notes:v1` に保存する(`assets/js/notes.js`)
 
 ## Service Worker のキャッシュバージョン
 

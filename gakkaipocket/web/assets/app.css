@@ -531,9 +531,10 @@ body.sd-open { overflow: hidden; }
 
 .sd-info-row dt {
   flex: none;
-  width: 3.6em;
+  width: 4.2em;
   color: var(--muted);
   font-weight: 700;
+  white-space: nowrap;
 }
 
 .sd-info-row dd {
@@ -606,6 +607,121 @@ body.sd-open { overflow: hidden; }
   margin-top: 2px;
   color: var(--muted);
   font-size: 12px;
+}
+
+/* ------------------------------------------------------------------ */
+/* メモ機能(notes.js / session-detail.js)                              */
+/* ------------------------------------------------------------------ */
+
+.sd-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.sd-pres-actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  align-self: center;
+}
+
+.sd-note-btn {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--background);
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.sd-note-btn--session {
+  width: 44px;
+  height: 44px;
+}
+
+.sd-note-btn--presentation {
+  width: 34px;
+  height: 34px;
+}
+
+.sd-note-btn.has-note {
+  border-color: var(--accent);
+  color: var(--accent-dark);
+  background: var(--kbg-lecture);
+}
+
+.sd-note-preview {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sd-note-editor {
+  margin-top: 8px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--background);
+}
+
+.sd-note-textarea {
+  display: block;
+  width: 100%;
+  min-height: 4.5em;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: inherit;
+  /* iOSでフォーカス時に自動ズームされないよう16px以上にする */
+  font-size: 16px;
+  resize: vertical;
+}
+.sd-note-textarea:focus-visible {
+  outline: 3px solid rgba(15, 118, 110, 0.3);
+  outline-offset: 1px;
+}
+
+.sd-note-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.sd-note-save-btn,
+.sd-note-cancel-btn,
+.sd-note-delete-btn {
+  padding: 7px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.sd-note-save-btn {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.sd-note-delete-btn {
+  margin-left: auto;
+  color: var(--mark-heart);
 }
 
 .sd-share-btn {
@@ -930,6 +1046,24 @@ body.sd-open { overflow: hidden; }
   color: var(--estimated-color);
   font-size: 11px;
   font-weight: 700;
+}
+
+.gp-mytaite-note-preview {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 11.5px;
+  line-height: 1.5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* マークが無くメモだけの項目にラベルを添える(静的文言はCSS側で付与し、
+   ユーザー入力のメモ本文とは分離する)。 */
+.gp-mytaite-note-preview.has-no-mark::before {
+  content: "メモ ";
+  color: var(--accent-dark);
+  font-weight: 800;
 }
 
 .gp-mytaite-promo {

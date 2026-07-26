@@ -4,9 +4,11 @@
 import { h, formatTime } from "./util.js";
 import { kindMeta, resolveArtistNames, resolveVenueNameForAct, findLaneForAct } from "./catalog.js";
 import { getMark, cycleMark } from "./marks.js";
+import { getNote, setNote, NOTE_MAX_LENGTH } from "./notes.js";
 
 const MARK_GLYPH = { idle: "♡", heart: "♥", star: "★" };
 const MARK_LABEL = { idle: "マークなし", heart: "絶対聴く", star: "できれば" };
+const SVG_NS = "http://www.w3.org/2000/svg";
 
 let activeController = null;
 
@@ -19,7 +21,7 @@ let activeController = null;
 export function openSessionDetail(ctx, options = {}) {
   closeSessionDetail();
 
-  const { act, day, artistsById, venuesById } = ctx;
+  const { act, day, artistsById, venuesById, eventId } = ctx;
   const meta = kindMeta(act.session_kind);
   const lane = findLaneForAct(act, day);
   const venueName = resolveVenueNameForAct(act, day, venuesById);
@@ -53,7 +55,12 @@ export function openSessionDetail(ctx, options = {}) {
   }
 
   const actMarkBtn = buildMarkButton(act.id, "session");
-  header.appendChild(actMarkBtn);
+  const actNote = createNoteControl({ eventId, actId: act.id, presentationId: null, kind: "session" });
+  const headerActions = h("div", { className: "sd-header-actions" });
+  headerActions.appendChild(actMarkBtn);
+  headerActions.appendChild(actNote.button);
+  header.appendChild(headerActions);
+  header.appendChild(actNote.panel);
 
   const info = h("dl", { className: "sd-info" });
   addInfoRow(info, "時間", `${formatTime(act.start)}〜${formatTime(act.end)}`);
@@ -77,7 +84,7 @@ export function openSessionDetail(ctx, options = {}) {
     );
     const list = h("ol", { className: "sd-pres-list" });
     for (const p of act.presentations) {
-      list.appendChild(buildPresentationRow(p, artistsById));
+      list.appendChild(buildPresentationRow(p, artistsById, eventId, act.id));
     }
     presWrap.appendChild(list);
     sheet.appendChild(presWrap);
@@ -141,7 +148,7 @@ function addInfoRow(dl, label, value) {
   dl.appendChild(row);
 }
 
-function buildPresentationRow(presentation, artistsById) {
+function buildPresentationRow(presentation, artistsById, eventId, actId) {
   const li = h("li", { className: "sd-pres-row" });
 
   const codeEl = h("div", { className: "sd-pres-code", text: presentation.code || "" });
@@ -164,9 +171,23 @@ function buildPresentationRow(presentation, artistsById) {
     body.appendChild(h("div", { className: "sd-pres-presenter", text: parts.filter(Boolean).join(" ") }));
   }
 
+  const presMarkBtn = buildMarkButton(presentation.id, "presentation");
+  const presNote = createNoteControl({
+    eventId,
+    actId,
+    presentationId: presentation.id,
+    kind: "presentation",
+  });
+  // メモの1行プレビュー・編集エリアは本文(body)側に積む(「その行の直下」に表示するため)。
+  body.appendChild(presNote.panel);
+
+  const actionsWrap = h("div", { className: "sd-pres-actions" });
+  actionsWrap.appendChild(presMarkBtn);
+  actionsWrap.appendChild(presNote.button);
+
   li.appendChild(codeEl);
   li.appendChild(body);
-  li.appendChild(buildMarkButton(presentation.id, "presentation"));
+  li.appendChild(actionsWrap);
   return li;
 }
 
@@ -239,4 +260,173 @@ function updateMarkButton(btn, state) {
   btn.textContent = MARK_GLYPH[key];
   btn.className = `sd-mark-btn sd-mark-btn--${kind} mark-${key}`;
   btn.setAttribute("aria-label", `マーク切り替え（現在: ${MARK_LABEL[key]}）`);
+}
+
+/**
+ * メモボタン(アイコン) + 1行プレビュー + インライン編集エリアの一式を組み立てる。
+ * ボタンはマークボタンの兄弟要素として配置する想定(button内buttonのネスト禁止のため)。
+ * @param {{ eventId: string, actId: string, presentationId: string|null, kind: "session"|"presentation" }} params
+ * @returns {{ button: HTMLButtonElement, panel: HTMLElement }}
+ */
+function createNoteControl({ eventId, actId, presentationId, kind }) {
+  const panel = h("div", { className: "sd-note-panel" });
+  const preview = h("p", { className: "sd-note-preview" });
+  panel.appendChild(preview);
+
+  const btn = h("button", {
+    className: `sd-note-btn sd-note-btn--${kind}`,
+    attrs: { type: "button" },
+  });
+  btn.appendChild(buildNoteIcon());
+
+  let editorEl = null;
+
+  function currentNote() {
+    return getNote(eventId, actId, presentationId);
+  }
+
+  function refresh() {
+    const note = currentNote();
+    const has = Boolean(note && note.text);
+    btn.classList.toggle("has-note", has);
+    btn.setAttribute("aria-label", has ? "メモを編集" : "メモを書く");
+    if (has) {
+      preview.textContent = note.text;
+      preview.hidden = false;
+    } else {
+      preview.textContent = "";
+      preview.hidden = true;
+    }
+  }
+
+  function closeEditor() {
+    if (editorEl) {
+      editorEl.remove();
+      editorEl = null;
+    }
+  }
+
+  function openEditor() {
+    if (editorEl) return;
+    const note = currentNote();
+    const hasExisting = Boolean(note && note.text);
+
+    const editor = h("div", { className: "sd-note-editor" });
+
+    const textarea = document.createElement("textarea");
+    textarea.className = "sd-note-textarea";
+    textarea.maxLength = NOTE_MAX_LENGTH;
+    textarea.rows = 3;
+    textarea.value = note ? note.text : "";
+    textarea.setAttribute("autofocus", "");
+    textarea.setAttribute("aria-label", "メモを入力");
+    editor.appendChild(textarea);
+
+    const actions = h("div", { className: "sd-note-actions" });
+    const saveBtn = h("button", {
+      className: "sd-note-save-btn",
+      attrs: { type: "button" },
+      text: "保存",
+    });
+    const cancelBtn = h("button", {
+      className: "sd-note-cancel-btn",
+      attrs: { type: "button" },
+      text: "キャンセル",
+    });
+    actions.appendChild(saveBtn);
+    actions.appendChild(cancelBtn);
+
+    if (hasExisting) {
+      const deleteBtn = h("button", {
+        className: "sd-note-delete-btn",
+        attrs: { type: "button" },
+        text: "削除",
+      });
+      deleteBtn.addEventListener("click", (ev) => {
+        ev.stopPropagation();
+        setNote(eventId, actId, presentationId, "");
+        closeEditor();
+        refresh();
+      });
+      actions.appendChild(deleteBtn);
+    }
+    editor.appendChild(actions);
+
+    saveBtn.addEventListener("click", (ev) => {
+      ev.stopPropagation();
+      setNote(eventId, actId, presentationId, textarea.value);
+      closeEditor();
+      refresh();
+    });
+    cancelBtn.addEventListener("click", (ev) => {
+      ev.stopPropagation();
+      closeEditor();
+    });
+
+    // 編集エリア内でのクリックが親要素(シートのオーバーレイクリック判定など)へ
+    // 伝播して誤動作しないようにする(マークボタンと同様の ev.stopPropagation() 方針)。
+    editor.addEventListener("click", (ev) => ev.stopPropagation());
+    // Escapeは編集エリアを閉じるだけにとどめ、シート全体のEscapeハンドラ
+    // (document への keydown リスナー)まで伝播させない。
+    editor.addEventListener("keydown", (ev) => {
+      if (ev.key === "Escape") {
+        ev.stopPropagation();
+        closeEditor();
+      }
+    });
+
+    editorEl = editor;
+    panel.appendChild(editor);
+    textarea.focus();
+  }
+
+  btn.addEventListener("click", (ev) => {
+    // マークボタンと同様、クリックが行/シート側のハンドラへ伝播して
+    // 詳細シートの開閉に影響しないようにする。
+    ev.stopPropagation();
+    if (editorEl) {
+      closeEditor();
+    } else {
+      openEditor();
+    }
+  });
+
+  refresh();
+
+  return { button: btn, panel };
+}
+
+/** 罫線のあるノートのインラインSVGアイコン(createElementNS で構築、innerHTML不使用) */
+function buildNoteIcon() {
+  const svg = document.createElementNS(SVG_NS, "svg");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.setAttribute("width", "16");
+  svg.setAttribute("height", "16");
+  svg.setAttribute("aria-hidden", "true");
+  svg.setAttribute("focusable", "false");
+
+  const outline = document.createElementNS(SVG_NS, "rect");
+  outline.setAttribute("x", "4");
+  outline.setAttribute("y", "3");
+  outline.setAttribute("width", "16");
+  outline.setAttribute("height", "18");
+  outline.setAttribute("rx", "2.5");
+  outline.setAttribute("fill", "none");
+  outline.setAttribute("stroke", "currentColor");
+  outline.setAttribute("stroke-width", "1.6");
+  svg.appendChild(outline);
+
+  [8, 12, 16].forEach((y) => {
+    const line = document.createElementNS(SVG_NS, "line");
+    line.setAttribute("x1", "7");
+    line.setAttribute("y1", String(y));
+    line.setAttribute("x2", "17");
+    line.setAttribute("y2", String(y));
+    line.setAttribute("stroke", "currentColor");
+    line.setAttribute("stroke-width", "1.4");
+    line.setAttribute("stroke-linecap", "round");
+    svg.appendChild(line);
+  });
+
+  return svg;
 }

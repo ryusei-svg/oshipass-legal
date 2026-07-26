@@ -237,7 +237,7 @@ function buildRowsWithGaps(entries, overlapping, day, liveNow, onSelectAct) {
     if (prev && prev.act.id !== entry.act.id) {
       const gapMin = diffMinutes(prev.rangeEnd, entry.rangeStart);
       if (gapMin >= GAP_THRESHOLD_MIN) {
-        out.push({ el: buildGapRow(gapMin, prev.venueId, entry.venueId, day), isScrollTarget: false });
+        out.push({ el: buildGapRow(gapMin, prev.venueId, entry.venueId), isScrollTarget: false });
       }
     }
 
@@ -261,22 +261,23 @@ function buildRowsWithGaps(entries, overlapping, day, liveNow, onSelectAct) {
   return out;
 }
 
-/** 「◯分のすきま」行。施設(venue)が変わる場合は移動の注意を添える(分単位の行程管理はしない)。 */
-function buildGapRow(gapMin, fromVenueId, toVenueId, day) {
+/**
+ * 「◯分のすきま」行。施設(venue)が変わる場合は移動の注意を添える(分単位の行程管理はしない)。
+ *
+ * カタログの inter_venue_walk(徒歩分数)はここでは表示しない。現在の値は実測でも公式の
+ * アクセス案内でもない概算(生成元 config.json に「仮値・要調整」と明記)であり、
+ * 事実情報のみを扱う方針に反するため。確定した所要時間が公式に示されたら復活を検討する。
+ */
+function buildGapRow(gapMin, fromVenueId, toVenueId) {
   const row = h("div", { className: "gp-mytaite-gap" });
   row.appendChild(
     h("span", { className: "gp-mytaite-gap-text", text: `${Math.round(gapMin)}分のすきま` })
   );
 
   if (fromVenueId && toVenueId && fromVenueId !== toVenueId) {
-    let moveText = "施設間の移動があります";
-    const walk = (day.interVenueWalk || []).find(
-      (w) => w.from_venue_id === fromVenueId && w.to_venue_id === toVenueId
+    row.appendChild(
+      h("span", { className: "gp-mytaite-gap-move", text: "施設間の移動があります" })
     );
-    if (walk && typeof walk.minutes === "number") {
-      moveText += `（徒歩${walk.minutes}分）`;
-    }
-    row.appendChild(h("span", { className: "gp-mytaite-gap-move", text: moveText }));
   }
 
   return row;

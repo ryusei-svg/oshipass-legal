@@ -63,6 +63,53 @@ export function diffMinutes(a, b) {
 }
 
 /**
+ * "YYYY-MM-DD" を "10月8日" のように整形する(当日ビューの案内文言用)。
+ * formatDateShort と同様、文字列から取り出した成分をそのまま組み立てるだけで
+ * Dateオブジェクトの端末タイムゾーン依存メソッドは使わない。
+ */
+export function formatDateLong(activityDate) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(activityDate || "");
+  if (!m) return activityDate || "";
+  return `${Number(m[2])}月${Number(m[3])}日`;
+}
+
+/**
+ * 現在時刻を表す Date を返す(常に「本物の絶対時刻」を返す。Dateは内部的に
+ * UTCのタイムスタンプを持つため、この値そのものは端末タイムゾーンに依存しない)。
+ *
+ * URLクエリに `?now=2026-10-08T13:45` (検証用) が指定されている場合は、
+ * その値を日本時間(+09:00)とみなして解釈した時刻を返す。オフセット表記
+ * (Z や +09:00 等)を含む値が渡された場合はそれを優先する。
+ * 未指定時・不正な値の場合は実際の現在時刻を返す(本番では常にこちら)。
+ */
+export function resolveNow() {
+  const params = new URLSearchParams(location.search);
+  const override = params.get("now");
+  if (override) {
+    const hasOffset = /(Z|[+-]\d{2}:?\d{2})$/.test(override);
+    const withOffset = hasOffset ? override : `${override}+09:00`;
+    const parsed = new Date(withOffset);
+    if (!Number.isNaN(parsed.getTime())) return parsed;
+  }
+  return new Date();
+}
+
+/**
+ * 与えられた Date が指す瞬間の「日本時間での暦日」を "YYYY-MM-DD" で返す。
+ * Date#getFullYear()/getMonth()/getDate() のような端末タイムゾーン依存の
+ * アクセサは使わず、絶対時刻(getTime())に9時間を加算した上で
+ * getUTCFullYear() 等のUTC系アクセサ(タイムゾーン非依存)で成分を取り出す。
+ * これにより、端末が海外タイムゾーンでもカタログ上の暦日どおりに判定できる。
+ */
+export function jstDateString(date) {
+  const shifted = new Date(date.getTime() + 9 * 60 * 60 * 1000);
+  const y = shifted.getUTCFullYear();
+  const mo = String(shifted.getUTCMonth() + 1).padStart(2, "0");
+  const d = String(shifted.getUTCDate()).padStart(2, "0");
+  return `${y}-${mo}-${d}`;
+}
+
+/**
  * createElement のショートハンド。XSS対策のため文字列は必ず textContent 経由で設定し、
  * innerHTML は一切使用しない。
  * @param {string} tag

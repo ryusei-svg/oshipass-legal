@@ -789,7 +789,7 @@ body.sd-open { overflow: hidden; }
 .gp-about-trigger:hover { color: var(--navy); }
 
 /* ------------------------------------------------------------------ */
-/* ナビ(検索・マイタイテ)タブ / ページ共通スクロールコンテナ               */
+/* ナビ(検索・当日)タブ / ページ共通スクロールコンテナ                     */
 /* ------------------------------------------------------------------ */
 
 .gp-nav-action { display: inline-flex; align-items: center; gap: 4px; }
@@ -964,10 +964,21 @@ body.sd-open { overflow: hidden; }
 }
 
 /* ------------------------------------------------------------------ */
-/* マイタイテページ(mytaite.js)                                        */
+/* 当日ビュー(mytaite.js)                                              */
 /* ------------------------------------------------------------------ */
 
 .gp-mytaite { max-width: 720px; margin: 0 auto; }
+
+.gp-mytaite-banner {
+  margin: 0 0 16px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--cream);
+  color: var(--navy);
+  font-size: 12.5px;
+  font-weight: 700;
+  text-align: center;
+}
 
 .gp-empty {
   margin: 32px 0;
@@ -995,6 +1006,24 @@ body.sd-open { overflow: hidden; }
   overflow: hidden;
 }
 
+/* 開催中、既に終了した項目は控えめな表示にして現在地をわかりやすくする。 */
+.gp-mytaite-row.is-done { opacity: 0.5; }
+
+/* すきま時間の案内行。分単位の行程管理はせず、注意喚起のみを行う。 */
+.gp-mytaite-gap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  padding: 9px 14px;
+  border-radius: 8px;
+  background: var(--cream);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+.gp-mytaite-gap-move { color: var(--accent-dark); }
+
 /* 「詳細を開く」用の実体<button>。マークボタンは.gp-mytaite-rowの兄弟要素として
    別に配置している(button内buttonのネストを避けるため)。 */
 .gp-mytaite-btn {
@@ -1020,6 +1049,20 @@ body.sd-open { overflow: hidden; }
   flex-direction: column;
   gap: 3px;
 }
+
+/* 「いま」「NEXT」バッジ。gp-mytaite-time は flex-direction:column のため
+   時刻表示の下に自然に積まれる(推定バッジと同じ配置パターン)。 */
+.gp-mytaite-badge {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+.gp-mytaite-badge--now { background: var(--mark-heart); color: #ffffff; }
+.gp-mytaite-badge--next { background: var(--accent); color: #ffffff; }
 
 .gp-mytaite-body { flex: 1 1 auto; min-width: 0; }
 

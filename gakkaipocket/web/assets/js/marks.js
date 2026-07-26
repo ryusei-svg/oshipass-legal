@@ -34,7 +34,7 @@ export function getMark(id) {
   return store[id];
 }
 
-/** マーク済みの [id, "heart"|"star"] を全件返す(マイタイテ画面で使用) */
+/** マーク済みの [id, "heart"|"star"] を全件返す(当日ビュー画面で使用) */
 export function listMarks() {
   return Object.entries(store);
 }

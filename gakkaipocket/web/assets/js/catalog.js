@@ -148,6 +148,8 @@ function normalizeDay(day, dayNumber, venuesById) {
     venueGroups,
     acts,
     timeRange,
+    // 施設間の徒歩移動時間(当日ビューのすきま時間表示で使用)。無ければ空配列。
+    interVenueWalk: day.inter_venue_walk || [],
   };
 }
 

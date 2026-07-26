@@ -1,5 +1,6 @@
 // main.js — アプリシェルの起動・ナビゲーション・ハッシュルーティングの統合
-// #/day/1, #/day/2, #/search, #/mytaite, #/session/<actId> を扱う。
+// #/day/1, #/day/2, #/search, #/today, #/session/<actId> を扱う。
+// 旧ハッシュ #/mytaite は #/today へ後方互換リダイレクトする(履歴を積まないreplaceState)。
 // 不明なハッシュは1日目にフォールバックする。
 
 import { loadCatalogModel } from "./catalog.js";
@@ -18,7 +19,7 @@ const footerEventNameEl = document.getElementById("gp-event-name");
 const aboutTriggerEl = document.getElementById("gp-about-trigger");
 
 let model = null;
-let currentPage = null; // "day" | "search" | "mytaite"
+let currentPage = null; // "day" | "search" | "today"
 let currentDayNumber = null;
 let currentPageController = null;
 let lastPageHash = "#/day/1";
@@ -76,15 +77,15 @@ function buildNavTabs(m) {
   });
   tabsEl.appendChild(searchBtn);
 
-  const mytaiteBtn = document.createElement("button");
-  mytaiteBtn.type = "button";
-  mytaiteBtn.className = "gp-day-tab gp-nav-action";
-  mytaiteBtn.dataset.nav = "mytaite";
-  mytaiteBtn.textContent = "マイタイテ";
-  mytaiteBtn.addEventListener("click", () => {
-    location.hash = "#/mytaite";
+  const todayBtn = document.createElement("button");
+  todayBtn.type = "button";
+  todayBtn.className = "gp-day-tab gp-nav-action";
+  todayBtn.dataset.nav = "today";
+  todayBtn.textContent = "当日";
+  todayBtn.addEventListener("click", () => {
+    location.hash = "#/today";
   });
-  tabsEl.appendChild(mytaiteBtn);
+  tabsEl.appendChild(todayBtn);
 }
 
 /**
@@ -143,7 +144,8 @@ function registerServiceWorker() {
 
 function parseRoute(hash) {
   if (hash === "#/search") return { type: "search" };
-  if (hash === "#/mytaite") return { type: "mytaite" };
+  if (hash === "#/today") return { type: "today" };
+  if (hash === "#/mytaite") return { type: "today-legacy" };
 
   const dayMatch = /^#\/day\/(\d+)$/.exec(hash);
   if (dayMatch) return { type: "day", day: Number(dayMatch[1]) };
@@ -166,6 +168,14 @@ function replaceHash(hash) {
 function handleRoute() {
   if (!model) return;
   const parsed = parseRoute(location.hash);
+
+  if (parsed && parsed.type === "today-legacy") {
+    // 後方互換: 旧ハッシュ #/mytaite で共有されたURLが死なないよう #/today へ正規化する。
+    // 他の不正ハッシュの正規化と同様、履歴を積まずに置き換える(replaceHash)。
+    replaceHash("#/today");
+    handleRoute();
+    return;
+  }
 
   if (parsed && parsed.type === "session") {
     const found = model.actIndex.get(parsed.actId);
@@ -225,9 +235,9 @@ function handleRoute() {
     return;
   }
 
-  if (parsed && parsed.type === "mytaite") {
-    lastPageHash = "#/mytaite";
-    renderMytaite();
+  if (parsed && parsed.type === "today") {
+    lastPageHash = "#/today";
+    renderToday();
     return;
   }
 
@@ -295,10 +305,10 @@ function renderSearch() {
   });
 }
 
-function renderMytaite() {
-  const alreadyShown = currentPage === "mytaite";
-  updateNavActive({ page: "mytaite" });
-  currentPage = "mytaite";
+function renderToday() {
+  const alreadyShown = currentPage === "today";
+  updateNavActive({ page: "today" });
+  currentPage = "today";
   currentDayNumber = null;
   if (alreadyShown) return; // スクロール位置などを保持したまま
 
@@ -318,7 +328,7 @@ function updateNavActive({ page, dayNumber }) {
     const isActive =
       (page === "day" && nav === `day:${dayNumber}`) ||
       (page === "search" && nav === "search") ||
-      (page === "mytaite" && nav === "mytaite");
+      (page === "today" && nav === "today");
     tab.classList.toggle("is-active", isActive);
     if (isActive) tab.setAttribute("aria-current", "page");
     else tab.removeAttribute("aria-current");

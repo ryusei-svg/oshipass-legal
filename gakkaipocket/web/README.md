@@ -7,6 +7,12 @@
 - カタログJSON(`../catalog/index.json` 等)は同一オリジンの親ディレクトリから fetch する
 - メモ機能(♡☆マークとは別に自由記述できるメモ)は localStorage キー `gp:notes:v1` に保存する(`assets/js/notes.js`)
 
+## 当日ビュー(`assets/js/mytaite.js`)
+
+- ナビ上のラベルは「当日」、ハッシュは `#/today` が正。旧ハッシュ `#/mytaite` は `#/today` へ後方互換リダイレクトする(履歴を積まないため「戻る」がループしない)。
+- 開催日当日は現在時刻(日本時間)を軸に「いま」「NEXT」バッジ・終了済み項目の控えめ表示・自動スクロールを行う。開催前後は従来どおり日別の一覧を表示する。
+- **動作確認用**: URLクエリ `?now=2026-10-08T13:45` を付けると、その時刻を日本時間(+09:00)とみなして現在時刻として扱う(`assets/js/util.js` の `resolveNow()`)。本番では指定しないため、常に実際の現在時刻が使われる。例: `index.html?now=2026-10-08T13:45#/today`
+
 ## Service Worker のキャッシュバージョン
 
 `sw.js` 冒頭の `VERSION` 定数がキャッシュ名(`gp-shell-<VERSION>` / `gp-catalog-<VERSION>`)を決めている。

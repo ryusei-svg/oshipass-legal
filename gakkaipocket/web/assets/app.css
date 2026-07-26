@@ -144,6 +144,63 @@ a:focus-visible,
   color: #ffffff;
 }
 
+/* .gp-day-tabs は display:flex を独自定義しているため、[hidden] のUA既定
+   (display:none)がそのままでは打ち消されてしまう。明示的に上書きする。 */
+.gp-day-tabs[hidden] { display: none; }
+
+/* ------------------------------------------------------------------ */
+/* 大会名ヘッダー(複数大会対応: 現在開いている大会名 + 切り替えボタン)          */
+/* ------------------------------------------------------------------ */
+
+.gp-event-header {
+  display: flex;
+  padding: 0 calc(14px + env(safe-area-inset-right)) 8px calc(14px + env(safe-area-inset-left));
+}
+
+.gp-event-header[hidden] { display: none; }
+
+.gp-event-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  /* flexアイテムは既定で min-width:auto となり、中身のテキスト分の幅までしか
+     縮まない。長い大会名をモバイル幅で省略表示させるには 0 にして
+     縮小を許可する必要がある。 */
+  min-width: 0;
+  max-width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--navy);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.gp-event-switch--static {
+  cursor: default;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gp-event-switch-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gp-event-switch-chevron {
+  flex: none;
+  color: var(--muted);
+}
+
+.gp-event-switch:hover .gp-event-switch-name,
+.gp-event-switch:focus-visible .gp-event-switch-name {
+  text-decoration: underline;
+}
+
 /* ------------------------------------------------------------------ */
 /* メイン(グリッド領域)                                                   */
 /* ------------------------------------------------------------------ */
@@ -399,6 +456,15 @@ a:focus-visible,
   text-decoration: none;
 }
 .gp-footer-links a:hover { text-decoration: underline; }
+
+/* https:/http: 以外のスキームで href を設定できない場合、リンクではなく
+   ただのテキストとして見せるための打ち消しスタイル(main.js populateFooterForEvent 参照)。 */
+.gp-footer-links a.is-plain {
+  color: inherit;
+  font-weight: inherit;
+  cursor: default;
+}
+.gp-footer-links a.is-plain:hover { text-decoration: none; }
 
 /* ------------------------------------------------------------------ */
 /* セッション詳細シート(モバイル: 下からのシート / PC: 中央モーダル)          */
@@ -804,6 +870,130 @@ body.sd-open { overflow: hidden; }
 }
 
 /* ------------------------------------------------------------------ */
+/* 大会一覧ページ(events.js #/events)                                    */
+/* ------------------------------------------------------------------ */
+
+.gp-events { max-width: 640px; margin: 0 auto; }
+
+.gp-events-title {
+  margin: 4px 0 16px;
+  color: var(--navy);
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.gp-events-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gp-event-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.gp-event-card:hover { border-color: var(--accent); }
+
+.gp-event-card-name {
+  color: var(--navy);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.gp-event-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+.gp-status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.gp-status-badge--published {
+  background: var(--kbg-lecture);
+  color: var(--accent-dark);
+}
+
+.gp-status-badge--lineup {
+  background: var(--kbg-luncheon);
+  color: var(--kc-luncheon);
+}
+
+.gp-status-badge--unannounced {
+  background: var(--kbg-other);
+  color: var(--muted);
+}
+
+/* ------------------------------------------------------------------ */
+/* 大会未公開案内ページ(events.js renderUnpublishedNotice)                */
+/* ------------------------------------------------------------------ */
+
+.gp-notice {
+  max-width: 480px;
+  margin: 40px auto 0;
+  padding: 0 4px;
+  text-align: center;
+}
+
+.gp-notice-title {
+  margin: 0 0 10px;
+  color: var(--navy);
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.gp-notice-text {
+  margin: 0 0 20px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.gp-notice-link {
+  display: inline-flex;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #ffffff;
+  font-size: 13.5px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.gp-notice-back {
+  display: block;
+  margin: 18px auto 0;
+  padding: 8px 4px;
+  border: none;
+  background: none;
+  color: var(--accent-dark);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ------------------------------------------------------------------ */
 /* 検索ページ(search.js)                                                */
 /* ------------------------------------------------------------------ */
 
@@ -1139,6 +1329,7 @@ body.sd-open { overflow: hidden; }
 
 @media (min-width: 760px) {
   .gp-header-inner { padding: 14px 22px 10px; }
+  .gp-event-header { padding: 0 22px 10px; }
   .gp-day-tabs { padding: 0 18px 14px; }
 
   .sd-overlay { align-items: center; padding: 24px; }

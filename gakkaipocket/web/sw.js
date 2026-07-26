@@ -11,15 +11,17 @@
 //   リクエストは通常どおりこの fetch イベントを通過する。
 //   カタログのURLは self.registration.scope から動的に算出しており、絶対パスを
 //   決め打ちしていない(配信パスが変わっても動作する)。
-// - install時にシェル一式に加えてカタログJSON(index.json/masters.json/対象event)も
-//   プリキャッシュする。これにより「初回オンライン閲覧の直後にオフラインになった」
-//   場合でも、SWのinstallが完了していればカタログが読める。
+// - install時にシェル一式に加えて index.json / masters.json(全大会共通、かつ
+//   大会一覧画面の描画に必須)もプリキャッシュする。個々の大会のイベントJSONは
+//   複数大会ぶんを事前に全取得すると重くなるためプリキャッシュ対象に含めない。
+//   その代わり network-first で扱っており、大会を実際に開いた時点でキャッシュされる
+//   (「開いたことのある大会はオフラインでも読める」が成立すれば十分なため)。
 //
 // キャッシュ名は冒頭の VERSION 定数に一本化している。
 // シェル(HTML/CSS/JS)の内容を変更したら、必ずこの VERSION を上げること。
 // (上げないと、cache-first で配っている古いシェルがユーザーの端末に残り続ける)
 
-const VERSION = "v6";
+const VERSION = "v8";
 const SHELL_CACHE = `gp-shell-${VERSION}`;
 const CATALOG_CACHE = `gp-catalog-${VERSION}`;
 
@@ -32,6 +34,7 @@ const SHELL_PATHS = [
   "./assets/js/marks.js",
   "./assets/js/notes.js",
   "./assets/js/catalog.js",
+  "./assets/js/events.js",
   "./assets/js/grid.js",
   "./assets/js/session-detail.js",
   "./assets/js/search.js",
@@ -62,9 +65,12 @@ self.addEventListener("install", (event) => {
 });
 
 /**
- * index.json → masters.json / 対象イベントJSON の順にプリフェッチしてCATALOG_CACHEへ
- * 保存する。ネットワークが使えない状態でのSW初回install時など、失敗しても
- * install自体は継続させたいのでエラーは握りつぶす(ベストエフォート)。
+ * index.json / masters.json をプリフェッチしてCATALOG_CACHEへ保存する
+ * (全大会共通で、大会一覧画面の描画にも必須のため)。個々の大会のイベントJSONは
+ * ここではプリキャッシュしない(network-firstのfetchハンドラ側で、実際に
+ * その大会を開いた時点でキャッシュされる)。
+ * ネットワークが使えない状態でのSW初回install時など、失敗してもinstall自体は
+ * 継続させたいのでエラーは握りつぶす(ベストエフォート)。
  */
 async function precacheCatalog() {
   try {
@@ -73,22 +79,10 @@ async function precacheCatalog() {
     const indexUrl = new URL("index.json", base).toString();
     const mastersUrl = new URL("masters.json", base).toString();
 
-    const [indexRes] = await Promise.all([
+    await Promise.all([
       fetchAndCache(cache, indexUrl),
       fetchAndCache(cache, mastersUrl),
     ]);
-
-    if (indexRes) {
-      const indexJson = await indexRes.clone().json();
-      const eventMeta = (indexJson.events || [])[0];
-      if (eventMeta && eventMeta.path) {
-        // index.json の path は web/ の親ディレクトリからの相対パス
-        // (例: "catalog/events/xxx.json")
-        const rootUrl = new URL("../", self.registration.scope);
-        const eventUrl = new URL(eventMeta.path, rootUrl).toString();
-        await fetchAndCache(cache, eventUrl);
-      }
-    }
   } catch (err) {
     // オフライン等で失敗しても、シェルのキャッシュ自体は成立させたいので無視する。
   }

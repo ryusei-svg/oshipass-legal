@@ -18,7 +18,8 @@
         <span class="gp-app-name">学会ポケット</span>
         <span class="gp-web-badge">Web版</span>
       </div>
-      <nav class="gp-day-tabs" id="day-tabs" aria-label="日程切り替え"></nav>
+      <div class="gp-event-header" id="event-header" hidden></div>
+      <nav class="gp-day-tabs" id="day-tabs" aria-label="日程切り替え" hidden></nav>
     </header>
 
     <main class="gp-main" id="grid-root">
@@ -29,7 +30,7 @@
     <footer class="gp-footer">
       <p class="gp-footer-notice">
         <button type="button" id="gp-about-trigger" class="gp-about-trigger">本アプリは大会主催者・運営とは関係のない非公式アプリです。</button>
-        <span id="gp-event-name"></span>の掲載情報は公式サイトの発表をもとに作成しています。最新かつ正確な情報は必ず公式サイトをご確認ください。
+        <span id="gp-event-footer-detail"><span id="gp-event-name"></span>の掲載情報は公式サイトの発表をもとに作成しています。最新かつ正確な情報は必ず公式サイトをご確認ください。</span>
       </p>
       <p class="gp-footer-links">
         <a id="gp-official-link" href="#" target="_blank" rel="noopener"></a>

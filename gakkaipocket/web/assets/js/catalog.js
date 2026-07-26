@@ -1,5 +1,10 @@
 // catalog.js — カタログJSON(index/masters/event)の取得と正規化モデルの構築
 // 同一オリジンの ../catalog/ 配下を相対パスで fetch する(CORS不要)。
+//
+// 複数大会対応: index.json の events[] は大会をまたいで共通の masters.json
+// (artists/venues) を参照する。loadIndex() で両方を1回だけ取得してキャッシュし、
+// loadEvent(eventId) は該当大会のイベントJSONだけを都度取得して正規化モデルを返す。
+// 取得済みの大会はメモリ上にキャッシュし、同じ大会を再度開いても再取得しない。
 
 import { parseISO, diffMinutes } from "./util.js";
 
@@ -43,23 +48,62 @@ export const KIND_GROUPS = [
   { className: "kind-other", label: "その他", kinds: ["other"] },
 ];
 
-/** カタログ一式を取得し、グリッド描画用に正規化したモデルを返す */
-export async function loadCatalogModel() {
-  const [indexData, masters] = await Promise.all([
-    fetchJson(INDEX_URL),
-    fetchJson(MASTERS_URL),
-  ]);
+let indexPromise = null;
+const eventModelPromises = new Map(); // eventId -> Promise<model>
 
-  const eventMeta = (indexData.events || [])[0];
-  if (!eventMeta) {
-    throw new Error("index.json に events が見つかりません");
+/**
+ * index.json(大会一覧のメタ情報)と masters.json(全大会共通のartists/venues)を
+ * 取得する。masters.json は全大会で共有するため、1度取得したら使い回す。
+ * @returns {Promise<{ events: object[], artistsById: Map, venuesById: Map }>}
+ */
+export function loadIndex() {
+  if (!indexPromise) {
+    indexPromise = Promise.all([fetchJson(INDEX_URL), fetchJson(MASTERS_URL)])
+      .then(([indexData, masters]) => ({
+        events: indexData.events || [],
+        artistsById: new Map((masters.artists || []).map((a) => [a.id, a])),
+        venuesById: new Map((masters.venues || []).map((v) => [v.id, v])),
+      }))
+      .catch((err) => {
+        // 失敗時は次回呼び出しで再取得できるようにキャッシュを捨てる
+        indexPromise = null;
+        throw err;
+      });
+  }
+  return indexPromise;
+}
+
+/**
+ * 指定した大会(eventId)のイベントJSONを取得し、グリッド描画用に正規化した
+ * モデルを返す。取得済みの大会はメモリにキャッシュして再取得しない。
+ * @param {string} eventId
+ * @returns {Promise<object>}
+ */
+export function loadEvent(eventId) {
+  if (eventModelPromises.has(eventId)) {
+    return eventModelPromises.get(eventId);
   }
 
+  const promise = buildEventModel(eventId).catch((err) => {
+    // 失敗時は次回呼び出しで再取得できるようにキャッシュを捨てる
+    eventModelPromises.delete(eventId);
+    throw err;
+  });
+  eventModelPromises.set(eventId, promise);
+  return promise;
+}
+
+async function buildEventModel(eventId) {
+  const { events, artistsById, venuesById } = await loadIndex();
+  const eventMeta = events.find((e) => e.id === eventId);
+  if (!eventMeta) {
+    throw new Error(`index.json に該当する大会が見つかりません: ${eventId}`);
+  }
+
+  // path はカタログルート(oshipass-legal/gakkaipocket/catalog/ の親)基準の
+  // 相対パスなので、web/ から見て1つ上の階層を起点に解決する。
   const eventUrl = `../${eventMeta.path}`;
   const eventFile = await fetchJson(eventUrl);
-
-  const artistsById = new Map((masters.artists || []).map((a) => [a.id, a]));
-  const venuesById = new Map((masters.venues || []).map((v) => [v.id, v]));
 
   const event = eventFile.event;
   const days = (event.days || []).map((day, i) =>

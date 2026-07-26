@@ -21,3 +21,14 @@
 上げないと、cache-first で配っている古いシェルがユーザーの端末に残り続けてしまう。
 
 `activate` イベントで旧バージョンの `gp-shell-*` / `gp-catalog-*` キャッシュは自動的に削除される。
+
+## 複数大会対応
+
+Web版はカタログの `index.json` に載っている大会をすべて扱う(1件決め打ちではない)。**大会を追加する場合、Web側のコード変更は不要**で、以下だけでよい。
+
+- `catalog/index.json` の `events[]` に大会のメタ情報(`id` / `name` / `dates` / `venue_names` / `timetable_status` / `path`)を追加する
+- 追加した `path` の場所(例 `catalog/events/<eventId>.json`)にその大会のイベントJSONを置く
+
+URLは大会をまたいでも壊れないよう `#/e/<eventId>/day/<n>`・`#/e/<eventId>/search`・`#/e/<eventId>/today`・`#/e/<eventId>/session/<actId>` の形式で大会IDを含む。大会一覧(選択画面)は `#/events`。旧形式(`#/day/1` 等、大会IDを含まないURL)は選択中の大会へ自動的に読み替える。
+
+localStorage の `gp:event:v1` は「現在選択中の大会ID」を保持する。ルート(`#/` や空ハッシュ)を開いたとき、この値があればその大会を直接開き、無ければ大会が1件だけならその大会を、2件以上あれば `#/events`(大会一覧)を表示する。

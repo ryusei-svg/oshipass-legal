@@ -141,6 +141,74 @@
   font-weight: 700;
 }
 
+/* --- Web版への導線(ヒーロー内 / 専用セクション共用) --- */
+
+.lp-web-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+  margin-top: 18px;
+}
+
+.lp-web-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 12px 20px;
+  border-radius: 999px;
+  border: 1.5px solid var(--lp-teal);
+  background: #ffffff;
+  color: var(--lp-teal);
+  font-size: 14.5px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: transform 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.lp-web-btn svg {
+  width: 19px;
+  height: 19px;
+  flex: none;
+}
+
+.lp-web-btn:hover {
+  transform: translateY(-2px);
+  background: var(--lp-teal);
+  color: #ffffff;
+}
+
+.lp-web-btn:focus-visible {
+  outline: 3px solid rgba(15, 118, 110, 0.4);
+  outline-offset: 3px;
+}
+
+.lp-web-note {
+  margin: 0;
+  max-width: 40ch;
+  color: var(--lp-muted);
+  font-size: 13px;
+}
+
+.lp-web-panel {
+  padding: clamp(24px, 4vw, 34px);
+  border: 1px solid var(--lp-line);
+  border-radius: 24px;
+  background: #ffffff;
+}
+
+.lp-web-panel-copy p {
+  margin: 0 0 14px;
+  max-width: 64ch;
+  color: var(--lp-muted);
+  font-size: 15px;
+  line-height: 1.85;
+}
+
+.lp-web-panel-note {
+  font-size: 14px !important;
+}
+
 .lp-hero-art {
   position: relative;
   display: grid;

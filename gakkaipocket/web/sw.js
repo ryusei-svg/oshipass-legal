@@ -21,7 +21,7 @@
 // シェル(HTML/CSS/JS)の内容を変更したら、必ずこの VERSION を上げること。
 // (上げないと、cache-first で配っている古いシェルがユーザーの端末に残り続ける)
 
-const VERSION = "v11";
+const VERSION = "v12";
 const SHELL_CACHE = `gp-shell-${VERSION}`;
 const CATALOG_CACHE = `gp-catalog-${VERSION}`;
 
@@ -33,6 +33,7 @@ const SHELL_PATHS = [
   "./assets/js/util.js",
   "./assets/js/marks.js",
   "./assets/js/notes.js",
+  "./assets/js/choices.js",
   "./assets/js/catalog.js",
   "./assets/js/events.js",
   "./assets/js/grid.js",
@@ -40,6 +41,7 @@ const SHELL_PATHS = [
   "./assets/js/search.js",
   "./assets/js/mytaite.js",
   "./assets/js/about.js",
+  "./assets/js/onboarding.js",
   "./assets/js/main.js",
 ];
 

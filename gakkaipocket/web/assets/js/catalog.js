@@ -169,6 +169,12 @@ function normalizeDay(day, dayNumber, venuesById) {
       const startDate = parseISO(act.start);
       const endDate = parseISO(act.end);
       const laneIndex = laneIndexById.get(act.lane_id);
+      const sortedPresentations = (act.presentations || [])
+        .slice()
+        .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+      const presentations = sortedPresentations.map((p, i) =>
+        withOccupancy(p, sortedPresentations[i + 1], startDate, endDate)
+      );
       return {
         ...act,
         laneIndex,
@@ -176,9 +182,7 @@ function normalizeDay(day, dayNumber, venuesById) {
         endDate,
         startMin: diffMinutes(timeRange.startDate, startDate),
         durationMin: diffMinutes(startDate, endDate),
-        presentations: (act.presentations || [])
-          .slice()
-          .sort((a, b) => (a.order ?? 0) - (b.order ?? 0)),
+        presentations,
       };
     })
     .filter((act) => act.laneIndex !== undefined)
@@ -195,6 +199,32 @@ function normalizeDay(day, dayNumber, venuesById) {
     // 施設間の徒歩移動時間(当日ビューのすきま時間表示で使用)。無ければ空配列。
     interVenueWalk: day.inter_venue_walk || [],
   };
+}
+
+/**
+ * 演題1件の占有時間(estStart〜estEnd。当日ビューの重なり判定・すきま時間計算で使う)を決める。
+ * - estStart は自身の estimated_start。
+ * - estEnd は同じactの次の演題の estimated_start。次の演題が無い(最後の演題)、または
+ *   次の演題に estimated_start が無い場合は act の終了時刻(endDate)。
+ * - estimated_start を持たない演題(現行データには無いが、将来の他学会で有り得る)は
+ *   estStart/estEnd を act の開始〜終了にフォールバックし、estRangeFallback フラグを立てる。
+ * 表示用の estimated_start / estimated (「推定」バッジ)は元の値のまま変更しない。
+ */
+function withOccupancy(presentation, nextPresentation, actStartDate, actEndDate) {
+  if (!presentation.estimated_start) {
+    return {
+      ...presentation,
+      estStart: actStartDate,
+      estEnd: actEndDate,
+      estRangeFallback: true,
+    };
+  }
+  const estStart = parseISO(presentation.estimated_start);
+  const estEnd =
+    nextPresentation && nextPresentation.estimated_start
+      ? parseISO(nextPresentation.estimated_start)
+      : actEndDate;
+  return { ...presentation, estStart, estEnd, estRangeFallback: false };
 }
 
 function computeTimeRange(day, lanes) {

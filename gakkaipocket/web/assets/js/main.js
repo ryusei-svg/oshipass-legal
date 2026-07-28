@@ -23,6 +23,7 @@ import { renderSearchPage } from "./search.js";
 import { renderMytaitePage } from "./mytaite.js";
 import { renderEventsListPage, renderUnpublishedNotice } from "./events.js";
 import { openAboutModal } from "./about.js";
+import { openOnboarding } from "./onboarding.js";
 import { formatDateShort, h } from "./util.js";
 
 const EVENT_STORAGE_KEY = "gp:event:v1";
@@ -49,6 +50,16 @@ let currentPageEventId = null; // currentPage がどの大会のものか(大会
 let currentDayNumber = null;
 let currentPageController = null;
 let lastPageHash = "#/events";
+
+// 初回ガイド(onboarding.js)は「グリッド読み込み後」の最初の1回だけ表示を試みる。
+// この判定自体はセッション内で一度でよい(実際に出すかどうかはonboarding.js側が
+// localStorage の gp:onboarded:v1 で最終判断する)。
+let onboardingChecked = false;
+function maybeShowOnboarding() {
+  if (onboardingChecked) return;
+  onboardingChecked = true;
+  openOnboarding();
+}
 
 // 同時に走りうる非同期ルーティング処理のうち、最後に開始したもの以外の結果を
 // 画面に反映させないためのトークン。hashchangeの連打やイベント切り替え中の
@@ -397,11 +408,13 @@ async function openEventRoute(eventId, parsed, myToken) {
     replaceHash(`#/e/${eventId}/day/${dayNumber}`);
     lastPageHash = `#/e/${eventId}/day/${dayNumber}`;
     renderDayPage(dayNumber);
+    maybeShowOnboarding();
     return;
   }
 
   lastPageHash = `#/e/${eventId}/day/${dayNumber}`;
   renderDayPage(dayNumber);
+  maybeShowOnboarding();
 }
 
 /* ------------------------------------------------------------------ */

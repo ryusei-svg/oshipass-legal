@@ -446,8 +446,41 @@ a:focus-visible,
   line-height: 1.7;
 }
 
-.gp-footer-notice { margin: 0 0 4px; }
+/* 非公式明示の一文と開閉ボタンを1行に収める(既定は折りたたみ)。 */
+.gp-footer-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+}
 .gp-footer-notice strong { color: var(--accent-dark); }
+
+.gp-footer-toggle {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  margin: -4px -4px -4px 0;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.gp-footer-toggle svg { width: 16px; height: 16px; }
+.gp-footer-toggle:hover { color: var(--navy); background: var(--background); }
+
+/* 展開中は矢印を反転させ、開閉の向きを示す。 */
+.gp-footer-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+.gp-footer-details { margin-top: 4px; }
+.gp-footer-details[hidden] { display: none; }
+
+.gp-footer-detail-text { margin: 0 0 4px; }
 
 .gp-footer-links { margin: 0; }
 .gp-footer-links a {

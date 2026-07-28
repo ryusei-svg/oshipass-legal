@@ -45,14 +45,23 @@
       <div class="tt-viewport" id="grid-container"></div>
     </main>
 
+    <!--
+      非公式である旨(gp-about-trigger)は法務要件のため常時表示のままとし、
+      画面の縦を圧迫する補足説明と公式サイトリンクのみを折りたたむ。
+    -->
     <footer class="gp-footer">
       <p class="gp-footer-notice">
         <button type="button" id="gp-about-trigger" class="gp-about-trigger">本アプリは大会主催者・運営とは関係のない非公式アプリです。</button>
-        <span id="gp-event-footer-detail"><span id="gp-event-name"></span>の掲載情報は公式サイトの発表をもとに作成しています。最新かつ正確な情報は必ず公式サイトをご確認ください。</span>
+        <button type="button" id="gp-footer-toggle" class="gp-footer-toggle" aria-expanded="false" aria-controls="gp-footer-details" aria-label="出典と注意事項を開く">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="7 10 12 15 17 10"></polyline></svg>
+        </button>
       </p>
-      <p class="gp-footer-links">
-        <a id="gp-official-link" href="#" target="_blank" rel="noopener"></a>
-      </p>
+      <div class="gp-footer-details" id="gp-footer-details" hidden>
+        <p class="gp-footer-detail-text" id="gp-event-footer-detail"><span id="gp-event-name"></span>の掲載情報は公式サイトの発表をもとに作成しています。最新かつ正確な情報は必ず公式サイトをご確認ください。</p>
+        <p class="gp-footer-links">
+          <a id="gp-official-link" href="#" target="_blank" rel="noopener"></a>
+        </p>
+      </div>
     </footer>
   </div>
 

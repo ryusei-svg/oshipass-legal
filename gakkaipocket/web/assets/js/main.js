@@ -35,6 +35,8 @@ const footerLinkEl = document.getElementById("gp-official-link");
 const footerDetailEl = document.getElementById("gp-event-footer-detail");
 const footerEventNameEl = document.getElementById("gp-event-name");
 const aboutTriggerEl = document.getElementById("gp-about-trigger");
+const footerToggleEl = document.getElementById("gp-footer-toggle");
+const footerDetailsEl = document.getElementById("gp-footer-details");
 
 let indexEvents = []; // index.json の events[](大会メタ情報の一覧)
 
@@ -66,6 +68,8 @@ async function init() {
       openAboutModal(currentModel ? currentModel.event : null);
     });
   }
+
+  setupFooterToggle();
 
   try {
     const idx = await loadIndex();
@@ -551,6 +555,8 @@ function populateFooterForEvent(event) {
   } else {
     footerLinkEl.hidden = true;
   }
+
+  syncFooterToggleAvailability();
 }
 
 /** 大会一覧・未公開案内・エラー画面など、特定の大会に紐づかない画面向けのフッター。 */
@@ -558,6 +564,57 @@ function populateFooterGeneric() {
   if (footerDetailEl) footerDetailEl.hidden = true;
   if (footerEventNameEl) footerEventNameEl.textContent = "";
   if (footerLinkEl) footerLinkEl.hidden = true;
+  syncFooterToggleAvailability();
+}
+
+const FOOTER_OPEN_KEY = "gp:footer-open:v1";
+
+/**
+ * フッターの補足(出典・公式サイトリンク)の開閉。非公式である旨の一文は法務要件のため
+ * 常時表示で、ここで折りたたむのは補足だけ。開閉状態はlocalStorageに保持し、
+ * 開いたままにしたい利用者が毎回開き直さずに済むようにする。
+ */
+function setupFooterToggle() {
+  if (!footerToggleEl || !footerDetailsEl) return;
+
+  let open = false;
+  try {
+    open = localStorage.getItem(FOOTER_OPEN_KEY) === "1";
+  } catch (err) {
+    open = false;
+  }
+  applyFooterOpenState(open);
+
+  footerToggleEl.addEventListener("click", () => {
+    const next = footerToggleEl.getAttribute("aria-expanded") !== "true";
+    applyFooterOpenState(next);
+    try {
+      localStorage.setItem(FOOTER_OPEN_KEY, next ? "1" : "0");
+    } catch (err) {
+      // プライベートブラウズ等で保存できなくても開閉自体は成立させる
+    }
+  });
+}
+
+function applyFooterOpenState(open) {
+  if (!footerToggleEl || !footerDetailsEl) return;
+  footerToggleEl.setAttribute("aria-expanded", open ? "true" : "false");
+  footerToggleEl.setAttribute("aria-label", open ? "出典と注意事項を閉じる" : "出典と注意事項を開く");
+  footerDetailsEl.hidden = !open;
+}
+
+/**
+ * 補足の中身が両方とも空になる画面(大会一覧など)では、開いても何も出ないため
+ * 開閉ボタン自体を隠す。
+ */
+function syncFooterToggleAvailability() {
+  if (!footerToggleEl || !footerDetailsEl) return;
+  const hasDetail = footerDetailEl && !footerDetailEl.hidden;
+  const hasLink = footerLinkEl && !footerLinkEl.hidden;
+  const usable = Boolean(hasDetail || hasLink);
+  footerToggleEl.hidden = !usable;
+  if (!usable) footerDetailsEl.hidden = true;
+  else applyFooterOpenState(footerToggleEl.getAttribute("aria-expanded") === "true");
 }
 
 /* ------------------------------------------------------------------ */

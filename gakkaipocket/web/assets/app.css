@@ -482,7 +482,12 @@ a:focus-visible,
 
 .gp-footer-detail-text { margin: 0 0 4px; }
 
-.gp-footer-links { margin: 0; }
+.gp-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin: 0;
+}
 .gp-footer-links a {
   color: var(--accent-dark);
   font-weight: 700;

@@ -21,7 +21,7 @@
 // シェル(HTML/CSS/JS)の内容を変更したら、必ずこの VERSION を上げること。
 // (上げないと、cache-first で配っている古いシェルがユーザーの端末に残り続ける)
 
-const VERSION = "v10";
+const VERSION = "v11";
 const SHELL_CACHE = `gp-shell-${VERSION}`;
 const CATALOG_CACHE = `gp-catalog-${VERSION}`;
 

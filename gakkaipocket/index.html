@@ -25,6 +25,39 @@
   <link rel="icon" href="assets/favicon-64.png" sizes="64x64">
   <link rel="stylesheet" href="assets/styles.css?v=3">
   <link rel="stylesheet" href="assets/landing.css?v=4">
+
+  <!--
+    検索エンジンに「学会ポケット」というアプリであることを伝えるための構造化データ。
+    価格・対応OS・提供者を明示する。Web版があるため applicationCategory は
+    モバイルアプリに限定せず、Web版のURLも sameAs で関連付ける。
+  -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "学会ポケット",
+    "alternateName": "Gakkai Pocket",
+    "url": "https://oshibul.jp/gakkaipocket/",
+    "sameAs": ["https://oshibul.jp/gakkaipocket/web/"],
+    "description": "学会・研究大会のプログラムから聴きたい演題を選び、自分だけのタイムテーブルをつくる非公式アプリです。演題検索、当日ビュー、演題メモ、オフライン閲覧に対応しています。",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "iOS, Web",
+    "inLanguage": "ja",
+    "image": "https://oshibul.jp/gakkaipocket/assets/ogp.png",
+    "screenshot": "https://oshibul.jp/gakkaipocket/assets/shots/01-mytaite.png",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "JPY"
+    },
+    "author": {
+      "@type": "Organization",
+      "name": "学会ポケット運営事務局",
+      "url": "https://oshibul.jp/gakkaipocket/",
+      "email": "contact@oshibul.jp"
+    }
+  }
+  </script>
 </head>
 <body>
   <header class="site-header">

@@ -27,7 +27,7 @@ export function renderSearchPage(container, model, { onSelectAct }) {
     className: "gp-search-input",
     attrs: {
       type: "search",
-      placeholder: "演題タイトル・発表者名・セッション名・所属で検索",
+      placeholder: "演題・発表者・演者・座長・所属で検索",
       "aria-label": "検索キーワード",
       autocomplete: "off",
     },
@@ -139,11 +139,15 @@ export function renderSearchPage(container, model, { onSelectAct }) {
         const meta = kindMeta(act.session_kind);
         if (activeKinds && !activeKinds.has(meta.className)) continue;
 
+        // 人物は「演者(artist_ids)」「座長(chair_ids)」「発表者(presenter_ids)」の
+        // 3系統がある。知人の名前で探す使い方を一級市民として扱うため、いずれも対象にする。
         const actArtistNames = resolveArtistNames(act.artist_ids, model.artistsById);
+        const actChairNames = resolveArtistNames(act.chair_ids, model.artistsById);
         const actMatched =
           normalizeSearchText(act.title).includes(q) ||
           (act.category && normalizeSearchText(act.category).includes(q)) ||
-          actArtistNames.some((name) => normalizeSearchText(name).includes(q));
+          actArtistNames.some((name) => normalizeSearchText(name).includes(q)) ||
+          actChairNames.some((name) => normalizeSearchText(name).includes(q));
         const matchedPresentations = (act.presentations || []).filter((p) =>
           presentationMatches(p, q, model.artistsById)
         );

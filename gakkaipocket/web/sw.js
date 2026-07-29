@@ -21,7 +21,7 @@
 // シェル(HTML/CSS/JS)の内容を変更したら、必ずこの VERSION を上げること。
 // (上げないと、cache-first で配っている古いシェルがユーザーの端末に残り続ける)
 
-const VERSION = "v14";
+const VERSION = "v16";
 const SHELL_CACHE = `gp-shell-${VERSION}`;
 const CATALOG_CACHE = `gp-catalog-${VERSION}`;
 
@@ -60,7 +60,11 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     caches
       .open(SHELL_CACHE)
-      .then((cache) => cache.addAll(SHELL_PATHS))
+      // cache: "no-cache" でブラウザのHTTPキャッシュを迂回して必ずサーバへ取りに行く。
+      // これが無いと、デプロイ直後のinstallでHTTPキャッシュに残った旧版のJSが
+      // 新VERSIONのシェルキャッシュへ混入し、新旧モジュールの組み合わせで
+      // import解決に失敗してアプリが起動しなくなることがある(検証で実際に発生)。
+      .then((cache) => cache.addAll(SHELL_PATHS.map((p) => new Request(p, { cache: "no-cache" }))))
       .then(() => precacheCatalog())
       .then(() => self.skipWaiting())
   );
@@ -151,13 +155,16 @@ self.addEventListener("fetch", (event) => {
 });
 
 async function cacheFirst(req) {
-  const cached = await caches.match(req);
+  // caches.match(req) はワーカーが持つ全キャッシュ(gp-catalog-* も含む)を横断して
+  // 検索してしまう。シェル取得は SHELL_CACHE の中だけに限定することで、
+  // 同名キー・キャッシュ間の意図しない取り違えを避ける。
+  const shellCache = await caches.open(SHELL_CACHE);
+  const cached = await shellCache.match(req);
   if (cached) return cached;
   try {
     const res = await fetch(req);
     if (res && res.ok) {
-      const cache = await caches.open(SHELL_CACHE);
-      cache.put(req, res.clone());
+      shellCache.put(req, res.clone());
     }
     return res;
   } catch (err) {

@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>学会ポケット Web版｜タイテグリッド</title>
   <meta name="description" content="学会・研究大会のプログラムをタイムテーブル形式で見られる非公式アプリ「学会ポケット」のWeb版です。">
@@ -40,8 +41,10 @@
       <nav class="gp-day-tabs" id="day-tabs" aria-label="日程切り替え" hidden></nav>
     </header>
 
+    <div class="gp-debug-banner" id="gp-debug-banner" role="status" hidden></div>
+
     <main class="gp-main" id="grid-root">
-      <p class="gp-status" id="grid-status">プログラム情報を読み込んでいます…</p>
+      <p class="gp-status" id="grid-status" role="status" aria-live="polite">プログラム情報を読み込んでいます…</p>
       <div class="tt-viewport" id="grid-container"></div>
     </main>
 

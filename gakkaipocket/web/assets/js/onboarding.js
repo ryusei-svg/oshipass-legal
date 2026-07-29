@@ -35,12 +35,16 @@ function markSeen() {
 }
 
 /**
- * 初回ガイドを開く。既に見た記録がある場合は何もしない。
+ * 初回ガイドを開く。既に見た記録がある場合は何もしない(force指定時を除く)。
  * 呼び出し側(main.js)はグリッド読み込み後にこの関数を呼ぶ。
+ * about.js の「使い方をもう一度見る」からは { force: true } で呼び出し、
+ * 既読状態に関わらず表示する。
+ * @param {{ force?: boolean }} [options]
  */
-export function openOnboarding() {
+export function openOnboarding(options = {}) {
+  const { force = false } = options;
   if (activeController) return;
-  if (hasSeenOnboarding()) return;
+  if (!force && hasSeenOnboarding()) return;
 
   let step = 0;
   const previouslyFocused = document.activeElement;
@@ -96,11 +100,14 @@ export function openOnboarding() {
   }
   renderStep();
 
+  // Escape・背景タップは「まだ読んでいる途中で誤って閉じた」可能性があるため、
+  // 既読にはしない(次回訪問時にまた表示される)。「スキップ」「はじめる」による
+  // 明示的な意思表示のときだけ既読化する。
   function handleKeydown(ev) {
-    if (ev.key === "Escape") close();
+    if (ev.key === "Escape") close(false);
   }
   function handleOverlayClick(ev) {
-    if (ev.target === overlay) close();
+    if (ev.target === overlay) close(false);
   }
 
   nextBtn.addEventListener("click", () => {
@@ -108,16 +115,17 @@ export function openOnboarding() {
       step += 1;
       renderStep();
     } else {
-      close();
+      close(true);
     }
   });
-  skipBtn.addEventListener("click", close);
+  skipBtn.addEventListener("click", () => close(true));
   overlay.addEventListener("click", handleOverlayClick);
   document.addEventListener("keydown", handleKeydown);
 
   nextBtn.focus();
 
-  function close() {
+  /** @param {boolean} markAsSeen - 「スキップ」「はじめる」経由なら true、Escape・背景タップなら false。 */
+  function close(markAsSeen) {
     if (activeController && activeController.closed) return;
     document.removeEventListener("keydown", handleKeydown);
     overlay.removeEventListener("click", handleOverlayClick);
@@ -131,9 +139,7 @@ export function openOnboarding() {
         /* no-op: フォーカス対象が既にDOMから外れている場合がある */
       }
     }
-    // スキップ・最後まで進む・Escape・オーバーレイクリック、どの経路で閉じても
-    // 「見た」扱いにして二度と出さない。
-    markSeen();
+    if (markAsSeen) markSeen();
     if (activeController) activeController.closed = true;
     activeController = null;
   }

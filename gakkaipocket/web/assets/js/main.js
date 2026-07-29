@@ -24,7 +24,7 @@ import { renderMytaitePage } from "./mytaite.js";
 import { renderEventsListPage, renderUnpublishedNotice } from "./events.js";
 import { openAboutModal } from "./about.js";
 import { openOnboarding } from "./onboarding.js";
-import { formatDateShort, h } from "./util.js";
+import { formatDateShort, h, getActiveNowOverrideLabel } from "./util.js";
 
 const EVENT_STORAGE_KEY = "gp:event:v1";
 
@@ -38,6 +38,7 @@ const footerEventNameEl = document.getElementById("gp-event-name");
 const aboutTriggerEl = document.getElementById("gp-about-trigger");
 const footerToggleEl = document.getElementById("gp-footer-toggle");
 const footerDetailsEl = document.getElementById("gp-footer-details");
+const debugBannerEl = document.getElementById("gp-debug-banner");
 
 let indexEvents = []; // index.json の events[](大会メタ情報の一覧)
 
@@ -68,7 +69,27 @@ let routeToken = 0;
 
 init();
 
+/**
+ * `?now=` 検証用オーバーライドが有効な間、画面上部に常時バナーを表示する
+ * (util.js の resolveNow() 側で localhost/127.0.0.1 以外では無効化されているため、
+ * ここに来る時点で本番ホストでは常に非表示のまま)。ページ遷移では消えないよう
+ * ヘッダー直下の常設要素に対して一度だけ設定する。
+ */
+function renderDebugBanner() {
+  if (!debugBannerEl) return;
+  const label = getActiveNowOverrideLabel();
+  if (!label) {
+    debugBannerEl.hidden = true;
+    debugBannerEl.textContent = "";
+    return;
+  }
+  debugBannerEl.textContent = `検証モード: 時刻を${label}に固定中`;
+  debugBannerEl.hidden = false;
+}
+
 async function init() {
+  renderDebugBanner();
+
   // カタログのfetch開始前にSWの登録を済ませておく。SW側のinstallハンドラが
   // シェル+index.json+masters.jsonをプリキャッシュするため、なるべく早く
   // 登録した方が「初回オンライン閲覧直後にオフラインになる」ケースでも間に合いやすい。

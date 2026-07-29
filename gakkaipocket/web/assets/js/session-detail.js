@@ -1,10 +1,12 @@
 // session-detail.js — セッション詳細シート(モバイル: 下からのシート / PC: 中央モーダル)
 // CSSのメディアクエリで見た目を切り替え、DOM構造は共通。
 
-import { h, formatTime } from "./util.js";
+import { h, formatTime, showToast } from "./util.js";
 import { kindMeta, resolveArtistNames, resolveVenueNameForAct, findLaneForAct } from "./catalog.js";
 import { getMark, cycleMark } from "./marks.js";
 import { getNote, setNote, NOTE_MAX_LENGTH } from "./notes.js";
+
+const SAVE_FAILED_MESSAGE = "保存できませんでした。ブラウザの空き容量をご確認ください。";
 
 const MARK_GLYPH = { idle: "♡", heart: "♥", star: "★" };
 const MARK_LABEL = { idle: "マークなし", heart: "絶対聴く", star: "できれば" };
@@ -54,7 +56,7 @@ export function openSessionDetail(ctx, options = {}) {
     header.appendChild(h("p", { className: "sd-code", text: act.session_code }));
   }
 
-  const actMarkBtn = buildMarkButton(act.id, "session");
+  const actMarkBtn = buildMarkButton(act.id, "session", act.title);
   const actNote = createNoteControl({ eventId, actId: act.id, presentationId: null, kind: "session" });
   const headerActions = h("div", { className: "sd-header-actions" });
   headerActions.appendChild(actMarkBtn);
@@ -171,7 +173,7 @@ function buildPresentationRow(presentation, artistsById, eventId, actId) {
     body.appendChild(h("div", { className: "sd-pres-presenter", text: parts.filter(Boolean).join(" ") }));
   }
 
-  const presMarkBtn = buildMarkButton(presentation.id, "presentation");
+  const presMarkBtn = buildMarkButton(presentation.id, "presentation", presentation.title);
   const presNote = createNoteControl({
     eventId,
     actId,
@@ -234,7 +236,14 @@ function buildShareButton(actId) {
   return btn;
 }
 
-export function buildMarkButton(targetId, kind) {
+/**
+ * ♡☆マークの切り替えボタンを組み立てる。
+ * @param {string} targetId
+ * @param {"session"|"presentation"} kind
+ * @param {string} [title] - aria-label に含める対象のタイトル(セッション名/演題名)。
+ *   スクリーンリーダー利用者が一覧の中でどの項目のボタンかを識別できるようにする。
+ */
+export function buildMarkButton(targetId, kind, title) {
   const btn = h("button", {
     className: `sd-mark-btn sd-mark-btn--${kind}`,
     attrs: {
@@ -243,12 +252,14 @@ export function buildMarkButton(targetId, kind) {
       "data-kind": kind,
     },
   });
+  btn.dataset.markTitle = title || "";
   updateMarkButton(btn, getMark(targetId));
 
   btn.addEventListener("click", (ev) => {
     ev.stopPropagation();
-    const next = cycleMark(targetId);
-    updateMarkButton(btn, next);
+    const result = cycleMark(targetId);
+    updateMarkButton(btn, result.value);
+    if (!result.ok) showToast(SAVE_FAILED_MESSAGE);
   });
 
   return btn;
@@ -257,9 +268,13 @@ export function buildMarkButton(targetId, kind) {
 function updateMarkButton(btn, state) {
   const key = state || "idle";
   const kind = btn.dataset.kind;
+  const title = btn.dataset.markTitle;
   btn.textContent = MARK_GLYPH[key];
   btn.className = `sd-mark-btn sd-mark-btn--${kind} mark-${key}`;
-  btn.setAttribute("aria-label", `マーク切り替え（現在: ${MARK_LABEL[key]}）`);
+  const label = title
+    ? `${title}のマークを切り替え（現在: ${MARK_LABEL[key]}）`
+    : `マーク切り替え（現在: ${MARK_LABEL[key]}）`;
+  btn.setAttribute("aria-label", label);
 }
 
 /**
@@ -322,6 +337,15 @@ function createNoteControl({ eventId, actId, presentationId, kind }) {
     textarea.setAttribute("aria-label", "メモを入力");
     editor.appendChild(textarea);
 
+    // 保存に失敗した場合のみ表示する案内(通常時は非表示)。
+    const errorEl = h("p", { className: "sd-note-error", attrs: { hidden: true } });
+    editor.appendChild(errorEl);
+
+    function showSaveError() {
+      errorEl.textContent = SAVE_FAILED_MESSAGE;
+      errorEl.hidden = false;
+    }
+
     const actions = h("div", { className: "sd-note-actions" });
     const saveBtn = h("button", {
       className: "sd-note-save-btn",
@@ -344,7 +368,11 @@ function createNoteControl({ eventId, actId, presentationId, kind }) {
       });
       deleteBtn.addEventListener("click", (ev) => {
         ev.stopPropagation();
-        setNote(eventId, actId, presentationId, "");
+        const ok = setNote(eventId, actId, presentationId, "");
+        if (!ok) {
+          showSaveError();
+          return;
+        }
         closeEditor();
         refresh();
       });
@@ -354,7 +382,13 @@ function createNoteControl({ eventId, actId, presentationId, kind }) {
 
     saveBtn.addEventListener("click", (ev) => {
       ev.stopPropagation();
-      setNote(eventId, actId, presentationId, textarea.value);
+      // 保存に失敗した場合は編集エリアを閉じず、入力済みのテキストを保持したまま
+      // 案内を表示する(せっかく書いたメモを失わせないため)。
+      const ok = setNote(eventId, actId, presentationId, textarea.value);
+      if (!ok) {
+        showSaveError();
+        return;
+      }
       closeEditor();
       refresh();
     });

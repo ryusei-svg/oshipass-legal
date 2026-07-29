@@ -140,16 +140,19 @@ function buildActBlock(act, day, artistsById, venuesById, onSelectAct) {
   const meta = kindMeta(act.session_kind);
   const venueName = venuesById ? resolveVenueNameForAct(act, day, venuesById) : "";
   const timeLabel = `${formatTime(act.start)}〜${formatTime(act.end)}`;
-  const ariaLabel = [timeLabel, venueName, meta.label, act.title].filter(Boolean).join(" ");
+  const ariaBase = [timeLabel, venueName, meta.label, act.title].filter(Boolean).join(" ");
   const block = h("div", {
     className: `tt-act ${meta.className}`,
     attrs: {
       role: "button",
       tabindex: "0",
-      "aria-label": ariaLabel,
+      "aria-label": ariaBase,
       "data-act-id": act.id,
     },
   });
+  // マーク状態が変わるたびに applyMarkState() 側で aria-label を更新するため、
+  // 元になるベースの文言(時刻・会場・種別・タイトル)を保持しておく。
+  block.dataset.ariaBase = ariaBase;
 
   const titleEl = h("div", { className: "tt-act-title", text: act.title });
   block.appendChild(titleEl);
@@ -188,10 +191,19 @@ function applyMarkState(el, act) {
   const badge = el.querySelector(".tt-mark-badge");
   if (badge) badge.textContent = "";
 
-  if (!summary.best) return;
+  let markText = "マークなし";
+  if (summary.best) {
+    const cls = summary.best === "heart" ? "is-marked-heart" : "is-marked-star";
+    el.classList.add(cls);
+    if (summary.fromChild) el.classList.add("is-marked-child");
+    if (badge) badge.textContent = summary.best === "heart" ? "♥" : "★";
 
-  const cls = summary.best === "heart" ? "is-marked-heart" : "is-marked-star";
-  el.classList.add(cls);
-  if (summary.fromChild) el.classList.add("is-marked-child");
-  if (badge) badge.textContent = summary.best === "heart" ? "♥" : "★";
+    const kindLabel = summary.best === "heart" ? "絶対聴く" : "できれば";
+    markText = summary.fromChild ? `演題に${kindLabel}マークあり` : `${kindLabel}マーク`;
+  }
+
+  // マーク状態(未マーク/絶対聴く/できれば/子演題のみマーク)が変わるたびに、
+  // aria-label へも反映する(スクリーンリーダー利用者がグリッド上で状態を把握できるように)。
+  const base = el.dataset.ariaBase || "";
+  el.setAttribute("aria-label", `${base}（${markText}）`);
 }

@@ -12,7 +12,7 @@
 //   競合(重なり)扱いしないようにしている。表示時刻・「推定」バッジは
 //   presentation.estimated_start / estimated のまま従来どおり。
 
-import { h, formatTime, formatDateLong, resolveNow, jstDateString, diffMinutes, bus } from "./util.js";
+import { h, formatTime, formatDateLong, resolveNow, jstDateString, diffMinutes, bus, showToast } from "./util.js";
 import { kindMeta, findLaneForAct } from "./catalog.js";
 import { listMarks } from "./marks.js";
 import { getNote } from "./notes.js";
@@ -20,6 +20,7 @@ import { buildMarkButton } from "./session-detail.js";
 import { getChoice, setChoice, clearChoice, buildGroupKey } from "./choices.js";
 
 const EMPTY_TEXT = "グリッドや検索で♡☆を付けると、当日の動きがここに並びます。";
+const SAVE_FAILED_MESSAGE = "保存できませんでした。ブラウザの空き容量をご確認ください。";
 
 // すきま時間として案内する最小の空き分数(iOS版の当日ビューと同じ基準)。
 const GAP_THRESHOLD_MIN = 15;
@@ -42,6 +43,12 @@ export function renderMytaitePage(container, model, { onSelectAct }) {
   // 「初回描画時に『いま』または『NEXT』へ自動スクロール」は文字どおり初回のみ行う。
   // 60秒ごとの再描画やmarks変更での再描画では、勝手にスクロール位置を動かさない。
   let firstBuildDone = false;
+
+  // 重なりカードの「ほかの候補」展開状態(groupKeyの集合)。build() は60秒ごとの
+  // 再描画やmarks変更のたびにDOMを丸ごと作り直すため、この状態をここ(build()の外)に
+  // 保持しておき、再構築のたびに復元することで、開いていた「ほかの候補」が
+  // 勝手に閉じないようにする。
+  const expandedGroupKeys = new Set();
 
   function computeStatus() {
     const now = resolveNow();
@@ -84,7 +91,7 @@ export function renderMytaitePage(container, model, { onSelectAct }) {
       const liveNow = isLiveDay ? status.now : null;
 
       const list = h("div", { className: "gp-mytaite-list" });
-      const rows = buildRowsWithGaps(entries, liveNow, onSelectAct);
+      const rows = buildRowsWithGaps(entries, liveNow, onSelectAct, expandedGroupKeys);
       for (const row of rows) {
         list.appendChild(row.el);
         if (!scrollTarget && row.isScrollTarget) scrollTarget = row.el;
@@ -338,15 +345,43 @@ function computeBadgeInfo(entries, liveNow) {
 }
 
 /**
+ * NOW/NEXTバッジ判定にかける「実際に表示される項目」の一覧を items から組み立てる。
+ * - 単独の予定: そのまま対象にする。
+ * - 選択済みの重なりグループ: 主役表示される selectedEntry のみを対象にする
+ *   (畳まれて隠れている「ほかの候補」は表示されていないため、NEXTを消費させない)。
+ * - 未選択の重なりグループ: 候補全員が並んで表示されるため、全候補を対象にする
+ *   (各候補が個別にバッジを持てるようにする。従来どおりの挙動)。
+ * @returns {object[]} sortTime順の entries
+ */
+function buildBadgeContestEntries(items) {
+  const list = [];
+  for (const item of items) {
+    if (item.type === "single") {
+      list.push(item.entry);
+    } else if (item.selectedEntry) {
+      list.push(item.selectedEntry);
+    } else {
+      for (const cand of item.sortedGroup) list.push(cand);
+    }
+  }
+  list.sort((a, b) => a.sortTime - b.sortTime);
+  return list;
+}
+
+/**
  * entries を行要素へ組み立てる。連続する2項目の間に15分以上の空きがあれば
  * 「◯分のすきま」行を挿入し、liveNow(開催中のその日のみ非null)が渡された場合は
  * 各行に「いま」「NEXT」バッジ、終了済み項目には控えめ表示(is-done)を付与する。
  * ♡同士が実際に重なっている場合は、個別の行ではなく1枚の「重なりカード」にまとめる。
+ * @param {Set<string>} expandedGroupKeys - 「ほかの候補」を展開中の groupKey の集合(呼び出し元で保持・復元する)。
  * @returns {{ el: HTMLElement, isScrollTarget: boolean }[]}
  */
-function buildRowsWithGaps(entries, liveNow, onSelectAct) {
-  const badgeInfo = computeBadgeInfo(entries, liveNow);
+function buildRowsWithGaps(entries, liveNow, onSelectAct, expandedGroupKeys) {
   const items = buildItems(entries);
+  // NOW/NEXTバッジは「重なりグループの選択を反映した後に実際に表示される項目」を
+  // 対象に判定する(畳まれて隠れている非選択候補がNEXTを消費しないように、
+  // items確定後のbuildBadgeContestEntries()の結果に対して計算する)。
+  const badgeInfo = computeBadgeInfo(buildBadgeContestEntries(items), liveNow);
   const out = [];
 
   for (let i = 0; i < items.length; i++) {
@@ -368,7 +403,7 @@ function buildRowsWithGaps(entries, liveNow, onSelectAct) {
       const el = buildEntryRow(item.entry, onSelectAct, info);
       out.push({ el, isScrollTarget: info.badge === "now" || info.badge === "next" });
     } else {
-      out.push(buildOverlapCard(item, badgeInfo, onSelectAct));
+      out.push(buildOverlapCard(item, badgeInfo, onSelectAct, expandedGroupKeys));
     }
   }
 
@@ -445,8 +480,9 @@ function buildEntryRow(entry, onSelectAct, rowStatus = {}) {
   const open = () => onSelectAct(act.id);
   openBtn.addEventListener("click", open);
 
+  const markTitle = presentation ? presentation.title : act.title;
   row.appendChild(openBtn);
-  row.appendChild(buildMarkButton(entry.markTargetId, entry.markKind));
+  row.appendChild(buildMarkButton(entry.markTargetId, entry.markKind, markTitle));
 
   return row;
 }
@@ -457,8 +493,10 @@ function buildEntryRow(entry, onSelectAct, rowStatus = {}) {
  *   (各候補は通常行と同じ情報量+「これに行く」ボタン)。
  * - 選択済み: 選ばれた候補を通常の予定行として主役表示し、他の候補は
  *   「ほかの候補(N件)」として畳む(消さない)。「選択を解除」で未選択に戻せる。
+ * @param {Set<string>} expandedGroupKeys - 「ほかの候補」を展開中の groupKey の集合。
+ *   60秒ごとの再構築でも展開状態を保てるよう、開閉のたびにこの集合へ反映する。
  */
-function buildOverlapCard(item, badgeInfo, onSelectAct) {
+function buildOverlapCard(item, badgeInfo, onSelectAct, expandedGroupKeys) {
   const { sortedGroup, groupKey, selectedEntry } = item;
   const card = h("div", { className: "gp-mytaite-overlap-card" });
   let isScrollTarget = false;
@@ -472,10 +510,12 @@ function buildOverlapCard(item, badgeInfo, onSelectAct) {
 
     const others = sortedGroup.filter((e) => e.key !== selectedEntry.key);
 
+    const isExpanded = expandedGroupKeys.has(groupKey);
+
     const footer = h("div", { className: "gp-mytaite-overlap-footer" });
     const toggleBtn = h("button", {
       className: "gp-mytaite-overlap-others-toggle",
-      attrs: { type: "button", "aria-expanded": "false" },
+      attrs: { type: "button", "aria-expanded": isExpanded ? "true" : "false" },
       text: `ほかの候補（${others.length}件）`,
     });
     const clearBtn = h("button", {
@@ -487,7 +527,10 @@ function buildOverlapCard(item, badgeInfo, onSelectAct) {
     footer.appendChild(clearBtn);
     card.appendChild(footer);
 
-    const othersWrap = h("div", { className: "gp-mytaite-overlap-others", attrs: { hidden: true } });
+    const othersWrap = h("div", {
+      className: "gp-mytaite-overlap-others",
+      attrs: { hidden: !isExpanded },
+    });
     for (const cand of others) {
       othersWrap.appendChild(buildOverlapCandidate(cand, groupKey, onSelectAct, {}));
     }
@@ -495,11 +538,15 @@ function buildOverlapCard(item, badgeInfo, onSelectAct) {
 
     toggleBtn.addEventListener("click", () => {
       const expanded = toggleBtn.getAttribute("aria-expanded") === "true";
-      toggleBtn.setAttribute("aria-expanded", expanded ? "false" : "true");
-      othersWrap.hidden = expanded;
+      const next = !expanded;
+      toggleBtn.setAttribute("aria-expanded", next ? "true" : "false");
+      othersWrap.hidden = !next;
+      if (next) expandedGroupKeys.add(groupKey);
+      else expandedGroupKeys.delete(groupKey);
     });
     clearBtn.addEventListener("click", () => {
-      clearChoice(groupKey);
+      const ok = clearChoice(groupKey);
+      if (!ok) showToast(SAVE_FAILED_MESSAGE);
     });
   } else {
     const head = h("div", { className: "gp-mytaite-overlap-head" });
@@ -534,7 +581,8 @@ function buildOverlapCandidate(entry, groupKey, onSelectAct, badgeInfoForEntry) 
     text: "これに行く",
   });
   chooseBtn.addEventListener("click", () => {
-    setChoice(groupKey, entry.key);
+    const ok = setChoice(groupKey, entry.key);
+    if (!ok) showToast(SAVE_FAILED_MESSAGE);
   });
   wrap.appendChild(chooseBtn);
 

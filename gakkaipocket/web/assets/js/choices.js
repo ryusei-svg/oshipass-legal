@@ -29,11 +29,14 @@ function readStore() {
   }
 }
 
+/** @returns {boolean} 保存に成功したか */
 function writeStore(store) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+    return true;
   } catch (err) {
     console.warn("[choices] localStorage への保存に失敗しました", err);
+    return false;
   }
 }
 
@@ -52,22 +55,33 @@ export function getChoice(groupKey) {
 /**
  * グループの選択を保存する。他タブの変更を上書きしないよう、
  * 書き込み直前にlocalStorageを再読込してからマージして保存する。
+ * 保存に失敗した場合はメモリ上の状態(store)を確定させない。
+ * @returns {boolean} 保存に成功したか
  */
 export function setChoice(groupKey, entryKey) {
   const latest = readStore();
-  latest[groupKey] = entryKey;
-  store = latest;
-  writeStore(store);
+  const attempted = { ...latest, [groupKey]: entryKey };
+  const ok = writeStore(attempted);
+  if (!ok) return false;
+  store = attempted;
   bus.emit("choice-changed", { groupKey, entryKey });
+  return true;
 }
 
-/** グループの選択を解除する(未選択状態に戻す)。 */
+/**
+ * グループの選択を解除する(未選択状態に戻す)。
+ * 保存に失敗した場合はメモリ上の状態(store)を確定させない。
+ * @returns {boolean} 保存に成功したか
+ */
 export function clearChoice(groupKey) {
   const latest = readStore();
-  delete latest[groupKey];
-  store = latest;
-  writeStore(store);
+  const attempted = { ...latest };
+  delete attempted[groupKey];
+  const ok = writeStore(attempted);
+  if (!ok) return false;
+  store = attempted;
   bus.emit("choice-changed", { groupKey, entryKey: undefined });
+  return true;
 }
 
 // 他タブで選択が変更された場合、この "storage" イベントで検知して

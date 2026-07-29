@@ -33,11 +33,14 @@ function readStore() {
   }
 }
 
+/** @returns {boolean} 保存に成功したか */
 function writeStore(store) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+    return true;
   } catch (err) {
     console.warn("[notes] localStorage への保存に失敗しました", err);
+    return false;
   }
 }
 
@@ -59,20 +62,27 @@ export function listNotes() {
  * メモを保存する。text が空文字またはホワイトスペースのみの場合は該当エントリを削除する。
  * 複数タブを開いている場合に他タブの変更を上書きしてしまわないよう、
  * 書き込み直前にlocalStorageを再読込してからマージして保存する。
+ * 保存に失敗した場合はメモリ上の状態(store)を確定させない
+ * (呼び出し元は戻り値を見て、編集中のテキストを破棄せず保存失敗を利用者に案内する)。
+ * @returns {boolean} 保存に成功したか
  */
 export function setNote(eventId, actId, presentationId, text) {
   const key = buildKey(eventId, actId, presentationId);
   const latest = readStore();
+  const attempted = { ...latest };
 
   if (!text || !text.trim()) {
-    delete latest[key];
+    delete attempted[key];
   } else {
-    latest[key] = { text, updatedAt: Date.now() };
+    attempted[key] = { text, updatedAt: Date.now() };
   }
 
-  store = latest;
-  writeStore(store);
+  const ok = writeStore(attempted);
+  if (!ok) return false;
+
+  store = attempted;
   bus.emit("notes-changed", { key, eventId, actId, presentationId });
+  return true;
 }
 
 /**

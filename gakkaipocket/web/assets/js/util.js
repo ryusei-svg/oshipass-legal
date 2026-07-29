@@ -74,24 +74,64 @@ export function formatDateLong(activityDate) {
 }
 
 /**
+ * `?now=` 検証用オーバーライドの使用を許可するホストかどうか。
+ * 本番配信ホストで誤ってクエリを付けても現在時刻が偽装されないよう、
+ * localhost / 127.0.0.1 での動作確認時のみ有効にする。
+ */
+export function isNowOverrideAllowedHost() {
+  if (typeof location === "undefined") return false;
+  return location.hostname === "localhost" || location.hostname === "127.0.0.1";
+}
+
+/**
  * 現在時刻を表す Date を返す(常に「本物の絶対時刻」を返す。Dateは内部的に
  * UTCのタイムスタンプを持つため、この値そのものは端末タイムゾーンに依存しない)。
  *
  * URLクエリに `?now=2026-10-08T13:45` (検証用) が指定されている場合は、
  * その値を日本時間(+09:00)とみなして解釈した時刻を返す。オフセット表記
  * (Z や +09:00 等)を含む値が渡された場合はそれを優先する。
- * 未指定時・不正な値の場合は実際の現在時刻を返す(本番では常にこちら)。
+ * このオーバーライドは isNowOverrideAllowedHost() が true の場合(localhost /
+ * 127.0.0.1 での動作確認時)のみ有効。本番配信ホストでは常に無視され、
+ * 実際の現在時刻を返す。
+ * 未指定時・不正な値の場合も実際の現在時刻を返す。
  */
 export function resolveNow() {
-  const params = new URLSearchParams(location.search);
-  const override = params.get("now");
-  if (override) {
-    const hasOffset = /(Z|[+-]\d{2}:?\d{2})$/.test(override);
-    const withOffset = hasOffset ? override : `${override}+09:00`;
-    const parsed = new Date(withOffset);
-    if (!Number.isNaN(parsed.getTime())) return parsed;
+  if (isNowOverrideAllowedHost()) {
+    const params = new URLSearchParams(location.search);
+    const override = params.get("now");
+    if (override) {
+      const hasOffset = /(Z|[+-]\d{2}:?\d{2})$/.test(override);
+      const withOffset = hasOffset ? override : `${override}+09:00`;
+      const parsed = new Date(withOffset);
+      if (!Number.isNaN(parsed.getTime())) return parsed;
+    }
   }
   return new Date();
+}
+
+/**
+ * 現在有効な `?now=` オーバーライドの生文字列を返す(検証モードバナー表示用)。
+ * 許可ホストでない場合・未指定の場合・不正な値の場合は null。
+ */
+export function getActiveNowOverrideLabel() {
+  if (!isNowOverrideAllowedHost()) return null;
+  const params = new URLSearchParams(location.search);
+  const override = params.get("now");
+  if (!override) return null;
+  const now = resolveNow();
+  if (Number.isNaN(now.getTime())) return null;
+  try {
+    return now.toLocaleString("ja-JP", {
+      timeZone: "Asia/Tokyo",
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  } catch (err) {
+    return override;
+  }
 }
 
 /**
@@ -131,6 +171,36 @@ export function h(tag, opts = {}) {
     }
   }
   return el;
+}
+
+let toastEl = null;
+let toastHideTimer = null;
+
+/**
+ * 画面下部に一時的なトースト通知を表示する(localStorage書き込み失敗時の
+ * 案内などに使う)。role="status"/aria-live="polite" のためスクリーンリーダーにも通知される。
+ * @param {string} message
+ */
+export function showToast(message) {
+  if (typeof document === "undefined") return;
+  if (!toastEl) {
+    toastEl = document.createElement("div");
+    toastEl.className = "gp-toast";
+    toastEl.setAttribute("role", "status");
+    toastEl.setAttribute("aria-live", "polite");
+    document.body.appendChild(toastEl);
+  }
+  toastEl.textContent = message;
+  // 一度クラスを外して再度付け直すことで、連続表示時にもフェードインをやり直す。
+  toastEl.classList.remove("is-visible");
+  // eslint禁止のvoid式ではなく、reflowを発生させて再アニメーションさせるための参照。
+  void toastEl.offsetWidth;
+  toastEl.classList.add("is-visible");
+
+  if (toastHideTimer) clearTimeout(toastHideTimer);
+  toastHideTimer = setTimeout(() => {
+    if (toastEl) toastEl.classList.remove("is-visible");
+  }, 3200);
 }
 
 /** 簡易イベントバス(marks更新など、モジュール間の疎結合な通知に使う) */

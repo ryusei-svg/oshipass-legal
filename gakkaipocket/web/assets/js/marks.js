@@ -19,11 +19,14 @@ function readStore() {
   }
 }
 
+/** @returns {boolean} 保存に成功したか */
 function writeStore(store) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+    return true;
   } catch (err) {
     console.warn("[marks] localStorage への保存に失敗しました", err);
+    return false;
   }
 }
 
@@ -43,21 +46,30 @@ export function listMarks() {
  * 無→♡→☆→無 のサイクルでマークを切り替える。
  * 複数タブを開いている場合に他タブの変更を上書きしてしまわないよう、
  * 書き込み直前にlocalStorageを再読込してからマージして保存する。
+ * 保存に失敗した場合はメモリ上の状態(store)を確定させず、切り替え前の値のまま返す
+ * (呼び出し元は ok:false を見て保存失敗を利用者に案内する)。
+ * @returns {{ ok: boolean, value: "heart"|"star"|undefined }}
  */
 export function cycleMark(id) {
   const latest = readStore();
   const current = latest[id];
   const idx = CYCLE.indexOf(current);
   const next = CYCLE[(idx + 1) % CYCLE.length];
+  const attempted = { ...latest };
   if (next === undefined) {
-    delete latest[id];
+    delete attempted[id];
   } else {
-    latest[id] = next;
+    attempted[id] = next;
   }
-  store = latest;
-  writeStore(store);
+
+  const ok = writeStore(attempted);
+  if (!ok) {
+    return { ok: false, value: current };
+  }
+
+  store = attempted;
   bus.emit("marks-changed", { id, value: next });
-  return next;
+  return { ok: true, value: next };
 }
 
 // 他タブでマークが変更された場合、この "storage" イベントで検知して

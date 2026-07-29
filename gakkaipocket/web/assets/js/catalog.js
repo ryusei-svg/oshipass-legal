@@ -56,14 +56,36 @@ const eventModelPromises = new Map(); // eventId -> Promise<model>
  * 取得する。masters.json は全大会で共有するため、1度取得したら使い回す。
  * @returns {Promise<{ events: object[], artistsById: Map, venuesById: Map }>}
  */
+/**
+ * index.json の event.path が期待どおり「catalog/」配下を指しているかを検証する。
+ * ".." を含む場合はカタログルート外(親ディレクトリ)を指せてしまう可能性があるため、
+ * 単純な前方一致だけでなく併せて拒否する。
+ * @param {string|undefined} path
+ */
+function isValidEventPath(path) {
+  return typeof path === "string" && path.startsWith("catalog/") && !path.includes("..");
+}
+
 export function loadIndex() {
   if (!indexPromise) {
     indexPromise = Promise.all([fetchJson(INDEX_URL), fetchJson(MASTERS_URL)])
-      .then(([indexData, masters]) => ({
-        events: indexData.events || [],
-        artistsById: new Map((masters.artists || []).map((a) => [a.id, a])),
-        venuesById: new Map((masters.venues || []).map((v) => [v.id, v])),
-      }))
+      .then(([indexData, masters]) => {
+        const rawEvents = indexData.events || [];
+        // path が不正なイベントは、意図しない場所からのファイル取得を避けるため
+        // 一覧から除外する(そのイベントのみスキップし、他のイベントの表示は継続する)。
+        const events = rawEvents.filter((e) => {
+          if (isValidEventPath(e && e.path)) return true;
+          console.warn(
+            `[catalog] index.json の event.path が不正なためスキップします: id=${e && e.id} path=${e && e.path}`
+          );
+          return false;
+        });
+        return {
+          events,
+          artistsById: new Map((masters.artists || []).map((a) => [a.id, a])),
+          venuesById: new Map((masters.venues || []).map((v) => [v.id, v])),
+        };
+      })
       .catch((err) => {
         // 失敗時は次回呼び出しで再取得できるようにキャッシュを捨てる
         indexPromise = null;

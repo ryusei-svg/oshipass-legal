@@ -221,7 +221,7 @@ function buildSessionResultRow(act, day, model, matchedPresentations, onSelectAc
   head.addEventListener("click", openAct);
 
   row.appendChild(head);
-  row.appendChild(buildMarkButton(act.id, "session"));
+  row.appendChild(buildMarkButton(act.id, "session", act.title));
 
   if (matchedPresentations.length) {
     const list = h("ul", { className: "gp-result-pres-list" });
@@ -258,7 +258,7 @@ function buildPresentationHitRow(presentation, artistsById, openAct) {
   btn.addEventListener("click", openAct);
 
   li.appendChild(btn);
-  li.appendChild(buildMarkButton(presentation.id, "presentation"));
+  li.appendChild(buildMarkButton(presentation.id, "presentation", presentation.title));
 
   return li;
 }

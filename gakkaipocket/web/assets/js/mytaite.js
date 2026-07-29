@@ -212,13 +212,13 @@ function collectEntries(day, marks, eventId) {
 }
 
 /**
- * ♡(絶対聴く)同士で実際に時間が重なっているエントリを、推移的にグループ化する
- * (A-Bが重なり、B-Cが重なるならA/B/Cで1グループ)。☆・メモのみの項目は対象外。
+ * マーク済み(♡・☆)のエントリのうち、実際に時間が重なっているものを推移的にグループ化する
+ * (A-Bが重なり、B-Cが重なるならA/B/Cで1グループ)。メモのみの項目は対象外。
  * 同一セッション(act)内の組み合わせ(セッション自体のマーク×自セッションの演題マーク等)は
  * 重なり扱いにしない。2件以上集まったグループのみ返す。
  * @returns {Array<Array<object>>}
  */
-function computeOverlapGroups(heartEntries) {
+function computeOverlapGroups(markedEntries) {
   const parent = new Map();
   function find(k) {
     let root = k;
@@ -231,12 +231,12 @@ function computeOverlapGroups(heartEntries) {
     if (ra !== rb) parent.set(ra, rb);
   }
 
-  for (const e of heartEntries) parent.set(e.key, e.key);
+  for (const e of markedEntries) parent.set(e.key, e.key);
 
-  for (let i = 0; i < heartEntries.length; i++) {
-    for (let j = i + 1; j < heartEntries.length; j++) {
-      const a = heartEntries[i];
-      const b = heartEntries[j];
+  for (let i = 0; i < markedEntries.length; i++) {
+    for (let j = i + 1; j < markedEntries.length; j++) {
+      const a = markedEntries[i];
+      const b = markedEntries[j];
       if (a.act.id === b.act.id) continue; // 同一セッション内は重なり扱いにしない
       if (a.rangeStart < b.rangeEnd && b.rangeStart < a.rangeEnd) {
         union(a.key, b.key);
@@ -245,7 +245,7 @@ function computeOverlapGroups(heartEntries) {
   }
 
   const groupsByRoot = new Map();
-  for (const e of heartEntries) {
+  for (const e of markedEntries) {
     const root = find(e.key);
     if (!groupsByRoot.has(root)) groupsByRoot.set(root, []);
     groupsByRoot.get(root).push(e);
@@ -260,8 +260,11 @@ function computeOverlapGroups(heartEntries) {
  * 最初に現れた位置に置く(= グループ内で最も早いエントリの位置)。
  */
 function buildItems(entries) {
-  const hearts = entries.filter((e) => e.markValue === "heart");
-  const groups = computeOverlapGroups(hearts);
+  // ♡・☆の区別なくマーク済みの予定を対象にする。当初は♡だけを対象にしていたが、
+  // ♡と☆が重なっているときに何の注意も出ず、時間が被ったまま並んでしまうため
+  // (iOS版の実機フィードバック。同じ問題がWeb版にもあった)。
+  const marked = entries.filter((e) => e.markValue === "heart" || e.markValue === "star");
+  const groups = computeOverlapGroups(marked);
 
   const groupInfoByKey = new Map();
   for (const group of groups) {

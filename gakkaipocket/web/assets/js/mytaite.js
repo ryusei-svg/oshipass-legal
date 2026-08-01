@@ -592,12 +592,15 @@ function buildOverlapCandidate(entry, groupKey, onSelectAct, badgeInfoForEntry) 
 function appendPromo(wrap) {
   const promo = h("div", { className: "gp-mytaite-promo" });
   promo.appendChild(h("p", { text: "当日ビューはiOSアプリでより便利に使えます。" }));
-  // TODO: App Store公開後、下記リンクを実際のストアURLに差し替えること(現在は審査中のためLPへ暫定リンク)
   promo.appendChild(
     h("a", {
       className: "gp-mytaite-promo-link",
-      text: "iOSアプリのページを見る",
-      attrs: { href: "https://oshibul.jp/gakkaipocket/", target: "_blank", rel: "noopener" },
+      text: "App Storeで見る（無料）",
+      attrs: {
+        href: "https://apps.apple.com/jp/app/id6794542143",
+        target: "_blank",
+        rel: "noopener",
+      },
     })
   );
   wrap.appendChild(promo);

@@ -128,11 +128,12 @@ html.js .lp-reveal.is-visible { opacity: 1; transform: none; }
 
 .lp-hero h1 {
   margin: 0 0 22px;
-  font-size: clamp(34px, 4.8vw, 56px);
+  /* 上限56pxだと「聴きたい演題だけを、」10字=568pxで左カラム(約568px)に
+     ちょうど収まらず「だ/けを、」と割れる。50pxまで下げて1行を確保する。 */
+  font-size: clamp(34px, 4.8vw, 50px);
   font-weight: 900;
   line-height: 1.42;
   letter-spacing: 0.015em;
-  text-wrap: pretty;
 }
 
 .lp-hero-lead {
@@ -141,7 +142,6 @@ html.js .lp-reveal.is-visible { opacity: 1; transform: none; }
   font-size: clamp(15px, 1.6vw, 17px);
   line-height: 2.05;
   color: #33413e;
-  text-wrap: pretty;
 }
 
 .lp-cta-row {
@@ -293,7 +293,6 @@ html.js .lp-reveal.is-visible { opacity: 1; transform: none; }
   font-weight: 900;
   line-height: 1.6;
   letter-spacing: 0.02em;
-  text-wrap: pretty;
 }
 .lp-head-sub {
   margin: 16px auto 0;
@@ -361,7 +360,9 @@ html.js .lp-reveal.is-visible { opacity: 1; transform: none; }
 .lp-bubble {
   position: relative;
   display: grid;
-  justify-items: center;
+  /* center だと中の文字列が shrink-to-fit 幅になり、Safariで極端に
+     短い行に折り返される。テキストは全幅に伸ばし text-align で中央化する。 */
+  justify-items: stretch;
   gap: 14px;
   padding: 28px 22px 26px;
   background: #ffffff;
@@ -379,8 +380,8 @@ html.js .lp-reveal.is-visible { opacity: 1; transform: none; }
   border-bottom: 0;
   filter: drop-shadow(0 2px 0 var(--gp-paper-line));
 }
-.lp-bubble p { margin: 0; font-size: 15px; font-weight: 500; line-height: 1.9; color: var(--gp-navy); text-wrap: pretty; }
-.lp-mini-face { width: 58px; height: 58px; }
+.lp-bubble p { margin: 0; font-size: 15px; font-weight: 500; line-height: 1.9; color: var(--gp-navy); }
+.lp-mini-face { width: 58px; height: 58px; justify-self: center; }
 .lp-bubble-leaf .lp-mini-face rect:first-of-type { fill: #ffffff; }
 
 /* 解決バナー */
@@ -472,7 +473,7 @@ html.js .lp-reveal.is-visible { opacity: 1; transform: none; }
   line-height: 1.55;
   letter-spacing: 0.02em;
 }
-.lp-step-lead { margin: 0 0 18px; font-size: 15.5px; line-height: 2.05; color: #33413e; text-wrap: pretty; }
+.lp-step-lead { margin: 0 0 18px; font-size: 15.5px; line-height: 2.05; color: #33413e; }
 
 .lp-checks { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
 .lp-checks li {
@@ -568,7 +569,7 @@ html.js .lp-reveal.is-visible { opacity: 1; transform: none; }
 }
 .lp-extra-card {
   display: grid;
-  justify-items: center;
+  justify-items: stretch;
   gap: 12px;
   padding: 26px 18px;
   background: var(--gp-cream);
@@ -577,6 +578,7 @@ html.js .lp-reveal.is-visible { opacity: 1; transform: none; }
 }
 .lp-extra-icon {
   display: grid;
+  justify-self: center;
   place-content: center;
   width: 54px;
   aspect-ratio: 1;
@@ -587,7 +589,7 @@ html.js .lp-reveal.is-visible { opacity: 1; transform: none; }
 }
 .lp-extra-icon svg { width: 24px; height: 24px; }
 .lp-extra-card h4 { margin: 0; font-size: 16px; font-weight: 700; }
-.lp-extra-card p { margin: 0; font-size: 13px; line-height: 1.9; color: var(--gp-muted); text-wrap: pretty; }
+.lp-extra-card p { margin: 0; font-size: 13px; line-height: 1.9; color: var(--gp-muted); }
 
 /* ---------- Web版 ---------- */
 
@@ -636,7 +638,7 @@ html.js .lp-reveal.is-visible { opacity: 1; transform: none; }
   font-weight: 900;
   line-height: 1.6;
 }
-.lp-web-copy p { margin: 0 0 14px; font-size: 15px; line-height: 2.05; color: #2d403c; text-wrap: pretty; }
+.lp-web-copy p { margin: 0 0 14px; font-size: 15px; line-height: 2.05; color: #2d403c; }
 .lp-web-note { font-size: 13px; color: var(--gp-muted); }
 .lp-web-copy .lp-web-btn { margin-top: 10px; }
 
@@ -726,8 +728,9 @@ html.js .lp-reveal.is-visible { opacity: 1; transform: none; }
   .lp-stamp svg { width: 20px; height: 20px; }
   .lp-hero-spark-l, .lp-hero-spark-r { display: none; }
 
-  /* 「…プログラムア/プリ」と割れるため字送りと級数を詰めて1行に収める */
-  .lp-eyebrow { padding: 7px 14px; font-size: 12px; letter-spacing: 0.04em; }
+  /* 「…プログラムア/プリ」と割れるため字送りと級数を詰めて1行に収める。
+     先頭の丸(8px)+gap(8px)も専有するので、その分を見込んで詰める。 */
+  .lp-eyebrow { padding: 7px 13px; font-size: 11.5px; letter-spacing: 0.03em; }
 
   /* ハンコを本文左の余白から上部へ出し、テキストに全幅を使わせる。
      absolute 前提の translateY(-50%) が残ると浮くので transform も上書きする。 */
@@ -737,4 +740,11 @@ html.js .lp-reveal.is-visible { opacity: 1; transform: none; }
   /* 左右の余白 22px では本文が画面端に寄って見えるため 30px に広げる */
   .lp-wrap { width: min(1080px, calc(100% - 60px)); }
   .lp-notice { width: min(860px, calc(100% - 60px)); }
+
+  /* 見出しは1文節が親幅に収まらないと文節の内部で割れる。
+     狭い画面では級数を落として、1行=1文節を保てるようにする。
+     (例: 393px で「こんなお悩みありませんか?」13字は26pxだと345px必要で溢れる) */
+  .lp-head h2 { font-size: clamp(20px, 5.9vw, 26px); }
+  .lp-hero h1 { font-size: clamp(24px, 7.6vw, 34px); }
+  .lp-outro h2 { font-size: clamp(21px, 6.4vw, 30px); }
 }

@@ -32,11 +32,19 @@
 
 /* ---------- ベース ---------- */
 
+/* iOS Safari の自動文字拡大を止め、実機とレスポンシブ検証の折り返しを揃える */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
 body {
   background: #ffffff;
   font-family: var(--gp-font-body);
   color: var(--gp-ink);
 }
+
+/* 文節のかたまり。日本語は任意の位置で改行できるため、放っておくと
+   「かん/たん」のように語中で割れる。inline-block にすると、入るときは
+   ひとかたまりで折り返し、単独でも入らないときだけ内部で改行される。 */
+.lp-nw { display: inline-block; }
 
 .lp h1, .lp h2, .lp h3, .lp h4,
 .site-header .brand span {
@@ -725,4 +733,8 @@ html.js .lp-reveal.is-visible { opacity: 1; transform: none; }
      absolute 前提の translateY(-50%) が残ると浮くので transform も上書きする。 */
   .lp-notice { padding: 22px 20px; }
   .lp-notice-stamp { position: static; margin: 0 0 14px; transform: rotate(-8deg); }
+
+  /* 左右の余白 22px では本文が画面端に寄って見えるため 30px に広げる */
+  .lp-wrap { width: min(1080px, calc(100% - 60px)); }
+  .lp-notice { width: min(860px, calc(100% - 60px)); }
 }

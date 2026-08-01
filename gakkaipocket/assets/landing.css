@@ -1,995 +1,710 @@
 /* ===================================================================
-   landing.css — 学会ポケット トップページ専用スタイル
-   このファイルは index.html からのみ読み込まれます。
-   法務3ページ (about / privacy-policy / terms-of-service) は
-   styles.css のみを参照しており、本ファイルの影響を受けません。
+   landing.css — 学会ポケット トップページ専用スタイル(v7 全面刷新)
+   index.html からのみ読み込む。法務3ページは styles.css のみ参照。
+   構成: 全幅バンド(.lp-band)を波形SVGで継ぎ、空→クリーム→白→
+   ペールティール→クリーム→白 と背景色を流す tabinuki 型のLP。
    =================================================================== */
 
-/* ------------------------------------------------------------------ */
-/* 1. トークン(色・フォント)                                            */
-/* ------------------------------------------------------------------ */
-
 :root {
-  --gp-teal: #0f766e;        /* ブランド主色(既存踏襲) */
+  --gp-teal: #0f766e;
   --gp-teal-deep: #0b5a54;
-  --gp-navy: #17233c;        /* ポケットの紺 */
-  --gp-ink: #253230;         /* 本文 */
-  --gp-cream: #faf5e9;       /* 紙のようなクリーム地 */
-  --gp-sky: #d9f0ec;         /* ヒーローの空(teal寄り) */
+  --gp-navy: #17233c;
+  --gp-ink: #253230;
+  --gp-cream: #faf5e9;
+  --gp-cream-deep: #f3ead6;
+  --gp-sky: #cfeae4;
   --gp-gold: #e5b34a;
   --gp-coral: #e78a92;
   --gp-leaf: #83bd7e;
-  --gp-hanko: #c2452d;       /* ハンコ朱色 */
-
-  /* パステル面(吹き出し・ステップ背景など) */
+  --gp-hanko: #c2452d;
   --gp-gold-pale: #f6e3b3;
   --gp-coral-pale: #f7d6d9;
   --gp-leaf-pale: #d9ecd4;
   --gp-teal-pale: #d9efec;
-
-  /* 濃色面(ステップの縦書きラベル帯など、白文字を乗せる用) */
   --gp-gold-deep: #9c6f1c;
   --gp-coral-deep: #b1414b;
-
   --gp-muted: #5c6a67;
   --gp-line: rgba(23, 35, 60, 0.09);
-
+  --gp-paper-line: #e8e0cc;
   --gp-font-round: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", sans-serif;
   --gp-font-body: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", sans-serif;
 }
 
-/* ------------------------------------------------------------------ */
-/* 2. ベース                                                            */
-/* ------------------------------------------------------------------ */
+/* ---------- ベース ---------- */
 
-/* landing.css は index.html にしか読み込まれないため、body 直下の
-   タイポグラフィをここで上書きしても法務ページには影響しない。 */
 body {
+  background: #ffffff;
   font-family: var(--gp-font-body);
   color: var(--gp-ink);
 }
 
-.lp-main h1,
-.lp-main h2,
-.lp-main h3,
+.lp h1, .lp h2, .lp h3, .lp h4,
 .site-header .brand span {
   font-family: var(--gp-font-round);
+  color: var(--gp-navy);
 }
 
-.brand span { font-weight: 800; }
+.site-header {
+  background: rgba(250, 245, 233, 0.92);
+  border-bottom: 1px solid rgba(23, 35, 60, 0.07);
+}
+.header-inner { width: min(1080px, calc(100% - 40px)); }
 
-/* main の横幅を法務ページ共有の .container(800px)より広げ、
-   イラストシーンを含むヒーローがのびのび呼吸できるようにする。
-   同じクラス特異度でも landing.css が後読みのため styles.css の
-   .container 幅を上書きできる。 */
-.lp-main {
-  display: block;
-  width: min(1180px, calc(100% - 40px));
-  margin: 40px auto 80px;
+.lp { display: block; width: 100%; margin: 0; }
+
+.lp a { color: var(--gp-teal-deep); }
+.lp a:hover { color: var(--gp-teal); }
+
+.lp-wrap {
+  width: min(1080px, calc(100% - 44px));
+  margin: 0 auto;
 }
 
 .lp-visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
 }
 
-/* ------------------------------------------------------------------ */
-/* 3. スクロール演出の下地(JSなしでも全要素が見える)                       */
-/* ------------------------------------------------------------------ */
+.lp-h1-line { display: inline-block; }
 
-html.js .lp-reveal {
-  opacity: 0;
-  transform: translateY(22px);
-  transition: opacity 640ms ease, transform 640ms ease;
-}
+/* マーカー(蛍光ペン) */
+.mk { background: linear-gradient(transparent 64%, var(--gp-gold-pale) 64%); padding: 0 0.06em; }
+.mk-coral { background: linear-gradient(transparent 64%, var(--gp-coral-pale) 64%); padding: 0 0.06em; }
 
-html.js .lp-reveal.is-visible {
-  opacity: 1;
-  transform: none;
-}
+/* スクロール演出(JSなしでも全要素が見える) */
+html.js .lp-reveal { opacity: 0; transform: translateY(24px); transition: opacity 700ms ease, transform 700ms ease; }
+html.js .lp-reveal.is-visible { opacity: 1; transform: none; }
 
-/* ------------------------------------------------------------------ */
-/* 4. ヒーロー(イラストシーン)                                          */
-/* ------------------------------------------------------------------ */
+/* 波形の継ぎ目 */
+.lp-wave { display: block; width: 100%; height: clamp(42px, 6vw, 76px); }
 
-/* ヒーローは幅いっぱいの1枚の角丸パネルとして空〜丘のシーンを描き、
-   その上に白いコピーパネルを左寄せで浮かせる(tabinuki型の構図)。
-   .lp-hero 自体をシーンのアスペクト比に固定することで、内部の
-   イラストSVGが常にコンテナぴったりに収まり(=slice でも欠けない)、
-   %指定のオーバーレイ(マスコット・チップ・バナー)の位置もズレない。 */
+/* ---------- ヒーロー ---------- */
+
 .lp-hero {
   position: relative;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  aspect-ratio: 1400 / 780;
-  min-height: 460px;
-  padding: clamp(20px, 3vw, 40px);
-  border-radius: 34px;
   overflow: hidden;
-  isolation: isolate;
+  background: linear-gradient(180deg, var(--gp-sky) 0%, #e9f5f0 52%, #f6f1e2 100%);
 }
 
-.lp-hero-panel {
+.lp-hero-wrap {
   position: relative;
   z-index: 2;
-  width: min(430px, 46%);
-  padding: clamp(24px, 3vw, 38px);
-  border-radius: 28px;
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(6px);
-  box-shadow: 0 24px 60px rgba(23, 35, 60, 0.14);
-  animation: lpRise 760ms ease both;
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  align-items: center;
+  gap: 28px;
+  padding: clamp(48px, 7vw, 96px) 0 clamp(210px, 22vw, 280px);
 }
 
 .lp-eyebrow {
-  margin: 0 0 14px;
-  color: var(--gp-teal);
-  font-family: var(--gp-font-round);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-}
-
-.lp-name {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 14px;
-  margin: 0 0 18px;
+  gap: 8px;
+  margin: 0 0 20px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1.5px solid rgba(15, 118, 110, 0.35);
+  color: var(--gp-teal-deep);
+  font-family: var(--gp-font-round);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
 }
-
-.lp-name-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 13px;
-  box-shadow: 0 8px 18px rgba(23, 35, 60, 0.18);
-  flex: none;
+.lp-eyebrow::before {
+  content: "";
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--gp-teal);
 }
 
 .lp-hero h1 {
-  margin: 0;
-  color: var(--gp-navy);
+  margin: 0 0 22px;
+  font-size: clamp(34px, 4.8vw, 56px);
   font-weight: 900;
-  font-size: clamp(26px, 4.6vw, 34px);
-  line-height: 1.2;
+  line-height: 1.42;
+  letter-spacing: 0.015em;
+  text-wrap: pretty;
 }
 
 .lp-hero-lead {
-  margin: 0 0 28px;
-  max-width: 42ch;
-  color: var(--gp-muted);
-  font-size: 15px;
-  line-height: 1.9;
+  margin: 0 0 30px;
+  max-width: 33em;
+  font-size: clamp(15px, 1.6vw, 17px);
+  line-height: 2.05;
+  color: #33413e;
+  text-wrap: pretty;
 }
 
-.lp-store {
+.lp-cta-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 16px;
+  gap: 14px 18px;
 }
 
-.lp-badge-link {
-  display: inline-flex;
-  padding: 12px;
-  margin: -12px;
-  border-radius: 16px;
-  line-height: 0;
-  transition: transform 160ms ease;
-}
-
+.lp-badge-link { display: inline-block; line-height: 0; border-radius: 12px; }
+.lp-badge-link img { display: block; height: 56px; width: auto; }
 .lp-badge-link:hover { transform: translateY(-2px); }
-
-.lp-badge-link:focus-visible {
-  outline: 3px solid rgba(15, 118, 110, 0.4);
-  outline-offset: 3px;
-}
-
-.lp-badge-link img {
-  display: block;
-  height: 52px;
-  width: auto;
-}
-
-.lp-store-note {
-  margin: 0;
-  padding: 6px 14px;
-  border-radius: 999px;
-  background: rgba(23, 35, 60, 0.06);
-  color: var(--gp-muted);
-  font-size: 12.5px;
-  font-weight: 700;
-}
-
-.lp-web-cta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px 16px;
-  margin-top: 20px;
-}
 
 .lp-web-btn {
   display: inline-flex;
   align-items: center;
-  gap: 9px;
-  padding: 12px 20px;
+  gap: 10px;
+  min-height: 56px;
+  padding: 12px 28px;
   border-radius: 999px;
-  border: 1.5px solid var(--gp-teal);
-  background: #ffffff;
-  color: var(--gp-teal);
-  font-family: var(--gp-font-round);
-  font-size: 14.5px;
-  font-weight: 700;
-  text-decoration: none;
-  transition: transform 160ms ease, background 160ms ease, color 160ms ease;
-}
-
-.lp-web-btn svg { width: 19px; height: 19px; flex: none; }
-
-.lp-web-btn:hover {
-  transform: translateY(-2px);
-  background: var(--gp-teal);
-  color: #ffffff;
-}
-
-.lp-web-btn:focus-visible {
-  outline: 3px solid rgba(15, 118, 110, 0.4);
-  outline-offset: 3px;
-}
-
-.lp-web-note {
-  margin: 8px 0 0;
-  max-width: 40ch;
-  color: var(--gp-muted);
-  font-size: 12.5px;
-  flex-basis: 100%;
-}
-
-/* --- イラストシーン --- */
-
-.lp-hero-scene {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background: linear-gradient(180deg, #ffffff 0%, var(--gp-sky) 42%, var(--gp-sky) 100%);
-  animation: lpRise 760ms ease 120ms both;
-}
-
-.lp-scene-bg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-.lp-cloud { animation: lpDrift 26s ease-in-out infinite; }
-.lp-cloud-b { animation-duration: 32s; animation-delay: -6s; }
-.lp-cloud-c { animation-duration: 22s; animation-delay: -12s; }
-
-.lp-sparkle { transform-origin: center; animation: lpTwinkle 2.6s ease-in-out infinite; }
-.lp-sparkle-b { animation-delay: -1.1s; }
-
-/* 浮遊チップ */
-
-.lp-chip {
-  position: absolute;
-  left: var(--lp-chip-x, 50%);
-  top: var(--lp-chip-y, 50%);
-  width: 46px;
-  height: 46px;
-  margin: -23px;
-  display: grid;
-  place-items: center;
-  border-radius: 14px;
-  background: #ffffff;
-  box-shadow: 0 12px 24px rgba(23, 35, 60, 0.18);
-  animation: lpBob 7s ease-in-out infinite;
-  z-index: 3;
-}
-
-.lp-chip svg { width: 22px; height: 22px; }
-
-.lp-chip-star { color: var(--gp-gold); animation-delay: -0.6s; }
-.lp-chip-search { color: var(--gp-teal); animation-delay: -3.2s; }
-.lp-chip-clock { color: var(--gp-navy); animation-delay: -1.8s; }
-.lp-chip-memo { color: var(--gp-coral); animation-delay: -4.4s; }
-
-/* マスコット(道の途中、シーン内に完全に収まる位置) */
-
-.lp-mascot-wrap {
-  position: absolute;
-  left: 55%;
-  top: 76%;
-  width: clamp(170px, 18vw, 240px);
-  margin-left: calc(clamp(170px, 18vw, 240px) / -2);
-  margin-top: calc(clamp(170px, 18vw, 240px) / -2);
-  z-index: 2;
-  animation: lpBreathe 4s ease-in-out infinite;
-  transform-origin: 50% 78%;
-}
-
-.lp-mascot { display: block; width: 100%; height: auto; }
-
-/* 縦書きバナー(シーン右上の空いた空に独立配置。会場や旗とは重ねない) */
-
-.lp-vert-banners {
-  position: absolute;
-  right: 3%;
-  top: 6%;
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  z-index: 3;
-}
-
-.lp-vert-banner {
-  writing-mode: vertical-rl;
-  text-orientation: upright;
-  padding: 18px 8px;
-  border-radius: 14px;
+  background: var(--gp-navy);
+  color: #ffffff !important;
   font-family: var(--gp-font-round);
   font-size: 15px;
   font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 10px 24px rgba(23, 35, 60, 0.24);
+}
+.lp-web-btn svg { width: 20px; height: 20px; }
+.lp-web-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(23, 35, 60, 0.3); }
+
+.lp-cta-note {
+  margin: 14px 0 0;
+  font-size: 12.5px;
+  color: var(--gp-muted);
+}
+
+/* ヒーロー右: マスコット+スタンプ */
+.lp-hero-art {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
+.lp-hero-icon {
+  position: relative;
+  margin-bottom: 30px;
+}
+.lp-hero-icon img {
+  display: block;
+  width: clamp(150px, 16vw, 210px);
+  height: auto;
+  border-radius: 24%;
+  transform: rotate(-6deg);
+  box-shadow: 0 30px 60px rgba(23, 35, 60, 0.26), 0 0 0 8px rgba(255, 255, 255, 0.55);
+}
+.lp-hero-icon .lp-sparkle { position: absolute; color: #e5b34a; }
+.lp-hero-spark-l { left: -44px; top: -14px; width: 30px; height: 30px; }
+.lp-hero-spark-r { right: -38px; bottom: 18px; width: 20px; height: 20px; }
+
+.lp-stamp {
+  position: absolute;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 5px;
+  width: 96px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 2.5px dashed currentColor;
+  background: rgba(255, 255, 255, 0.92);
+  font-family: var(--gp-font-round);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.lp-stamp svg { width: 24px; height: 24px; }
+.lp-stamp-a { color: var(--gp-teal-deep); top: 4%; left: -4%; transform: rotate(-9deg); }
+.lp-stamp-b { color: var(--gp-gold-deep); top: -6%; right: 2%; transform: rotate(7deg); }
+.lp-stamp-c { color: var(--gp-coral-deep); bottom: 34%; right: -7%; transform: rotate(-5deg); }
+
+/* 空の装飾 */
+.lp-sun {
+  position: absolute;
+  top: clamp(28px, 5vw, 64px);
+  right: 6%;
+  width: clamp(56px, 7vw, 92px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 38%, #f8dfa1, var(--gp-gold));
+  opacity: 0.85;
+}
+.lp-cloud { position: absolute; color: #ffffff; }
+.lp-cloud svg { display: block; width: 100%; height: auto; }
+.lp-cloud-a { top: 12%; left: 8%; width: clamp(80px, 9vw, 130px); }
+.lp-cloud-b { top: 30%; left: 42%; width: clamp(60px, 7vw, 100px); opacity: 0.9; }
+.lp-cloud-c { top: 7%; right: 24%; width: clamp(56px, 6vw, 88px); opacity: 0.85; }
+
+/* 街並み(ヒーロー最下部・全幅) */
+.lp-town {
+  position: absolute;
+  left: 0; right: 0; bottom: -1px;
+  z-index: 1;
+  width: 100%;
+  height: clamp(150px, 18vw, 250px);
+  pointer-events: none;
+}
+.lp-town svg { display: block; width: 100%; height: 100%; }
+
+@keyframes lpTwinkle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.82); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .lp-sparkle { animation: lpTwinkle 2.6s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+  .lp-sparkle-b { animation-delay: 1.2s; }
+  .lp-badge-link, .lp-web-btn { transition: transform 180ms ease, box-shadow 180ms ease; }
+}
+
+/* ---------- バンド共通 ---------- */
+
+.lp-band { position: relative; }
+.lp-band-cream { background: var(--gp-cream); }
+.lp-band-white { background: #ffffff; }
+.lp-band-teal { background: var(--gp-teal-pale); }
+
+.lp-section-pad { padding: clamp(56px, 8vw, 104px) 0; }
+
+.lp-head { text-align: center; margin-bottom: clamp(36px, 5vw, 60px); }
+.lp-head-badge {
+  display: inline-block;
+  margin-bottom: 18px;
+  padding: 7px 20px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1.5px solid rgba(15, 118, 110, 0.35);
+  color: var(--gp-teal-deep);
+  font-family: var(--gp-font-round);
+  font-size: 13px;
+  font-weight: 700;
   letter-spacing: 0.14em;
-  box-shadow: 0 14px 28px rgba(23, 35, 60, 0.16);
+}
+.lp-head-badge.is-gold { border-color: rgba(156, 111, 28, 0.4); color: var(--gp-gold-deep); }
+.lp-head h2 {
+  margin: 0;
+  font-size: clamp(26px, 4.4vw, 42px);
+  font-weight: 900;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+  text-wrap: pretty;
+}
+.lp-head-sub {
+  margin: 16px auto 0;
+  max-width: 36em;
+  color: var(--gp-muted);
+  font-size: clamp(14px, 1.5vw, 16px);
+  line-height: 2;
 }
 
-.lp-vert-banner-navy {
-  background: var(--gp-navy);
-  color: #ffffff;
-}
-
-.lp-vert-banner-gold {
-  background: var(--gp-gold);
-  color: var(--gp-navy);
-  margin-top: 34px;
-}
-
-/* ------------------------------------------------------------------ */
-/* 5. 非公式のお知らせ(貼り紙カード)                                     */
-/* ------------------------------------------------------------------ */
+/* ---------- 非公式notice(貼り紙) ---------- */
 
 .lp-notice {
   position: relative;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-  align-items: flex-start;
-  margin-top: 26px;
-  padding: 24px 26px;
-  border: 1px solid rgba(15, 118, 110, 0.2);
-  border-radius: 18px;
-  background: var(--gp-cream);
-  box-shadow: 0 14px 30px rgba(23, 35, 60, 0.07);
+  width: min(860px, calc(100% - 44px));
+  margin: 0 auto;
+  padding: 26px 30px 26px 96px;
+  background: #ffffff;
+  border: 1.5px solid var(--gp-paper-line);
+  border-radius: 6px;
+  box-shadow: 0 14px 34px rgba(23, 35, 60, 0.08);
+  transform: rotate(-0.4deg);
+  font-size: 13.5px;
+  line-height: 2;
+  color: #45514e;
 }
-
+.lp-notice strong { display: block; margin-bottom: 4px; color: var(--gp-navy); font-family: var(--gp-font-round); font-size: 15px; }
 .lp-notice-tape {
   position: absolute;
-  top: -10px;
-  width: 64px;
-  height: 22px;
-  background: rgba(15, 118, 110, 0.32);
-  box-shadow: 0 2px 4px rgba(23, 35, 60, 0.08);
+  top: -12px;
+  width: 92px; height: 26px;
+  background: rgba(217, 239, 236, 0.85);
+  border-left: 1px dashed rgba(15, 118, 110, 0.25);
+  border-right: 1px dashed rgba(15, 118, 110, 0.25);
 }
-
-.lp-notice-tape-l { left: 26px; transform: rotate(-7deg); }
-.lp-notice-tape-r { right: 34px; transform: rotate(6deg); }
-
+.lp-notice-tape-l { left: 8%; transform: rotate(-5deg); }
+.lp-notice-tape-r { right: 8%; transform: rotate(4deg); }
 .lp-notice-stamp {
-  flex: none;
-  align-self: center;
-  padding: 6px 12px;
-  border: 2px solid var(--gp-hanko);
-  border-radius: 10px;
-  outline: 1px solid var(--gp-hanko);
-  outline-offset: 2px;
+  position: absolute;
+  left: 24px; top: 50%;
+  transform: translateY(-50%) rotate(-8deg);
+  display: grid;
+  place-content: center;
+  width: 54px;
+  aspect-ratio: 1;
+  border: 3px solid var(--gp-hanko);
+  border-radius: 50%;
   color: var(--gp-hanko);
   font-family: var(--gp-font-round);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  transform: rotate(-6deg);
-}
-
-.lp-notice-icon {
-  flex: none;
-  width: 22px;
-  height: 22px;
-  margin-top: 2px;
-  color: var(--gp-teal);
-}
-
-.lp-notice p {
-  margin: 0;
-  color: var(--gp-navy);
-  font-size: 13.5px;
-  line-height: 1.9;
-}
-
-.lp-notice strong {
-  display: block;
-  margin-bottom: 4px;
-  color: var(--gp-teal-deep);
   font-size: 13px;
-  letter-spacing: 0.04em;
-}
-
-/* ------------------------------------------------------------------ */
-/* 6. セクション共通                                                    */
-/* ------------------------------------------------------------------ */
-
-.lp-section { margin-top: 84px; }
-
-.lp-section-head {
-  margin: 0 0 34px;
-  text-align: center;
-}
-
-.lp-section-eyebrow {
-  display: block;
-  margin: 0 0 8px;
-  color: var(--gp-teal);
-  font-family: var(--gp-font-round);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-}
-
-.lp-section-title {
-  margin: 0;
-  color: var(--gp-navy);
   font-weight: 900;
-  font-size: clamp(21px, 3.6vw, 28px);
+  letter-spacing: 0.06em;
+  opacity: 0.85;
 }
 
-/* ------------------------------------------------------------------ */
-/* 7. お悩みセクション(吹き出し+ハンコ)                                  */
-/* ------------------------------------------------------------------ */
-
-/* ページ全体のセクションリズムを 淡背景→クリーム→白 の交互にするため、
-   お悩みセクションはクリームの面(パネル)として見せる */
-.lp-worries {
-  padding: clamp(32px, 4.4vw, 52px) clamp(24px, 4vw, 48px);
-  border-radius: 34px;
-  background: var(--gp-cream);
-}
-
-.lp-worries-title {
-  margin: 0 0 44px;
-  color: var(--gp-navy);
-  font-weight: 900;
-  font-size: clamp(21px, 3.8vw, 29px);
-  text-align: center;
-  transform: rotate(-2deg);
-}
+/* ---------- お悩み ---------- */
 
 .lp-bubbles {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 26px 20px;
-  margin: 0 0 48px;
-  padding: 12px 0 0;
-  list-style: none;
-}
-
-.lp-bubble {
-  position: relative;
-  padding: 28px 22px 26px;
-  border-radius: 22px;
-  font-size: 14.5px;
-  line-height: 1.8;
-  color: var(--gp-navy);
-  box-shadow: 0 14px 26px rgba(23, 35, 60, 0.1);
-}
-
-.lp-bubble::after {
-  content: "";
-  position: absolute;
-  bottom: -12px;
-  left: 34px;
-  width: 24px;
-  height: 24px;
-  background: inherit;
-  border-radius: 0 0 0 8px;
-  transform: rotate(45deg);
-}
-
-.lp-bubble-leaf { background: var(--gp-leaf-pale); }
-.lp-bubble-gold { background: var(--gp-gold-pale); margin-top: 26px; }
-.lp-bubble-coral { background: var(--gp-coral-pale); }
-
-/* ミニ顔アバターは吹き出しの左上からはみ出させ、
-   「キャラが話している」ような佇まいにする */
-.lp-mini-face {
-  position: absolute;
-  top: -16px;
-  left: -14px;
-  width: 44px;
-  height: 44px;
-  padding: 3px;
-  border-radius: 50%;
-  background: #ffffff;
-  box-shadow: 0 8px 16px rgba(23, 35, 60, 0.18);
-  z-index: 1;
-}
-
-.lp-bubble p { position: relative; z-index: 0; margin: 0; font-weight: 700; }
-
-.lp-hanko {
-  display: flex;
-  justify-content: center;
-  margin: 0;
-}
-
-.lp-hanko span {
-  display: grid;
-  place-items: center;
-  width: 148px;
-  height: 148px;
-  border: 3px solid var(--gp-hanko);
-  border-radius: 50%;
-  outline: 2px solid var(--gp-hanko);
-  outline-offset: 6px;
-  color: var(--gp-hanko);
-  font-family: var(--gp-font-round);
-  font-weight: 900;
-  font-size: 16px;
-  line-height: 1.5;
-  text-align: center;
-  opacity: 0.86;
-  transform: rotate(8deg);
-}
-
-/* ------------------------------------------------------------------ */
-/* 8. 3ステップ(色分けセクション)                                       */
-/* ------------------------------------------------------------------ */
-
-.lp-step-list {
+  gap: 22px;
   margin: 0;
   padding: 0;
   list-style: none;
+}
+.lp-bubble {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  padding: 28px 22px 26px;
+  background: #ffffff;
+  border: 2px solid var(--gp-paper-line);
+  border-radius: 26px;
+  text-align: center;
+}
+.lp-bubble::after {
+  content: "";
+  position: absolute;
+  bottom: -13px; left: 50%;
+  transform: translateX(-50%);
+  border: 12px solid transparent;
+  border-top-color: #ffffff;
+  border-bottom: 0;
+  filter: drop-shadow(0 2px 0 var(--gp-paper-line));
+}
+.lp-bubble p { margin: 0; font-size: 15px; font-weight: 500; line-height: 1.9; color: var(--gp-navy); text-wrap: pretty; }
+.lp-mini-face { width: 58px; height: 58px; }
+.lp-bubble-leaf .lp-mini-face rect:first-of-type { fill: #ffffff; }
+
+/* 解決バナー */
+.lp-solve {
+  position: relative;
   display: flex;
-  flex-direction: column;
-  gap: 28px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 18px 40px;
+  margin-top: clamp(48px, 6vw, 72px);
+  text-align: center;
+}
+.lp-solve-copy {
+  position: relative;
+  font-family: var(--gp-font-round);
+  font-size: clamp(24px, 4vw, 38px);
+  font-weight: 900;
+  line-height: 1.7;
+  color: var(--gp-navy);
+  letter-spacing: 0.02em;
+}
+.lp-hanko-seal {
+  display: grid;
+  place-content: center;
+  width: clamp(88px, 10vw, 116px);
+  aspect-ratio: 1;
+  border: 4px solid var(--gp-hanko);
+  border-radius: 50%;
+  color: var(--gp-hanko);
+  font-family: var(--gp-font-round);
+  font-size: clamp(24px, 3vw, 32px);
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  transform: rotate(9deg);
+  background:
+    radial-gradient(circle at 34% 28%, rgba(255,255,255,0.35) 0 4%, transparent 5%),
+    radial-gradient(circle at 66% 64%, rgba(255,255,255,0.3) 0 3.5%, transparent 4.5%);
+}
+
+/* ---------- 使い方3ステップ ---------- */
+
+.lp-step-list {
+  display: grid;
+  gap: clamp(56px, 7vw, 96px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: none;
 }
 
 .lp-step {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 400px);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(28px, 5vw, 64px);
   align-items: center;
-  gap: clamp(24px, 4vw, 44px);
-  padding: clamp(22px, 3.2vw, 34px);
-  border-radius: 30px;
 }
+.lp-step:nth-child(even) .lp-step-art { order: -1; }
 
-.lp-step:nth-child(even) { grid-template-columns: minmax(0, 400px) minmax(0, 1fr); }
-.lp-step:nth-child(even) .lp-step-copy { order: 2; }
-.lp-step:nth-child(even) .lp-step-art { order: 1; }
-
-.lp-step-teal { background: var(--gp-teal-pale); }
-.lp-step-gold { background: var(--gp-gold-pale); }
-.lp-step-coral { background: var(--gp-coral-pale); }
-
-.lp-step-copy { position: relative; }
-
-/* 番号バッジ+縦書きラベル帯(tabinukiの「知る/巡る/楽しむ」風)を
-   コピー列の先頭にまとめる */
 .lp-step-head {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 16px;
+  margin-bottom: 18px;
 }
-
-.lp-step-num {
-  display: inline-grid;
-  place-items: center;
-  width: 50px;
-  height: 50px;
+.lp-step-badge {
+  display: grid;
+  place-content: center;
+  width: 74px;
+  aspect-ratio: 1;
   border-radius: 50%;
-  background: #ffffff;
-  color: var(--gp-navy);
-  font-family: var(--gp-font-round);
-  font-weight: 900;
-  font-size: 17px;
-  box-shadow: 0 10px 22px rgba(23, 35, 60, 0.12);
-}
-
-.lp-step-kanji {
-  writing-mode: vertical-rl;
-  text-orientation: upright;
-  padding: 10px 8px;
-  border-radius: 14px;
   color: #ffffff;
   font-family: var(--gp-font-round);
-  font-weight: 700;
-  font-size: 15px;
-  letter-spacing: 0.12em;
-  box-shadow: 0 8px 18px rgba(23, 35, 60, 0.16);
-}
-
-.lp-step-teal .lp-step-kanji { background: var(--gp-teal-deep); }
-.lp-step-gold .lp-step-kanji { background: var(--gp-gold-deep); }
-.lp-step-coral .lp-step-kanji { background: var(--gp-coral-deep); }
-
-.lp-step h3 {
-  margin: 0 0 10px;
-  color: var(--gp-navy);
+  font-size: 32px;
   font-weight: 900;
-  font-size: 22px;
+  box-shadow: 0 8px 18px rgba(23, 35, 60, 0.14);
 }
+.lp-step-num {
+  font-family: var(--gp-font-round);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: var(--gp-muted);
+}
+.lp-step h3 {
+  margin: 0 0 14px;
+  font-size: clamp(25px, 3.2vw, 34px);
+  font-weight: 900;
+  line-height: 1.55;
+  letter-spacing: 0.02em;
+}
+.lp-step-lead { margin: 0 0 18px; font-size: 15.5px; line-height: 2.05; color: #33413e; text-wrap: pretty; }
 
-.lp-step p {
-  margin: 0 0 10px;
-  max-width: 44ch;
-  color: var(--gp-ink);
+.lp-checks { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
+.lp-checks li {
+  position: relative;
+  padding-left: 34px;
   font-size: 14.5px;
+  font-weight: 500;
   line-height: 1.85;
+  color: var(--gp-navy);
+}
+.lp-checks li::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 3px;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background-color: var(--gp-teal);
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 12.5l4 4 9-9.5"/></svg>');
+  background-size: 13px;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
-.lp-step-note { color: var(--gp-muted) !important; font-size: 13px !important; }
+.lp-step-teal .lp-step-badge { background: var(--gp-teal); }
+.lp-step-gold .lp-step-badge { background: var(--gp-gold-deep); }
+.lp-step-coral .lp-step-badge { background: var(--gp-coral-deep); }
+.lp-step-gold .lp-checks li::before { background-color: var(--gp-gold-deep); }
+.lp-step-coral .lp-checks li::before { background-color: var(--gp-coral-deep); }
 
-.lp-step-art {
+/* 端末スクショの載る色パネル */
+.lp-step-art { min-width: 0; }
+.lp-shot-panel {
+  position: relative;
   display: flex;
-  gap: 14px;
   align-items: flex-start;
+  justify-content: center;
+  gap: 26px;
+  height: clamp(400px, 44vw, 560px);
+  padding: clamp(32px, 4vw, 48px) 24px 0;
+  border-radius: 34px;
+  overflow: hidden;
+}
+.lp-step-teal .lp-shot-panel { background: var(--gp-teal-pale); }
+.lp-step-gold .lp-shot-panel { background: var(--gp-gold-pale); }
+.lp-step-coral .lp-shot-panel { background: var(--gp-coral-pale); }
+
+.lp-shot-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.55) 2.5px, transparent 2.5px);
+  background-size: 26px 26px;
+  opacity: 0.5;
 }
 
-.lp-step-art .lp-shot { flex: 1; }
-
-/* ------------------------------------------------------------------ */
-/* 9. スクリーンショット                                                 */
-/* ------------------------------------------------------------------ */
-
-/* assets/shots/ の4枚はダーク帯の見出し+デバイスモックが焼き込み済みの
-   マーケ用コンポジット画像。CSSで電話枠を足すと二重フレームになるため、
-   角丸+シャドウだけを画像本体に与え、そのままカードとして見せる。 */
-.lp-shot {
-  margin: 0;
-  display: block;
+.lp-phone {
+  position: relative;
+  width: clamp(200px, 21vw, 285px);
+  border-radius: 34px 34px 0 0;
+  overflow: hidden;
+  box-shadow: 0 -2px 0 rgba(23, 35, 60, 0.05), 0 24px 48px rgba(23, 35, 60, 0.22);
+  outline: 1px solid rgba(23, 35, 60, 0.1);
+  outline-offset: -1px;
 }
+.lp-phone img { display: block; width: 100%; height: auto; }
+.lp-phone-back { width: clamp(170px, 17vw, 240px); margin-top: 64px; opacity: 0.96; }
 
-.lp-shot img {
-  display: block;
-  width: 100%;
-  height: auto;
-  border-radius: 20px;
-  box-shadow: 0 18px 36px rgba(23, 35, 60, 0.2);
+/* ---------- さらに、こんな機能も ---------- */
+
+.lp-extra { margin-top: clamp(64px, 8vw, 104px); }
+.lp-extra-title {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin: 0 0 28px;
+  font-size: clamp(21px, 2.6vw, 26px);
+  font-weight: 900;
 }
-
-/* ------------------------------------------------------------------ */
-/* 10. できること                                                       */
-/* ------------------------------------------------------------------ */
-
-.lp-feature-grid {
+.lp-extra-title::before,
+.lp-extra-title::after {
+  content: "";
+  flex: 1;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, var(--gp-paper-line) 0 10px, transparent 10px 20px);
+}
+.lp-extra-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
-
-.lp-feature {
-  padding: 26px 24px;
-  border: 1px solid var(--gp-line);
-  border-radius: 22px;
-  background: var(--gp-cream);
-  box-shadow: 0 10px 26px rgba(23, 35, 60, 0.05);
-}
-
-.lp-feature-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 42px;
-  height: 42px;
-  margin-bottom: 14px;
-  border-radius: 13px;
-  background: rgba(15, 118, 110, 0.12);
-  color: var(--gp-teal);
-}
-
-.lp-feature-icon svg { width: 22px; height: 22px; }
-
-.lp-feature h3 {
-  margin: 0 0 6px;
-  color: var(--gp-navy);
-  font-size: 15.5px;
-  font-weight: 900;
-}
-
-.lp-feature p {
-  margin: 0;
-  color: var(--gp-muted);
-  font-size: 13px;
-  line-height: 1.8;
-}
-
-/* ------------------------------------------------------------------ */
-/* 11. Web版                                                           */
-/* ------------------------------------------------------------------ */
-
-.lp-web-panel {
+.lp-extra-card {
   display: grid;
-  grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
-  gap: clamp(24px, 4vw, 40px);
-  align-items: center;
-  padding: clamp(24px, 4vw, 34px);
-  border: 1px solid var(--gp-line);
-  border-radius: 26px;
-  background: #ffffff;
-}
-
-.lp-web-browser {
-  border-radius: 18px;
-  overflow: hidden;
-  border: 1px solid var(--gp-line);
-  box-shadow: 0 14px 30px rgba(23, 35, 60, 0.1);
-}
-
-.lp-web-browser-bar {
-  display: flex;
-  gap: 6px;
-  padding: 10px 12px;
+  justify-items: center;
+  gap: 12px;
+  padding: 26px 18px;
   background: var(--gp-cream);
+  border-radius: 24px;
+  text-align: center;
 }
-
-.lp-web-browser-bar span {
-  width: 9px;
-  height: 9px;
+.lp-extra-icon {
+  display: grid;
+  place-content: center;
+  width: 54px;
+  aspect-ratio: 1;
   border-radius: 50%;
-  background: rgba(23, 35, 60, 0.18);
+  background: #ffffff;
+  color: var(--gp-teal-deep);
+  box-shadow: 0 6px 14px rgba(23, 35, 60, 0.08);
 }
+.lp-extra-icon svg { width: 24px; height: 24px; }
+.lp-extra-card h4 { margin: 0; font-size: 16px; font-weight: 700; }
+.lp-extra-card p { margin: 0; font-size: 13px; line-height: 1.9; color: var(--gp-muted); text-wrap: pretty; }
 
-.lp-web-browser-body {
+/* ---------- Web版 ---------- */
+
+.lp-web-grid {
   display: grid;
-  place-items: center;
-  padding: 14px;
-  background: var(--gp-sky);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(28px, 5vw, 60px);
+  align-items: center;
 }
 
-.lp-web-browser-body svg { display: block; width: 100%; height: auto; }
+.lp-browser {
+  border-radius: 22px;
+  background: #ffffff;
+  box-shadow: 0 26px 56px rgba(23, 35, 60, 0.16);
+  overflow: hidden;
+  border: 1px solid rgba(23, 35, 60, 0.08);
+  transform: rotate(-1deg);
+}
+.lp-browser-bar {
+  display: flex;
+  gap: 7px;
+  padding: 13px 16px;
+  background: var(--gp-cream);
+  border-bottom: 1px solid var(--gp-paper-line);
+}
+.lp-browser-bar span { width: 11px; height: 11px; border-radius: 50%; background: var(--gp-cream-deep); }
+.lp-browser-bar span:nth-child(1) { background: var(--gp-coral); }
+.lp-browser-bar span:nth-child(2) { background: var(--gp-gold); }
+.lp-browser-bar span:nth-child(3) { background: var(--gp-leaf); }
+.lp-browser-body svg { display: block; width: 100%; height: auto; }
 
 .lp-web-chip {
   display: inline-block;
-  margin-bottom: 12px;
-  padding: 6px 14px;
+  margin-bottom: 16px;
+  padding: 7px 18px;
   border-radius: 999px;
-  background: rgba(15, 118, 110, 0.1);
+  background: #ffffff;
   color: var(--gp-teal-deep);
   font-family: var(--gp-font-round);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
 }
-
-.lp-web-panel-copy p {
-  margin: 0 0 14px;
-  max-width: 64ch;
-  color: var(--gp-muted);
-  font-size: 15px;
-  line-height: 1.85;
+.lp-web-copy h2 {
+  margin: 0 0 16px;
+  font-size: clamp(25px, 3.4vw, 36px);
+  font-weight: 900;
+  line-height: 1.6;
 }
+.lp-web-copy p { margin: 0 0 14px; font-size: 15px; line-height: 2.05; color: #2d403c; text-wrap: pretty; }
+.lp-web-note { font-size: 13px; color: var(--gp-muted); }
+.lp-web-copy .lp-web-btn { margin-top: 10px; }
 
-.lp-web-panel-note { font-size: 13.5px !important; }
+/* ---------- クロージングCTA ---------- */
 
-/* ------------------------------------------------------------------ */
-/* 12. アウトロCTA                                                      */
-/* ------------------------------------------------------------------ */
-
-.lp-outro-inner {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  grid-template-areas:
-    "mascot bubble"
-    "ctas   ctas";
-  align-items: center;
-  gap: 20px 26px;
-  padding: clamp(28px, 4vw, 44px);
-  border-radius: 30px;
-  background: linear-gradient(150deg, var(--gp-cream), #ffffff 70%);
-  box-shadow: 0 20px 48px rgba(23, 35, 60, 0.08);
-}
-
-.lp-outro .lp-mascot-wave {
-  grid-area: mascot;
-  width: clamp(120px, 14vw, 160px);
-  height: auto;
-  animation: lpBreathe 4s ease-in-out infinite;
-}
-
-.lp-wave-hand { animation: lpWave 1.6s ease-in-out infinite; transform-origin: 168px 88px; }
-
-.lp-outro-bubble {
-  grid-area: bubble;
+.lp-outro { text-align: center; }
+.lp-outro-icon {
   position: relative;
-  max-width: 520px;
-  padding: 18px 24px;
-  border-radius: 20px;
-  background: #ffffff;
-  box-shadow: 0 12px 24px rgba(23, 35, 60, 0.1);
+  display: inline-block;
+  margin-bottom: 28px;
 }
-
-.lp-outro-bubble::before {
-  content: "";
-  position: absolute;
-  left: -10px;
-  top: 30px;
-  width: 20px;
-  height: 20px;
-  background: #ffffff;
-  clip-path: polygon(100% 0, 100% 100%, 0 50%);
+.lp-outro-icon img {
+  display: block;
+  width: 96px;
+  height: 96px;
+  border-radius: 26px;
+  transform: rotate(-4deg);
+  box-shadow: 0 16px 36px rgba(23, 35, 60, 0.18);
 }
-
-.lp-outro-bubble p {
-  margin: 0;
-  color: var(--gp-navy);
-  font-weight: 700;
-  font-size: 15.5px;
-  line-height: 1.7;
+.lp-outro-spark { position: absolute; color: #e5b34a; }
+.lp-outro-spark-l { left: -36px; top: -8px; width: 26px; height: 26px; }
+.lp-outro-spark-r { right: -30px; bottom: 0; width: 18px; height: 18px; }
+.lp-outro h2 {
+  margin: 0 0 14px;
+  font-size: clamp(27px, 4.4vw, 44px);
+  font-weight: 900;
+  line-height: 1.6;
 }
+.lp-outro-lead { margin: 0 auto 34px; max-width: 34em; color: var(--gp-muted); font-size: 15px; line-height: 2; }
+.lp-outro .lp-cta-row { justify-content: center; }
+.lp-outro .lp-cta-note { text-align: center; }
 
-.lp-outro-ctas {
-  grid-area: ctas;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 16px;
-  padding-top: 8px;
-  border-top: 1px dashed var(--gp-line);
-}
+/* ---------- 法務カード ---------- */
 
-/* ------------------------------------------------------------------ */
-/* 13. 法務カード                                                       */
-/* ------------------------------------------------------------------ */
-
-.lp-legal { margin-top: 84px; }
-
+.lp-legal .cards { margin-top: 0; }
 .lp-legal .card {
-  border-radius: 22px;
-  background: var(--gp-cream);
-  border-color: var(--gp-line);
+  border: 1.5px solid var(--gp-paper-line);
+  border-radius: 24px;
+  box-shadow: none;
 }
+.lp-legal .card h2 { font-family: var(--gp-font-round); font-size: 17px; color: var(--gp-navy); }
+.lp-legal .card:hover { border-color: rgba(15, 118, 110, 0.4); }
 
-.lp-legal .card h2 { color: var(--gp-navy); font-family: var(--gp-font-round); }
+.site-footer { border-top: 1px solid var(--gp-paper-line); }
 
-/* ------------------------------------------------------------------ */
-/* 14. モーション(キーフレーム)                                          */
-/* ------------------------------------------------------------------ */
+/* ---------- レスポンシブ ---------- */
 
-@keyframes lpRise {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: none; }
-}
-
-@keyframes lpBob {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
-@keyframes lpDrift {
-  0% { transform: translateX(0); }
-  50% { transform: translateX(22px); }
-  100% { transform: translateX(0); }
-}
-
-@keyframes lpBreathe {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.015); }
-}
-
-@keyframes lpTwinkle {
-  0%, 100% { opacity: 0.5; transform: scale(0.85); }
-  50% { opacity: 1; transform: scale(1.05); }
-}
-
-@keyframes lpWave {
-  0%, 100% { transform: rotate(0deg); }
-  25% { transform: rotate(-16deg); }
-  75% { transform: rotate(10deg); }
-}
-
-/* ------------------------------------------------------------------ */
-/* 15. レスポンシブ                                                      */
-/* ------------------------------------------------------------------ */
-
-@media (max-width: 980px) {
-  /* シーンを常時アスペクト比固定のフルブリードにするのは横幅に余裕がある
-     デスクトップのみ。タブレット以下ではパネル→シーンの2枚のカードを
-     縦に積む構成に切り替える(元スペックの「横書きの帯」相当)。 */
-  .lp-hero {
-    flex-direction: column;
-    align-items: stretch;
-    width: auto;
-    aspect-ratio: auto;
-    min-height: 0;
-    padding: 0;
-    border-radius: 0;
-    overflow: visible;
-    isolation: auto;
-    gap: clamp(20px, 3vw, 28px);
-  }
-  .lp-hero-panel { width: 100%; order: 1; }
-  .lp-hero-scene {
-    position: relative;
-    inset: auto;
-    order: 2;
-    width: 100%;
-    aspect-ratio: 1400 / 780;
-    min-height: 320px;
-    border-radius: 30px;
-    overflow: hidden;
-  }
-  .lp-bubbles { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-}
-
-@media (max-width: 860px) {
-  .lp-feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .lp-step { grid-template-columns: 1fr !important; }
-  .lp-step-copy { order: 1 !important; }
-  .lp-step-art { order: 2 !important; max-width: 380px; margin: 0 auto; }
-  .lp-web-panel { grid-template-columns: 1fr; }
-  .lp-web-browser { max-width: 260px; margin: 0 auto; }
-}
-
-@media (max-width: 700px) {
-  .lp-main { width: min(680px, calc(100% - 28px)); margin: 30px auto 64px; }
-
-  .lp-hero-panel { padding: 26px 22px; border-radius: 24px; }
-  .lp-store { justify-content: center; }
-  .lp-hero-lead { max-width: none; }
-
-  .lp-hero-scene { min-height: 260px; border-radius: 24px; }
-  .lp-vert-banners { right: 4%; top: 5%; gap: 8px; }
-  .lp-vert-banner { font-size: 13px; padding: 14px 6px; }
-  .lp-mascot-wrap { left: 54%; top: 78%; width: clamp(120px, 30vw, 170px); margin-left: calc(clamp(120px, 30vw, 170px) / -2); margin-top: calc(clamp(120px, 30vw, 170px) / -2); }
-  .lp-chip { width: 36px; height: 36px; margin: -18px; }
-  .lp-chip svg { width: 17px; height: 17px; }
-
-  .lp-worries { padding: 30px 22px; border-radius: 26px; }
-  .lp-worries-title { font-size: 20px; }
-  .lp-bubbles { grid-template-columns: 1fr; }
-  .lp-bubble-gold { margin-top: 0; }
-
-  .lp-feature-grid { grid-template-columns: 1fr; }
-
-  .lp-outro-inner {
+@media (max-width: 960px) {
+  .lp-hero-wrap {
     grid-template-columns: 1fr;
-    grid-template-areas:
-      "mascot"
-      "bubble"
-      "ctas";
     text-align: center;
-    justify-items: center;
+    gap: 40px;
+    padding-bottom: clamp(190px, 30vw, 240px);
   }
-  .lp-outro-bubble::before { display: none; }
-  .lp-outro-ctas { justify-content: center; border-top: none; padding-top: 0; }
+  .lp-hero-lead { margin-left: auto; margin-right: auto; }
+  .lp-cta-row { justify-content: center; }
+  .lp-hero-art { min-height: 0; align-items: center; }
+  .lp-hero-icon { margin-bottom: 0; }
+  .lp-hero-icon img { width: clamp(130px, 24vw, 170px); }
+  .lp-stamp { width: 82px; font-size: 11.5px; }
+  .lp-stamp-a { left: 2%; top: -2%; }
+  .lp-stamp-c { right: 0; bottom: 8%; }
 
-  .lp-section { margin-top: 56px; }
+  .lp-bubbles { grid-template-columns: 1fr; max-width: 460px; margin: 0 auto; }
+  .lp-step { grid-template-columns: 1fr; gap: 26px; }
+  .lp-step:nth-child(even) .lp-step-art { order: 0; }
+  .lp-shot-panel { height: clamp(340px, 56vw, 460px); }
+  .lp-extra-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lp-web-grid { grid-template-columns: 1fr; }
+  .lp-browser { width: 100%; max-width: 560px; margin: 0 auto; }
 }
 
-@media (max-width: 420px) {
-  .lp-step-art { flex-direction: column; align-items: stretch; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .lp-badge-link,
-  .lp-hero-panel,
-  .lp-hero-scene { transition: none; animation: none !important; }
-  .lp-cloud,
-  .lp-sparkle,
-  .lp-chip,
-  .lp-mascot-wrap,
-  .lp-outro .lp-mascot-wave,
-  .lp-wave-hand { animation: none !important; }
-  html.js .lp-reveal { opacity: 1; transform: none; transition: none; }
+@media (max-width: 640px) {
+  .lp-hero h1 { font-size: clamp(30px, 8.6vw, 38px); }
+  .lp-stamp-b { display: none; }
+  .lp-notice { padding: 22px 22px 22px 88px; }
+  .lp-solve { flex-direction: column; gap: 26px; }
+  .lp-phone-back { display: none; }
+  .lp-extra-grid { grid-template-columns: 1fr; }
 }

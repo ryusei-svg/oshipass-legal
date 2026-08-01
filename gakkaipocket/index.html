@@ -24,7 +24,7 @@
   <link rel="icon" href="assets/favicon-32.png" sizes="32x32">
   <link rel="icon" href="assets/favicon-64.png" sizes="64x64">
   <link rel="stylesheet" href="assets/styles.css?v=3">
-  <link rel="stylesheet" href="assets/landing.css?v=6">
+  <link rel="stylesheet" href="assets/landing.css?v=7">
 
   <!-- 見出し・本文用の Google Fonts(このLPで唯一の外部リソース) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -50,11 +50,7 @@
     "inLanguage": "ja",
     "image": "https://oshibul.jp/gakkaipocket/assets/ogp.png",
     "screenshot": "https://oshibul.jp/gakkaipocket/assets/shots/01-mytaite.png",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "JPY"
-    },
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
     "author": {
       "@type": "Organization",
       "name": "学会ポケット運営事務局",
@@ -76,374 +72,338 @@
     </div>
   </header>
 
-  <main class="container lp-main">
+  <main class="lp">
 
+    <!-- ============ ヒーロー ============ -->
     <section class="lp-hero">
-      <div class="lp-hero-scene" aria-hidden="true">
-        <svg class="lp-scene-bg" viewBox="0 0 1400 780" preserveAspectRatio="xMidYMid slice" focusable="false">
-          <!-- 空は .lp-hero-scene の背景グラデーションで表現し、ここには
-               丘から上の風景(雲・丘・木・会場・道)だけを描く。コンテナと
-               viewBoxのアスペクト比を一致させているため slice でも欠けない。 -->
-          <g class="lp-cloud lp-cloud-a" transform="translate(520 120)">
-            <ellipse cx="0" cy="0" rx="60" ry="24" fill="#ffffff"/>
-            <ellipse cx="-46" cy="8" rx="38" ry="18" fill="#ffffff"/>
-            <ellipse cx="48" cy="10" rx="42" ry="20" fill="#ffffff"/>
-          </g>
-          <g class="lp-cloud lp-cloud-b" transform="translate(860 84)">
-            <ellipse cx="0" cy="0" rx="46" ry="18" fill="#ffffff"/>
-            <ellipse cx="40" cy="6" rx="30" ry="14" fill="#ffffff"/>
-          </g>
-          <g class="lp-cloud lp-cloud-c" transform="translate(660 200)">
-            <ellipse cx="0" cy="0" rx="38" ry="15" fill="#ffffff"/>
-            <ellipse cx="32" cy="6" rx="24" ry="12" fill="#ffffff"/>
-          </g>
-          <!-- 丘(二層のクリーム色) -->
-          <path d="M0 560 Q300 500 650 535 T1400 545 V780 H0 Z" fill="#f3ead6"/>
-          <path d="M0 620 Q220 560 480 590 T900 585 Q1000 600 1120 598 T1400 615 V780 H0 Z" fill="#faf5e9"/>
-          <!-- 丸っこい木 -->
-          <g transform="translate(640 555)">
-            <rect x="-6" y="34" width="12" height="52" rx="5" fill="#8a6b4a"/>
-            <circle cx="0" cy="16" r="40" fill="#83bd7e"/>
-            <circle cx="-27" cy="34" r="26" fill="#83bd7e"/>
-            <circle cx="29" cy="34" r="26" fill="#83bd7e"/>
-          </g>
-          <!-- マスコットから会場へ伸びる道 -->
-          <path d="M650 780 C740 690 800 650 850 620 S 950 600 990 595" fill="none" stroke="#ffffff" stroke-width="34" stroke-linecap="round"/>
-          <path d="M650 780 C740 690 800 650 850 620 S 950 600 990 595" fill="none" stroke="#e4decf" stroke-width="2.5" stroke-dasharray="2 14" stroke-linecap="round"/>
-          <!-- 学会会場(紺屋根のコンベンションホール+旗)。完全な形で描き、
-               地平線(丘)の上に据える -->
-          <g transform="translate(1010 470)">
-            <rect x="-90" y="40" width="180" height="90" rx="14" fill="#ffffff" stroke="#e4decf" stroke-width="2"/>
-            <path d="M-104 44 L0 -28 L104 44 Z" fill="#17233c"/>
-            <rect x="-14" y="-70" width="6" height="46" fill="#17233c"/>
-            <path d="M-8 -70 L34 -58 L-8 -46 Z" fill="#c2452d"/>
-            <rect x="-64" y="72" width="26" height="58" rx="4" fill="#0f766e"/>
-            <rect x="-24" y="60" width="48" height="70" rx="6" fill="#d9f0ec" stroke="#0f766e" stroke-width="2"/>
-            <rect x="38" y="72" width="26" height="58" rx="4" fill="#0f766e"/>
-          </g>
-        </svg>
+      <div class="lp-sun" aria-hidden="true"></div>
+      <div class="lp-cloud lp-cloud-a" aria-hidden="true"><svg viewBox="0 0 120 44"><ellipse cx="42" cy="26" rx="34" ry="15" fill="currentColor"></ellipse><ellipse cx="76" cy="21" rx="26" ry="13" fill="currentColor"></ellipse><ellipse cx="97" cy="30" rx="19" ry="10" fill="currentColor"></ellipse></svg></div>
+      <div class="lp-cloud lp-cloud-b" aria-hidden="true"><svg viewBox="0 0 120 44"><ellipse cx="42" cy="26" rx="34" ry="15" fill="currentColor"></ellipse><ellipse cx="80" cy="24" rx="24" ry="12" fill="currentColor"></ellipse></svg></div>
+      <div class="lp-cloud lp-cloud-c" aria-hidden="true"><svg viewBox="0 0 120 44"><ellipse cx="46" cy="27" rx="32" ry="14" fill="currentColor"></ellipse><ellipse cx="82" cy="25" rx="22" ry="11" fill="currentColor"></ellipse></svg></div>
 
-        <div class="lp-chip lp-chip-star" style="--lp-chip-x:50%; --lp-chip-y:16%;">
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5l2.9 6.3 6.9.8-5.1 4.8 1.4 6.8L12 17.9l-6.1 3.3 1.4-6.8-5.1-4.8 6.9-.8z"/></svg>
-        </div>
-        <div class="lp-chip lp-chip-search" style="--lp-chip-x:87%; --lp-chip-y:36%;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><line x1="20" y1="20" x2="15.3" y2="15.3"></line></svg>
-        </div>
-        <div class="lp-chip lp-chip-clock" style="--lp-chip-x:48%; --lp-chip-y:58%;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3.5 2"></path></svg>
-        </div>
-        <div class="lp-chip lp-chip-memo" style="--lp-chip-x:86%; --lp-chip-y:66%;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4.5h9l4 4V19a1.2 1.2 0 0 1-1.2 1.2H6A1.2 1.2 0 0 1 4.8 19V5.7A1.2 1.2 0 0 1 6 4.5z"></path><line x1="8.3" y1="11" x2="15.7" y2="11"></line><line x1="8.3" y1="14.3" x2="13.5" y2="14.3"></line></svg>
+      <div class="lp-wrap lp-hero-wrap">
+        <div class="lp-hero-copy">
+          <p class="lp-eyebrow">学会・研究大会のための非公式プログラムアプリ</p>
+          <h1><span class="lp-h1-line">聴きたい<span class="mk">演題</span>だけを、</span><span class="lp-h1-line">自分の<span class="mk">タイテ</span>に。</span></h1>
+          <p class="lp-hero-lead">学会・研究大会のプログラムから聴きたい演題を選んで、自分だけのタイムテーブルをつくるアプリ。演題検索からメモ、当日ビューまで、学会の一日をポケットひとつでスムーズに。</p>
+          <div class="lp-cta-row">
+            <a class="lp-badge-link" href="https://apps.apple.com/jp/app/id6794542143" target="_blank" rel="noopener">
+              <img src="assets/app-store-badge-ja.svg" alt="App Storeでダウンロード" width="163" height="56">
+            </a>
+            <a class="lp-web-btn" href="web/">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><line x1="3.2" y1="12" x2="20.8" y2="12"></line><path d="M12 3.2a14 14 0 0 1 0 17.6a14 14 0 0 1 0-17.6z"></path></svg>
+              <span>Web版をブラウザで開く</span>
+            </a>
+          </div>
+          <p class="lp-cta-note">iPhone向けに無料公開中。Web版はインストール不要で、Android・パソコンからも使えます。</p>
         </div>
 
-        <div class="lp-mascot-wrap">
-          <svg class="lp-mascot" viewBox="0 0 220 220" aria-hidden="true">
-            <!-- 紙キャラ(ポケットの後ろから顔を出す) -->
-            <g transform="rotate(-5 110 80)">
-              <rect x="72" y="30" width="76" height="100" rx="12" fill="#fff" stroke="#e4decf" stroke-width="2"/>
-              <rect x="80" y="42" width="60" height="13" rx="5" fill="#17233c"/>
-              <circle cx="95" cy="80" r="5" fill="#2b3038"/>
-              <circle cx="125" cy="80" r="5" fill="#2b3038"/>
-              <circle cx="87" cy="91" r="5.5" fill="#f2a9ad" opacity="0.65"/>
-              <circle cx="133" cy="91" r="5.5" fill="#f2a9ad" opacity="0.65"/>
-              <path d="M102 90 q8 7 16 0" stroke="#2b3038" stroke-width="2.4" stroke-linecap="round" fill="none"/>
-              <rect x="86" y="104" width="48" height="5" rx="2.5" fill="#0f766e" opacity="0.5"/>
-              <rect x="86" y="113" width="34" height="5" rx="2.5" fill="#0f766e" opacity="0.5"/>
-            </g>
-            <!-- ポケット本体(紙の前面に重なる) -->
-            <rect x="40" y="118" width="140" height="76" rx="26" fill="#17233c"/>
-            <path d="M56 132 h108" stroke="#fff" stroke-width="2" stroke-dasharray="1 7" stroke-linecap="round" opacity="0.35"/>
-            <!-- 手(ポケットのふちを掴む) -->
-            <circle cx="66" cy="121" r="8" fill="#fff" stroke="#e4decf" stroke-width="2"/>
-            <circle cx="154" cy="121" r="8" fill="#fff" stroke="#e4decf" stroke-width="2"/>
-            <!-- きらめき -->
-            <path class="lp-sparkle lp-sparkle-a" d="M176 30 l3.5 8 8 3.5 -8 3.5 -3.5 8 -3.5 -8 -8 -3.5 8 -3.5z" fill="#e5b34a"/>
-            <path class="lp-sparkle lp-sparkle-b" d="M52 48 l2.2 5 5 2.2 -5 2.2 -2.2 5 -2.2 -5 -5 -2.2 5 -2.2z" fill="#e5b34a" opacity="0.8"/>
-          </svg>
+        <div class="lp-hero-art" aria-hidden="true">
+          <div class="lp-stamp lp-stamp-a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"></circle><line x1="20" y1="20" x2="15.3" y2="15.3"></line></svg><span>演題検索</span></div>
+          <div class="lp-stamp lp-stamp-b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12.5l4 4L15.5 8"></path><path d="M10.5 16.5l1 1L21 8"></path></svg><span>マイタイテ</span></div>
+          <div class="lp-stamp lp-stamp-c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3.5 2"></path></svg><span>当日ビュー</span></div>
+          <div class="lp-hero-icon">
+            <img src="assets/icon.png" alt="">
+            <svg class="lp-sparkle lp-hero-spark-l" viewBox="0 0 24 24"><path d="M12 2 Q13.5 9 21 10.5 Q13.5 12 12 19 Q10.5 12 3 10.5 Q10.5 9 12 2 Z" fill="currentColor"></path></svg>
+            <svg class="lp-sparkle lp-sparkle-b lp-hero-spark-r" viewBox="0 0 24 24"><path d="M12 2 Q13.5 9 21 10.5 Q13.5 12 12 19 Q10.5 12 3 10.5 Q10.5 9 12 2 Z" fill="currentColor"></path></svg>
+          </div>
         </div>
-
-        <div class="lp-vert-banners">
-          <span class="lp-vert-banner lp-vert-banner-navy">聴きたい演題だけを、</span>
-          <span class="lp-vert-banner lp-vert-banner-gold">自分のタイテに。</span>
-        </div>
+            
       </div>
 
-      <div class="lp-hero-panel">
-        <p class="lp-eyebrow">学会・研究大会向け　非公式プログラムアプリ</p>
-        <div class="lp-name">
-          <img class="lp-name-icon" src="assets/icon.png" alt="">
-          <h1>学会ポケット</h1>
-        </div>
-        <p class="lp-hero-lead">学会・研究大会のプログラムから聴きたい演題を選んで、自分だけのタイムテーブルをつくるアプリ。演題メモや当日ビューまで、学会参加の当日をスムーズにします。</p>
-        <div class="lp-store">
-          <a class="lp-badge-link" href="https://apps.apple.com/jp/app/id6794542143" target="_blank" rel="noopener">
-            <img src="assets/app-store-badge-ja.svg" alt="App Storeでダウンロード" width="163" height="60">
-          </a>
-          <p class="lp-store-note">iPhone向けに無料で公開中です。</p>
-        </div>
-        <div class="lp-web-cta">
-          <a class="lp-web-btn" href="web/">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><line x1="3.2" y1="12" x2="20.8" y2="12"></line><path d="M12 3.2a14 14 0 0 1 0 17.6a14 14 0 0 1 0-17.6z"></path></svg>
-            <span>Web版をブラウザで開く</span>
-          </a>
-          <p class="lp-web-note">インストール不要。iPhone以外のスマートフォンやパソコンからも、いますぐご覧いただけます。</p>
-        </div>
+      <!-- 街並み(全幅) -->
+      <div class="lp-town" aria-hidden="true">
+        <svg viewBox="0 0 1440 240" preserveAspectRatio="xMidYMax slice" focusable="false">
+          <path d="M0 198 Q 360 160 720 186 T 1440 180 L1440 240 L0 240 Z" fill="#e7f1e2"></path>
+          <g id="lp-tile">
+            <g transform="translate(30 206)">
+              <rect x="-5" y="-28" width="10" height="28" rx="4" fill="#8a6b4a"></rect>
+              <circle cx="0" cy="-42" r="22" fill="#83bd7e"></circle>
+              <circle cx="-16" cy="-31" r="14" fill="#83bd7e"></circle>
+              <circle cx="16" cy="-31" r="14" fill="#83bd7e"></circle>
+            </g>
+            <g transform="translate(86 206)">
+              <rect x="0" y="-48" width="74" height="48" rx="8" fill="#f7d6d9"></rect>
+              <path d="M-8 -46 L37 -76 L82 -46 Z" fill="#17233c"></path>
+              <rect x="29" y="-30" width="16" height="30" rx="3" fill="#fff"></rect>
+            </g>
+            <g transform="translate(188 206)">
+              <rect x="0" y="-112" width="76" height="112" rx="10" fill="#bfe0da"></rect>
+              <rect x="13" y="-96" width="16" height="16" rx="3" fill="#fff"></rect>
+              <rect x="47" y="-96" width="16" height="16" rx="3" fill="#fff"></rect>
+              <rect x="13" y="-66" width="16" height="16" rx="3" fill="#fff"></rect>
+              <rect x="47" y="-66" width="16" height="16" rx="3" fill="#fff"></rect>
+              <rect x="28" y="-28" width="20" height="28" rx="3" fill="#0f766e"></rect>
+            </g>
+            <g transform="translate(294 206)">
+              <rect x="0" y="-64" width="150" height="64" rx="10" fill="#ffffff" stroke="#e4decf" stroke-width="2"></rect>
+              <path d="M-10 -60 L75 -112 L160 -60 Z" fill="#17233c"></path>
+              <rect x="70" y="-148" width="5" height="38" fill="#17233c"></rect>
+              <path d="M75 -148 l30 9 -30 9z" fill="#c2452d"></path>
+              <rect x="24" y="-40" width="22" height="40" rx="4" fill="#0f766e"></rect>
+              <rect x="62" y="-46" width="30" height="46" rx="5" fill="#d9f0ec" stroke="#0f766e" stroke-width="1.6"></rect>
+              <rect x="106" y="-40" width="22" height="40" rx="4" fill="#0f766e"></rect>
+            </g>
+            <g transform="translate(456 206)">
+              <circle cx="0" cy="-12" r="14" fill="#d9ecd4"></circle>
+              <circle cx="17" cy="-9" r="11" fill="#d9ecd4"></circle>
+            </g>
+          </g>
+          <use href="#lp-tile" x="480"></use>
+          <use href="#lp-tile" x="960"></use>
+          <rect x="0" y="204" width="1440" height="36" fill="#f3ead6"></rect>
+          <path d="M0 226 Q 240 210 480 222 T 960 220 Q 1200 214 1440 224 L1440 240 L0 240 Z" fill="#faf5e9"></path>
+        </svg>
       </div>
     </section>
 
-    <div class="lp-notice">
-      <span class="lp-notice-tape lp-notice-tape-l" aria-hidden="true"></span>
-      <span class="lp-notice-tape lp-notice-tape-r" aria-hidden="true"></span>
-      <span class="lp-notice-stamp" aria-hidden="true">非公式</span>
-      <svg class="lp-notice-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <circle cx="12" cy="12" r="9"></circle>
-        <line x1="12" y1="8" x2="12" y2="13"></line>
-        <line x1="12" y1="16.2" x2="12" y2="16.3"></line>
-      </svg>
-      <p>
-        <strong>非公式アプリについて</strong>
-        本アプリは、掲載する学会・大会の主催者・運営とは関係のない非公式アプリです。参加者が公式サイトで公開されているプログラム情報をもとに、学会ポケット運営事務局が制作しています。掲載内容は公式発表により変更となる場合がありますので、最新・正確な情報は必ず大会の公式サイトでご確認ください。
-      </p>
+    <!-- ============ 非公式notice+お悩み ============ -->
+    <div class="lp-band lp-band-cream">
+      <section class="lp-section-pad" style="padding-bottom: 0;">
+        <div class="lp-notice">
+          <span class="lp-notice-tape lp-notice-tape-l" aria-hidden="true"></span>
+          <span class="lp-notice-tape lp-notice-tape-r" aria-hidden="true"></span>
+          <span class="lp-notice-stamp" aria-hidden="true">非公式</span>
+          <p style="margin: 0;">
+            <strong>非公式アプリについて</strong>
+            本アプリは、掲載する学会・大会の主催者・運営とは関係のない非公式アプリです。参加者が公式サイトで公開されているプログラム情報をもとに、学会ポケット運営事務局が制作しています。掲載内容は公式発表により変更となる場合がありますので、最新・正確な情報は必ず大会の公式サイトでご確認ください。
+          </p>
+        </div>
+      </section>
+
+      <section class="lp-section-pad" aria-labelledby="lp-worries-title">
+        <div class="lp-wrap">
+          <header class="lp-head">
+            <span class="lp-head-badge">学会あるある</span>
+            <h2 id="lp-worries-title">学会参加、こんな<span class="mk-coral">お悩み</span>ありませんか?</h2>
+          </header>
+
+          <ul class="lp-bubbles">
+            <li class="lp-bubble lp-reveal">
+              <svg class="lp-mini-face" viewBox="-8 -8 88 88" aria-hidden="true">
+                <rect x="4" y="4" width="64" height="64" rx="20" fill="#fff" stroke="#e4decf" stroke-width="2"></rect>
+                <rect x="14" y="16" width="44" height="10" rx="5" fill="#17233c"></rect>
+                <circle cx="24" cy="42" r="4.2" fill="#2b3038"></circle>
+                <circle cx="48" cy="42" r="4.2" fill="#2b3038"></circle>
+                <path d="M28 52 q8 -6 16 0" stroke="#2b3038" stroke-width="2.2" stroke-linecap="round" fill="none"></path>
+              </svg>
+              <p>分厚い抄録集やPDF、<br>会場で開くのが大変…</p>
+            </li>
+            <li class="lp-bubble lp-reveal">
+              <svg class="lp-mini-face" viewBox="-8 -8 88 88" aria-hidden="true">
+                <rect x="4" y="4" width="64" height="64" rx="20" fill="#fff" stroke="#e4decf" stroke-width="2"></rect>
+                <rect x="14" y="16" width="44" height="10" rx="5" fill="#17233c"></rect>
+                <circle cx="24" cy="42" r="4.2" fill="#2b3038"></circle>
+                <circle cx="48" cy="42" r="4.2" fill="#2b3038"></circle>
+                <path d="M28 52 q8 -6 16 0" stroke="#2b3038" stroke-width="2.2" stroke-linecap="round" fill="none"></path>
+              </svg>
+              <p>聴きたい演題が、<br>別会場で同じ時間…</p>
+            </li>
+            <li class="lp-bubble lp-reveal">
+              <svg class="lp-mini-face" viewBox="-8 -8 88 88" aria-hidden="true">
+                <rect x="4" y="4" width="64" height="64" rx="20" fill="#fff" stroke="#e4decf" stroke-width="2"></rect>
+                <rect x="14" y="16" width="44" height="10" rx="5" fill="#17233c"></rect>
+                <circle cx="24" cy="42" r="4.2" fill="#2b3038"></circle>
+                <circle cx="48" cy="42" r="4.2" fill="#2b3038"></circle>
+                <path d="M28 52 q8 -6 16 0" stroke="#2b3038" stroke-width="2.2" stroke-linecap="round" fill="none"></path>
+              </svg>
+              <p>いま何の演題?<br>次はどの会場だっけ?</p>
+            </li>
+          </ul>
+
+          <div class="lp-solve lp-reveal">
+            <p class="lp-solve-copy">そのお悩み、<span class="mk">学会ポケット</span>が<br>まるごと解決します!</p>
+            <span class="lp-hanko-seal" aria-hidden="true">解決</span>
+          </div>
+        </div>
+      </section>
     </div>
 
-    <section class="lp-section lp-worries" aria-labelledby="lp-worries-title">
-      <h2 id="lp-worries-title" class="lp-worries-title">学会参加、こんな経験ありませんか?</h2>
+    <svg class="lp-wave" viewBox="0 0 1440 72" preserveAspectRatio="none" aria-hidden="true" style="background: #faf5e9;"><path d="M0 40 C 240 72 480 8 720 34 C 960 60 1200 14 1440 42 L1440 72 L0 72 Z" fill="#ffffff"></path></svg>
 
-      <ul class="lp-bubbles">
-        <li class="lp-bubble lp-bubble-leaf lp-reveal">
-          <svg class="lp-mini-face" viewBox="-8 -8 88 88" aria-hidden="true">
-            <rect x="4" y="4" width="64" height="64" rx="20" fill="#fff" stroke="#e4decf" stroke-width="2"/>
-            <rect x="14" y="16" width="44" height="10" rx="5" fill="#17233c"/>
-            <circle cx="24" cy="42" r="4.2" fill="#2b3038"/>
-            <circle cx="48" cy="42" r="4.2" fill="#2b3038"/>
-            <circle cx="18" cy="50" r="4.4" fill="#f2a9ad" opacity="0.65"/>
-            <circle cx="54" cy="50" r="4.4" fill="#f2a9ad" opacity="0.65"/>
-            <path d="M30 49 q6 5.5 12 0" stroke="#2b3038" stroke-width="2.2" stroke-linecap="round" fill="none"/>
-          </svg>
-          <p>分厚い抄録集やPDF、会場で開くのが大変…</p>
-        </li>
-        <li class="lp-bubble lp-bubble-gold lp-reveal">
-          <svg class="lp-mini-face" viewBox="-8 -8 88 88" aria-hidden="true">
-            <rect x="4" y="4" width="64" height="64" rx="20" fill="#fff" stroke="#e4decf" stroke-width="2"/>
-            <rect x="14" y="16" width="44" height="10" rx="5" fill="#17233c"/>
-            <circle cx="24" cy="42" r="4.2" fill="#2b3038"/>
-            <circle cx="48" cy="42" r="4.2" fill="#2b3038"/>
-            <circle cx="18" cy="50" r="4.4" fill="#f2a9ad" opacity="0.65"/>
-            <circle cx="54" cy="50" r="4.4" fill="#f2a9ad" opacity="0.65"/>
-            <path d="M30 49 q6 5.5 12 0" stroke="#2b3038" stroke-width="2.2" stroke-linecap="round" fill="none"/>
-          </svg>
-          <p>聴きたい演題が、別会場で同じ時間…</p>
-        </li>
-        <li class="lp-bubble lp-bubble-coral lp-reveal">
-          <svg class="lp-mini-face" viewBox="-8 -8 88 88" aria-hidden="true">
-            <rect x="4" y="4" width="64" height="64" rx="20" fill="#fff" stroke="#e4decf" stroke-width="2"/>
-            <rect x="14" y="16" width="44" height="10" rx="5" fill="#17233c"/>
-            <circle cx="24" cy="42" r="4.2" fill="#2b3038"/>
-            <circle cx="48" cy="42" r="4.2" fill="#2b3038"/>
-            <circle cx="18" cy="50" r="4.4" fill="#f2a9ad" opacity="0.65"/>
-            <circle cx="54" cy="50" r="4.4" fill="#f2a9ad" opacity="0.65"/>
-            <path d="M30 49 q6 5.5 12 0" stroke="#2b3038" stroke-width="2.2" stroke-linecap="round" fill="none"/>
-          </svg>
-          <p>いま何の演題? 次はどの会場だっけ?</p>
-        </li>
-      </ul>
+    <!-- ============ 使い方3ステップ ============ -->
+    <div class="lp-band lp-band-white">
+      <section class="lp-section-pad" aria-labelledby="lp-steps-title">
+        <div class="lp-wrap">
+          <header class="lp-head">
+            <span class="lp-head-badge">HOW IT WORKS</span>
+            <h2 id="lp-steps-title">使い方は、かんたん<span class="mk">3ステップ</span>。</h2>
+          </header>
 
-      <p class="lp-hanko"><span>学会ポケットで<br>解決!</span></p>
-    </section>
+          <ol class="lp-step-list">
+            <li class="lp-step lp-step-teal lp-reveal">
+              <div class="lp-step-copy">
+                <div class="lp-step-head">
+                  <span class="lp-step-badge" aria-hidden="true">探</span>
+                  <span class="lp-step-num">STEP 01 ─ さがす</span>
+                </div>
+                <h3>演題も発表者も、<br>横断検索。</h3>
+                <p class="lp-step-lead">分厚い抄録集をめくらなくても、聴きたい演題にすぐたどり着けます。</p>
+                <ul class="lp-checks">
+                  <li>演題タイトル・発表者名・所属からすばやく検索</li>
+                  <li>収録している全大会・全セッションを横断</li>
+                  <li>セッション詳細で時間・会場・座長までまとめて確認</li>
+                </ul>
+              </div>
+              <div class="lp-step-art">
+                <div class="lp-shot-panel">
+                  <div class="lp-phone lp-phone-back"><img src="assets/shots/phone-02.png" width="468" height="1021" alt="セッション詳細画面。セッション内の演題一覧と発表者名、時間帯が確認できる"></div>
+                  <div class="lp-phone"><img src="assets/shots/phone-04.png" width="468" height="1021" alt="検索画面。演題タイトルや発表者名からすばやく検索できる"></div>
+                </div>
+              </div>
+            </li>
 
-    <section class="lp-section lp-steps" aria-labelledby="lp-steps-title">
-      <header class="lp-section-head">
-        <span class="lp-section-eyebrow">HOW IT WORKS</span>
-        <h2 id="lp-steps-title" class="lp-section-title">使い方は、かんたん3ステップ。</h2>
-      </header>
+            <li class="lp-step lp-step-gold lp-reveal">
+              <div class="lp-step-copy">
+                <div class="lp-step-head">
+                  <span class="lp-step-badge" aria-hidden="true">選</span>
+                  <span class="lp-step-num">STEP 02 ─ えらぶ</span>
+                </div>
+                <h3>タップだけで、<br>マイタイテが完成。</h3>
+                <p class="lp-step-lead">気になる演題をマークするだけ。自分だけの時間割ができあがります。</p>
+                <ul class="lp-checks">
+                  <li>「絶対聴く」「できれば」の2段階マーク</li>
+                  <li>会場×時間のタイムテーブルに自動で整理</li>
+                  <li>聴きたい演題の時間かぶりもひと目で分かる</li>
+                </ul>
+              </div>
+              <div class="lp-step-art">
+                <div class="lp-shot-panel">
+                  <div class="lp-phone"><img src="assets/shots/phone-01.png" width="468" height="1021" alt="マイタイテ画面。マークした演題だけが自分の時間割としてまとまって表示されている"></div>
+                </div>
+              </div>
+            </li>
 
-      <ol class="lp-step-list">
-        <li class="lp-step lp-step-teal lp-reveal">
-          <div class="lp-step-copy">
-            <div class="lp-step-head">
-              <span class="lp-step-kanji" aria-hidden="true">探</span>
-              <span class="lp-step-num">01</span>
+            <li class="lp-step lp-step-coral lp-reveal">
+              <div class="lp-step-copy">
+                <div class="lp-step-head">
+                  <span class="lp-step-badge" aria-hidden="true">巡</span>
+                  <span class="lp-step-num">STEP 03 ─ まわる</span>
+                </div>
+                <h3>当日は、<br>「今」と「次」だけ。</h3>
+                <p class="lp-step-lead">会場では迷わない。今いるべき場所と、次に向かう場所だけが見えます。</p>
+                <ul class="lp-checks">
+                  <li>当日ビューが「今」と「次」の演題だけを表示</li>
+                  <li>すきま時間も見えるから、休憩や移動も計画できる</li>
+                  <li>ホーム画面ウィジェットでロック解除せずに確認</li>
+                </ul>
+              </div>
+              <div class="lp-step-art">
+                <div class="lp-shot-panel">
+                  <div class="lp-phone"><img src="assets/shots/phone-03.png" width="468" height="1021" alt="当日ビュー画面。今の演題と次の演題がひと目でわかる"></div>
+                </div>
+              </div>
+            </li>
+          </ol>
+
+          <div class="lp-extra">
+            <h3 class="lp-extra-title"><span>さらに、こんな機能も</span></h3>
+            <ul class="lp-extra-grid">
+              <li class="lp-extra-card lp-reveal">
+                <span class="lp-extra-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 18.5a4 4 0 0 1-1-7.87A5.5 5.5 0 0 1 16 8.06 4.5 4.5 0 0 1 15.5 17"></path><line x1="4" y1="4" x2="20" y2="20"></line></svg></span>
+                <h4>オフライン対応</h4>
+                <p>一度開いた大会は端末に保存。会場の電波が弱くても見られます。</p>
+              </li>
+              <li class="lp-extra-card lp-reveal">
+                <span class="lp-extra-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4.5h9l4 4V19a1.2 1.2 0 0 1-1.2 1.2H6A1.2 1.2 0 0 1 4.8 19V5.7A1.2 1.2 0 0 1 6 4.5z"></path><line x1="8.3" y1="11" x2="15.7" y2="11"></line><line x1="8.3" y1="14.3" x2="13.5" y2="14.3"></line></svg></span>
+                <h4>演題メモ</h4>
+                <p>質問したいことや感想を、その場で演題に書き留められます。</p>
+              </li>
+              <li class="lp-extra-card lp-reveal">
+                <span class="lp-extra-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l7 3.2v5.1c0 4.6-3 7.9-7 9.2-4-1.3-7-4.6-7-9.2V6.7z"></path><path d="M9 12l2 2 4-4.3"></path></svg></span>
+                <h4>広告なし・登録不要</h4>
+                <p>会員登録もログインも不要。広告表示もありません。</p>
+              </li>
+              <li class="lp-extra-card lp-reveal">
+                <span class="lp-extra-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l2.9 6.3 6.9.8-5.1 4.8 1.4 6.8L12 17.9l-6.1 3.3 1.4-6.8-5.1-4.8 6.9-.8z"></path></svg></span>
+                <h4>すべて無料</h4>
+                <p>ダウンロードから全機能まで、無料でお使いいただけます。</p>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <svg class="lp-wave" viewBox="0 0 1440 72" preserveAspectRatio="none" aria-hidden="true" style="background: #ffffff;"><path d="M0 44 C 240 12 480 66 720 38 C 960 12 1200 58 1440 30 L1440 72 L0 72 Z" fill="#d9efec"></path></svg>
+
+    <!-- ============ Web版 ============ -->
+    <div class="lp-band lp-band-teal">
+      <section class="lp-section-pad" aria-labelledby="lp-web-title">
+        <div class="lp-wrap lp-web-grid">
+          <div class="lp-browser lp-reveal" aria-hidden="true">
+            <div class="lp-browser-bar"><span></span><span></span><span></span></div>
+            <div class="lp-browser-body">
+              <svg viewBox="0 0 260 160" focusable="false">
+                <rect x="14" y="14" width="200" height="24" rx="12" fill="#ffffff" stroke="#e8e0cc"></rect>
+                <circle cx="30" cy="26" r="5" fill="none" stroke="#17233c" stroke-width="1.6"></circle>
+                <line x1="34" y1="30" x2="38" y2="34" stroke="#17233c" stroke-width="1.6" stroke-linecap="round"></line>
+                <rect x="50" y="23" width="82" height="6" rx="3" fill="#efe8d8"></rect>
+                <rect x="14" y="52" width="60" height="8" rx="4" fill="#efe8d8"></rect>
+                <rect x="100" y="52" width="60" height="8" rx="4" fill="#efe8d8"></rect>
+                <rect x="186" y="52" width="60" height="8" rx="4" fill="#efe8d8"></rect>
+                <rect x="14" y="68" width="60" height="42" rx="8" fill="#d9efec" stroke="#0f766e" stroke-width="1.2"></rect>
+                <rect x="14" y="116" width="60" height="24" rx="8" fill="#f6e3b3" stroke="#e5b34a" stroke-width="1.2"></rect>
+                <rect x="100" y="68" width="60" height="26" rx="8" fill="#f6e3b3" stroke="#e5b34a" stroke-width="1.2"></rect>
+                <rect x="100" y="100" width="60" height="40" rx="8" fill="#f7d6d9" stroke="#e78a92" stroke-width="1.2"></rect>
+                <rect x="186" y="68" width="60" height="58" rx="8" fill="#f7d6d9" stroke="#e78a92" stroke-width="1.2"></rect>
+              </svg>
             </div>
-            <h3>さがす</h3>
-            <p>演題タイトルや発表者名から、収録している全大会・全セッションを横断してすばやく検索できます。</p>
           </div>
-          <div class="lp-step-art">
-            <figure class="lp-shot">
-              <img src="assets/shots/04-search.png" alt="検索画面。演題タイトルや発表者名からすばやく検索できる" loading="lazy">
-            </figure>
-            <figure class="lp-shot">
-              <img src="assets/shots/02-session-detail.png" alt="セッション詳細画面。セッション内の演題一覧と発表者名、時間帯が確認できる" loading="lazy">
-            </figure>
-          </div>
-        </li>
-
-        <li class="lp-step lp-step-gold lp-reveal">
-          <div class="lp-step-copy">
-            <div class="lp-step-head">
-              <span class="lp-step-kanji" aria-hidden="true">選</span>
-              <span class="lp-step-num">02</span>
-            </div>
-            <h3>えらぶ</h3>
-            <p>「絶対聴く」「できれば」の2段階でマークするだけ。会場×時間のタイムテーブル上にまとまり、聴きたい演題が時間で被っていないかもすぐ分かります。</p>
-          </div>
-          <div class="lp-step-art">
-            <figure class="lp-shot">
-              <img src="assets/shots/01-mytaite.png" alt="マイタイテ画面。マークした演題だけが自分の時間割としてまとまって表示されている" loading="lazy">
-            </figure>
-          </div>
-        </li>
-
-        <li class="lp-step lp-step-coral lp-reveal">
-          <div class="lp-step-copy">
-            <div class="lp-step-head">
-              <span class="lp-step-kanji" aria-hidden="true">巡</span>
-              <span class="lp-step-num">03</span>
-            </div>
-            <h3>まわる</h3>
-            <p>会場では「今」と「次」の演題だけを表示。ホーム画面ウィジェットでロック解除せずに確認できます。</p>
-            <p class="lp-step-note">一度開いた大会のプログラムは端末に保存。会場の電波が弱くても、マイタイテと演題情報を確認できます。</p>
-          </div>
-          <div class="lp-step-art">
-            <figure class="lp-shot">
-              <img src="assets/shots/03-today.png" alt="当日ビュー画面。今の演題と次の演題がひと目でわかる" loading="lazy">
-            </figure>
-          </div>
-        </li>
-      </ol>
-    </section>
-
-    <section class="lp-section" aria-labelledby="lp-features-title">
-      <header class="lp-section-head">
-        <span class="lp-section-eyebrow">FEATURES</span>
-        <h2 id="lp-features-title" class="lp-section-title">できること</h2>
-      </header>
-      <ul class="lp-feature-grid">
-        <li class="lp-feature">
-          <span class="lp-feature-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><line x1="20" y1="20" x2="15.3" y2="15.3"></line></svg>
-          </span>
-          <h3>演題・発表者の横断検索</h3>
-          <p>演題タイトルや発表者名から、収録している全大会・全セッションを横断してすばやく検索できます。</p>
-        </li>
-        <li class="lp-feature">
-          <span class="lp-feature-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12.5l4 4L15.5 8"></path><path d="M10.5 16.5l1 1L21 8"></path></svg>
-          </span>
-          <h3>2段階マークでマイタイテ作成</h3>
-          <p>「絶対聴く」「できれば」の2段階でマークするだけ。会場×時間のタイムテーブル上にまとまり、聴きたい演題が時間で被っていないかもすぐ分かります。</p>
-        </li>
-        <li class="lp-feature">
-          <span class="lp-feature-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="16" rx="3"></rect><line x1="3.5" y1="9" x2="20.5" y2="9"></line><circle cx="8" cy="14" r="1.3" fill="currentColor" stroke="none"></circle></svg>
-          </span>
-          <h3>当日ビューとウィジェット</h3>
-          <p>会場では「今」と「次」の演題だけを表示。ホーム画面ウィジェットでロック解除せずに確認できます。</p>
-        </li>
-        <li class="lp-feature">
-          <span class="lp-feature-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 18.5a4 4 0 0 1-1-7.87A5.5 5.5 0 0 1 16 8.06 4.5 4.5 0 0 1 15.5 17"></path><line x1="4" y1="4" x2="20" y2="20"></line></svg>
-          </span>
-          <h3>オフライン対応</h3>
-          <p>一度開いた大会のプログラムは端末に保存。会場の電波が弱くても、マイタイテと演題情報を確認できます。</p>
-        </li>
-        <li class="lp-feature">
-          <span class="lp-feature-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4.5h9l4 4V19a1.2 1.2 0 0 1-1.2 1.2H6A1.2 1.2 0 0 1 4.8 19V5.7A1.2 1.2 0 0 1 6 4.5z"></path><line x1="8.3" y1="11" x2="15.7" y2="11"></line><line x1="8.3" y1="14.3" x2="13.5" y2="14.3"></line></svg>
-          </span>
-          <h3>演題メモ</h3>
-          <p>気になった演題に自分だけのメモを残せます。質問したいことや感想をその場で書き留められます。</p>
-        </li>
-        <li class="lp-feature">
-          <span class="lp-feature-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l7 3.2v5.1c0 4.6-3 7.9-7 9.2-4-1.3-7-4.6-7-9.2V6.7z"></path><path d="M9 12l2 2 4-4.3"></path></svg>
-          </span>
-          <h3>広告なし・アカウント不要</h3>
-          <p>ダウンロードしてすぐ使えます。会員登録やログインは不要、広告表示もありません。</p>
-        </li>
-      </ul>
-    </section>
-
-    <section class="lp-section" aria-labelledby="lp-web-title">
-      <header class="lp-section-head">
-        <span class="lp-section-eyebrow">WEB</span>
-        <h2 id="lp-web-title" class="lp-section-title">Web版もあります</h2>
-      </header>
-      <div class="lp-web-panel">
-        <div class="lp-web-browser" aria-hidden="true">
-          <div class="lp-web-browser-bar"><span></span><span></span><span></span></div>
-          <div class="lp-web-browser-body">
-            <svg viewBox="0 0 260 160" focusable="false">
-              <!-- 検索バー -->
-              <rect x="14" y="14" width="200" height="24" rx="12" fill="#ffffff" stroke="var(--gp-line)"/>
-              <circle cx="30" cy="26" r="5" fill="none" stroke="var(--gp-navy)" stroke-width="1.6"/>
-              <line x1="34" y1="30" x2="38" y2="34" stroke="var(--gp-navy)" stroke-width="1.6" stroke-linecap="round"/>
-              <rect x="50" y="23" width="82" height="6" rx="3" fill="var(--gp-line)"/>
-              <!-- 会場×時間のタイテグリッド -->
-              <rect x="14" y="52" width="60" height="8" rx="4" fill="var(--gp-line)"/>
-              <rect x="100" y="52" width="60" height="8" rx="4" fill="var(--gp-line)"/>
-              <rect x="186" y="52" width="60" height="8" rx="4" fill="var(--gp-line)"/>
-              <rect x="14" y="68" width="60" height="42" rx="8" fill="var(--gp-teal-pale)" stroke="var(--gp-teal)" stroke-width="1.2"/>
-              <rect x="14" y="116" width="60" height="24" rx="8" fill="var(--gp-gold-pale)" stroke="var(--gp-gold)" stroke-width="1.2"/>
-              <rect x="100" y="68" width="60" height="26" rx="8" fill="var(--gp-gold-pale)" stroke="var(--gp-gold)" stroke-width="1.2"/>
-              <rect x="100" y="100" width="60" height="40" rx="8" fill="var(--gp-coral-pale)" stroke="var(--gp-coral)" stroke-width="1.2"/>
-              <rect x="186" y="68" width="60" height="58" rx="8" fill="var(--gp-coral-pale)" stroke="var(--gp-coral)" stroke-width="1.2"/>
-            </svg>
+          <div class="lp-web-copy">
+            <span class="lp-web-chip">iPhone以外のスマホ・パソコンからも</span>
+            <h2 id="lp-web-title">アプリなしでも、<br><span class="mk">Web版</span>があります。</h2>
+            <p>ブラウザでそのままタイムテーブルを見られます。演題の検索、聴きたい演題のマーク、メモ、当日ビューまで、主な機能はWeb版でもお使いいただけます。マークとメモはお使いのブラウザに保存され、一度開いた大会はオフラインでも表示できます。</p>
+            <p class="lp-web-note">iPhoneをお使いの方は、ホーム画面ウィジェットなどが使えるアプリ版がおすすめです。</p>
+            <a class="lp-web-btn" href="web/">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><line x1="3.2" y1="12" x2="20.8" y2="12"></line><path d="M12 3.2a14 14 0 0 1 0 17.6a14 14 0 0 1 0-17.6z"></path></svg>
+              <span>Web版をブラウザで開く</span>
+            </a>
           </div>
         </div>
-        <div class="lp-web-panel-copy">
-          <span class="lp-web-chip">iPhone以外のスマホ・PCからも</span>
-          <p>アプリを入れなくても、ブラウザでそのままタイムテーブルを見られます。演題の検索、聴きたい演題のマーク、メモ、当日ビューまで、主な機能はWeb版でもお使いいただけます。マークとメモはお使いのブラウザに保存され、一度開いた大会はオフラインでも表示できます。</p>
-          <p class="lp-web-panel-note">iPhoneをお使いの方は、当日をより快適に過ごせるアプリ版がおすすめです。ホーム画面ウィジェットなど、アプリ版だけの機能もあります。</p>
-          <a class="lp-web-btn" href="web/">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><line x1="3.2" y1="12" x2="20.8" y2="12"></line><path d="M12 3.2a14 14 0 0 1 0 17.6a14 14 0 0 1 0-17.6z"></path></svg>
-            <span>Web版をブラウザで開く</span>
-          </a>
-        </div>
-      </div>
-    </section>
+      </section>
+    </div>
 
-    <section class="lp-section lp-outro" aria-labelledby="lp-outro-title">
-      <h2 id="lp-outro-title" class="lp-visually-hidden">今すぐ学会ポケットを試す</h2>
-      <div class="lp-outro-inner">
-        <svg class="lp-mascot-wave" viewBox="0 0 220 220" aria-hidden="true">
-          <g transform="rotate(-5 110 80)">
-            <rect x="72" y="30" width="76" height="100" rx="12" fill="#fff" stroke="#e4decf" stroke-width="2"/>
-            <rect x="80" y="42" width="60" height="13" rx="5" fill="#17233c"/>
-            <circle cx="95" cy="80" r="5" fill="#2b3038"/>
-            <circle cx="125" cy="80" r="5" fill="#2b3038"/>
-            <circle cx="87" cy="91" r="5.5" fill="#f2a9ad" opacity="0.65"/>
-            <circle cx="133" cy="91" r="5.5" fill="#f2a9ad" opacity="0.65"/>
-            <path d="M102 90 q8 7 16 0" stroke="#2b3038" stroke-width="2.4" stroke-linecap="round" fill="none"/>
-            <rect x="86" y="104" width="48" height="5" rx="2.5" fill="#0f766e" opacity="0.5"/>
-            <rect x="86" y="113" width="34" height="5" rx="2.5" fill="#0f766e" opacity="0.5"/>
-          </g>
-          <rect x="40" y="118" width="140" height="76" rx="26" fill="#17233c"/>
-          <path d="M56 132 h108" stroke="#fff" stroke-width="2" stroke-dasharray="1 7" stroke-linecap="round" opacity="0.35"/>
-          <circle cx="66" cy="121" r="8" fill="#fff" stroke="#e4decf" stroke-width="2"/>
-          <circle class="lp-wave-hand" cx="168" cy="88" r="8" fill="#fff" stroke="#e4decf" stroke-width="2"/>
-          <path d="M176 30 l3.5 8 8 3.5 -8 3.5 -3.5 8 -3.5 -8 -8 -3.5 8 -3.5z" fill="#e5b34a"/>
-          <path d="M52 48 l2.2 5 5 2.2 -5 2.2 -2.2 5 -2.2 -5 -5 -2.2 5 -2.2z" fill="#e5b34a" opacity="0.8"/>
-        </svg>
-        <div class="lp-outro-bubble">
-          <p>まずはWeb版で、<br>のぞいてみてください</p>
-        </div>
-        <div class="lp-outro-ctas">
-          <a class="lp-badge-link" href="https://apps.apple.com/jp/app/id6794542143" target="_blank" rel="noopener">
-            <img src="assets/app-store-badge-ja.svg" alt="App Storeでダウンロード" width="163" height="60">
-          </a>
-          <a class="lp-web-btn" href="web/">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><line x1="3.2" y1="12" x2="20.8" y2="12"></line><path d="M12 3.2a14 14 0 0 1 0 17.6a14 14 0 0 1 0-17.6z"></path></svg>
-            <span>Web版をブラウザで開く</span>
-          </a>
-        </div>
-      </div>
-    </section>
+    <svg class="lp-wave" viewBox="0 0 1440 72" preserveAspectRatio="none" aria-hidden="true" style="background: #d9efec;"><path d="M0 38 C 240 66 480 10 720 36 C 960 62 1200 16 1440 44 L1440 72 L0 72 Z" fill="#faf5e9"></path></svg>
 
-    <section class="lp-legal cards" aria-label="法務・アプリ情報一覧">
-      <a class="card" href="about.html"><h2>このアプリについて</h2><p>扱う情報の範囲、出典、掲載情報の修正・削除依頼について。</p></a>
-      <a class="card" href="privacy-policy.html"><h2>プライバシーポリシー</h2><p>取り扱う情報、保存場所、外部送信、削除方法について。</p></a>
-      <a class="card" href="terms-of-service.html"><h2>利用規約</h2><p>アプリの利用条件、禁止事項、責任範囲について。</p></a>
-    </section>
+    <!-- ============ クロージングCTA ============ -->
+    <div class="lp-band lp-band-cream">
+      <section class="lp-section-pad lp-outro" aria-labelledby="lp-outro-title">
+        <div class="lp-wrap lp-reveal">
+          <div class="lp-outro-icon" aria-hidden="true">
+            <svg class="lp-outro-spark lp-sparkle lp-outro-spark-l" viewBox="0 0 24 24"><path d="M12 2 Q13.5 9 21 10.5 Q13.5 12 12 19 Q10.5 12 3 10.5 Q10.5 9 12 2 Z" fill="currentColor"></path></svg>
+            <img src="assets/icon.png" alt="">
+            <svg class="lp-outro-spark lp-sparkle lp-sparkle-b lp-outro-spark-r" viewBox="0 0 24 24"><path d="M12 2 Q13.5 9 21 10.5 Q13.5 12 12 19 Q10.5 12 3 10.5 Q10.5 9 12 2 Z" fill="currentColor"></path></svg>
+          </div>
+          <h2 id="lp-outro-title">聴きたい演題だけの、<br>自分のタイテを。</h2>
+          <p class="lp-outro-lead">まずはWeb版で、のぞいてみてください。無料・登録不要ではじめられます。</p>
+          <div class="lp-cta-row">
+            <a class="lp-badge-link" href="https://apps.apple.com/jp/app/id6794542143" target="_blank" rel="noopener">
+              <img src="assets/app-store-badge-ja.svg" alt="App Storeでダウンロード" width="163" height="56">
+            </a>
+            <a class="lp-web-btn" href="web/">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><line x1="3.2" y1="12" x2="20.8" y2="12"></line><path d="M12 3.2a14 14 0 0 1 0 17.6a14 14 0 0 1 0-17.6z"></path></svg>
+              <span>Web版をブラウザで開く</span>
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <svg class="lp-wave" viewBox="0 0 1440 72" preserveAspectRatio="none" aria-hidden="true" style="background: #faf5e9;"><path d="M0 42 C 240 12 480 62 720 36 C 960 12 1200 60 1440 34 L1440 72 L0 72 Z" fill="#ffffff"></path></svg>
+
+    <!-- ============ 法務カード ============ -->
+    <div class="lp-band lp-band-white">
+      <section class="lp-section-pad lp-legal" aria-label="法務・アプリ情報一覧" style="padding-top: clamp(24px, 4vw, 48px);">
+        <div class="lp-wrap">
+          <div class="cards">
+            <a class="card" href="about.html"><h2>このアプリについて</h2><p>扱う情報の範囲、出典、掲載情報の修正・削除依頼について。</p></a>
+            <a class="card" href="privacy-policy.html"><h2>プライバシーポリシー</h2><p>取り扱う情報、保存場所、外部送信、削除方法について。</p></a>
+            <a class="card" href="terms-of-service.html"><h2>利用規約</h2><p>アプリの利用条件、禁止事項、責任範囲について。</p></a>
+          </div>
+        </div>
+      </section>
+    </div>
   </main>
 
   <footer class="site-footer">学会ポケット運営事務局・<a href="mailto:contact@oshibul.jp">contact@oshibul.jp</a><br>© 2026 学会ポケット運営事務局</footer>
@@ -458,7 +418,7 @@
             io.unobserve(entry.target);
           }
         });
-      }, { threshold: 0.2 });
+      }, { threshold: 0.15 });
       document.querySelectorAll('.lp-reveal').forEach(function (el) { io.observe(el); });
     } else {
       document.querySelectorAll('.lp-reveal').forEach(function (el) { el.classList.add('is-visible'); });

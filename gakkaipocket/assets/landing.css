@@ -5,62 +5,136 @@
    styles.css のみを参照しており、本ファイルの影響を受けません。
    =================================================================== */
 
+/* ------------------------------------------------------------------ */
+/* 1. トークン(色・フォント)                                            */
+/* ------------------------------------------------------------------ */
+
 :root {
-  --lp-teal: #0f766e;
-  --lp-teal-light: #14b8a6;
-  --lp-navy: #17233c;
-  --lp-cream: #fff8f0;
-  --lp-muted: #5c6577;
-  --lp-line: rgba(23, 35, 60, 0.09);
-  --lp-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Times New Roman", serif;
+  --gp-teal: #0f766e;        /* ブランド主色(既存踏襲) */
+  --gp-teal-deep: #0b5a54;
+  --gp-navy: #17233c;        /* ポケットの紺 */
+  --gp-ink: #253230;         /* 本文 */
+  --gp-cream: #faf5e9;       /* 紙のようなクリーム地 */
+  --gp-sky: #d9f0ec;         /* ヒーローの空(teal寄り) */
+  --gp-gold: #e5b34a;
+  --gp-coral: #e78a92;
+  --gp-leaf: #83bd7e;
+  --gp-hanko: #c2452d;       /* ハンコ朱色 */
+
+  /* パステル面(吹き出し・ステップ背景など) */
+  --gp-gold-pale: #f6e3b3;
+  --gp-coral-pale: #f7d6d9;
+  --gp-leaf-pale: #d9ecd4;
+  --gp-teal-pale: #d9efec;
+
+  /* 濃色面(ステップの縦書きラベル帯など、白文字を乗せる用) */
+  --gp-gold-deep: #9c6f1c;
+  --gp-coral-deep: #b1414b;
+
+  --gp-muted: #5c6a67;
+  --gp-line: rgba(23, 35, 60, 0.09);
+
+  --gp-font-round: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", sans-serif;
+  --gp-font-body: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", sans-serif;
 }
 
-/* --- 見出し用の明朝体アクセント（外部フォント不使用・システムフォントのみ） --- */
-.lp-serif {
-  font-family: var(--lp-serif);
-  font-weight: 600;
-  letter-spacing: 0.01em;
+/* ------------------------------------------------------------------ */
+/* 2. ベース                                                            */
+/* ------------------------------------------------------------------ */
+
+/* landing.css は index.html にしか読み込まれないため、body 直下の
+   タイポグラフィをここで上書きしても法務ページには影響しない。 */
+body {
+  font-family: var(--gp-font-body);
+  color: var(--gp-ink);
 }
 
-.lp-main { display: block; }
+.lp-main h1,
+.lp-main h2,
+.lp-main h3,
+.site-header .brand span {
+  font-family: var(--gp-font-round);
+}
+
+.brand span { font-weight: 800; }
+
+/* main の横幅を法務ページ共有の .container(800px)より広げ、
+   イラストシーンを含むヒーローがのびのび呼吸できるようにする。
+   同じクラス特異度でも landing.css が後読みのため styles.css の
+   .container 幅を上書きできる。 */
+.lp-main {
+  display: block;
+  width: min(1180px, calc(100% - 40px));
+  margin: 40px auto 80px;
+}
+
+.lp-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 
 /* ------------------------------------------------------------------ */
-/* Hero                                                                 */
+/* 3. スクロール演出の下地(JSなしでも全要素が見える)                       */
 /* ------------------------------------------------------------------ */
 
+html.js .lp-reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 640ms ease, transform 640ms ease;
+}
+
+html.js .lp-reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* 4. ヒーロー(イラストシーン)                                          */
+/* ------------------------------------------------------------------ */
+
+/* ヒーローは幅いっぱいの1枚の角丸パネルとして空〜丘のシーンを描き、
+   その上に白いコピーパネルを左寄せで浮かせる(tabinuki型の構図)。
+   .lp-hero 自体をシーンのアスペクト比に固定することで、内部の
+   イラストSVGが常にコンテナぴったりに収まり(=slice でも欠けない)、
+   %指定のオーバーレイ(マスコット・チップ・バナー)の位置もズレない。 */
 .lp-hero {
   position: relative;
-  overflow: hidden;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 340px);
+  display: flex;
   align-items: center;
-  gap: 40px;
-  padding: clamp(36px, 6vw, 64px) clamp(28px, 6vw, 64px);
-  border-radius: 36px;
-  background:
-    radial-gradient(circle at 14px 14px, rgba(15, 118, 110, 0.14) 1.6px, transparent 1.7px) 0 0 / 26px 26px,
-    linear-gradient(150deg, var(--lp-cream), #ffffff 62%);
-  box-shadow: 0 24px 60px rgba(23, 35, 60, 0.1);
+  width: 100%;
+  aspect-ratio: 1400 / 780;
+  min-height: 460px;
+  padding: clamp(20px, 3vw, 40px);
+  border-radius: 34px;
+  overflow: hidden;
   isolation: isolate;
 }
 
-.lp-hero::before {
-  content: "";
-  position: absolute;
-  top: -120px;
-  right: -100px;
-  width: 340px;
-  height: 340px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(20, 184, 166, 0.28), rgba(20, 184, 166, 0) 70%);
-  z-index: -1;
+.lp-hero-panel {
+  position: relative;
+  z-index: 2;
+  width: min(430px, 46%);
+  padding: clamp(24px, 3vw, 38px);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 24px 60px rgba(23, 35, 60, 0.14);
+  animation: lpRise 760ms ease both;
 }
 
 .lp-eyebrow {
   margin: 0 0 14px;
-  color: var(--lp-teal);
+  color: var(--gp-teal);
+  font-family: var(--gp-font-round);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.14em;
 }
 
@@ -81,25 +155,18 @@
 
 .lp-hero h1 {
   margin: 0;
-  color: var(--lp-navy);
-  font-size: clamp(28px, 5.4vw, 38px);
+  color: var(--gp-navy);
+  font-weight: 900;
+  font-size: clamp(26px, 4.6vw, 34px);
   line-height: 1.2;
 }
 
-.lp-hero-tagline {
-  margin: 0 0 16px;
-  color: var(--lp-teal);
-  font-family: var(--lp-serif);
-  font-weight: 600;
-  font-size: clamp(20px, 3.4vw, 26px);
-  line-height: 1.5;
-}
-
 .lp-hero-lead {
-  margin: 0 0 30px;
-  max-width: 46ch;
-  color: var(--lp-muted);
+  margin: 0 0 28px;
+  max-width: 42ch;
+  color: var(--gp-muted);
   font-size: 15px;
+  line-height: 1.9;
 }
 
 .lp-store {
@@ -115,7 +182,7 @@
   margin: -12px;
   border-radius: 16px;
   line-height: 0;
-  transition: transform 160ms ease, background 160ms ease;
+  transition: transform 160ms ease;
 }
 
 .lp-badge-link:hover { transform: translateY(-2px); }
@@ -136,19 +203,17 @@
   padding: 6px 14px;
   border-radius: 999px;
   background: rgba(23, 35, 60, 0.06);
-  color: var(--lp-muted);
+  color: var(--gp-muted);
   font-size: 12.5px;
   font-weight: 700;
 }
-
-/* --- Web版への導線(ヒーロー内 / 専用セクション共用) --- */
 
 .lp-web-cta {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 12px 16px;
-  margin-top: 18px;
+  margin-top: 20px;
 }
 
 .lp-web-btn {
@@ -157,24 +222,21 @@
   gap: 9px;
   padding: 12px 20px;
   border-radius: 999px;
-  border: 1.5px solid var(--lp-teal);
+  border: 1.5px solid var(--gp-teal);
   background: #ffffff;
-  color: var(--lp-teal);
+  color: var(--gp-teal);
+  font-family: var(--gp-font-round);
   font-size: 14.5px;
-  font-weight: 800;
+  font-weight: 700;
   text-decoration: none;
   transition: transform 160ms ease, background 160ms ease, color 160ms ease;
 }
 
-.lp-web-btn svg {
-  width: 19px;
-  height: 19px;
-  flex: none;
-}
+.lp-web-btn svg { width: 19px; height: 19px; flex: none; }
 
 .lp-web-btn:hover {
   transform: translateY(-2px);
-  background: var(--lp-teal);
+  background: var(--gp-teal);
   color: #ffffff;
 }
 
@@ -184,69 +246,158 @@
 }
 
 .lp-web-note {
-  margin: 0;
+  margin: 8px 0 0;
   max-width: 40ch;
-  color: var(--lp-muted);
-  font-size: 13px;
+  color: var(--gp-muted);
+  font-size: 12.5px;
+  flex-basis: 100%;
 }
 
-.lp-web-panel {
-  padding: clamp(24px, 4vw, 34px);
-  border: 1px solid var(--lp-line);
-  border-radius: 24px;
-  background: #ffffff;
+/* --- イラストシーン --- */
+
+.lp-hero-scene {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(180deg, #ffffff 0%, var(--gp-sky) 42%, var(--gp-sky) 100%);
+  animation: lpRise 760ms ease 120ms both;
 }
 
-.lp-web-panel-copy p {
-  margin: 0 0 14px;
-  max-width: 64ch;
-  color: var(--lp-muted);
-  font-size: 15px;
-  line-height: 1.85;
+.lp-scene-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
-.lp-web-panel-note {
-  font-size: 14px !important;
-}
+.lp-cloud { animation: lpDrift 26s ease-in-out infinite; }
+.lp-cloud-b { animation-duration: 32s; animation-delay: -6s; }
+.lp-cloud-c { animation-duration: 22s; animation-delay: -12s; }
 
-.lp-hero-art {
-  position: relative;
+.lp-sparkle { transform-origin: center; animation: lpTwinkle 2.6s ease-in-out infinite; }
+.lp-sparkle-b { animation-delay: -1.1s; }
+
+/* 浮遊チップ */
+
+.lp-chip {
+  position: absolute;
+  left: var(--lp-chip-x, 50%);
+  top: var(--lp-chip-y, 50%);
+  width: 46px;
+  height: 46px;
+  margin: -23px;
   display: grid;
   place-items: center;
-  min-height: 220px;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 12px 24px rgba(23, 35, 60, 0.18);
+  animation: lpBob 7s ease-in-out infinite;
+  z-index: 3;
 }
 
-.lp-hero-art-shot {
+.lp-chip svg { width: 22px; height: 22px; }
+
+.lp-chip-star { color: var(--gp-gold); animation-delay: -0.6s; }
+.lp-chip-search { color: var(--gp-teal); animation-delay: -3.2s; }
+.lp-chip-clock { color: var(--gp-navy); animation-delay: -1.8s; }
+.lp-chip-memo { color: var(--gp-coral); animation-delay: -4.4s; }
+
+/* マスコット(道の途中、シーン内に完全に収まる位置) */
+
+.lp-mascot-wrap {
   position: absolute;
-  width: 132px;
-  border-radius: 20px;
-  box-shadow: 0 22px 44px rgba(23, 35, 60, 0.22);
-  transform: rotate(7deg) translate(46px, 6px);
-  border: 5px solid var(--lp-navy);
+  left: 55%;
+  top: 76%;
+  width: clamp(170px, 18vw, 240px);
+  margin-left: calc(clamp(170px, 18vw, 240px) / -2);
+  margin-top: calc(clamp(170px, 18vw, 240px) / -2);
+  z-index: 2;
+  animation: lpBreathe 4s ease-in-out infinite;
+  transform-origin: 50% 78%;
 }
 
-.lp-hero-art-icon {
-  position: relative;
-  width: 118px;
-  height: 118px;
-  border-radius: 30px;
-  box-shadow: 0 20px 40px rgba(23, 35, 60, 0.22);
-  transform: rotate(-6deg) translate(-30px, 0);
+.lp-mascot { display: block; width: 100%; height: auto; }
+
+/* 縦書きバナー(シーン右上の空いた空に独立配置。会場や旗とは重ねない) */
+
+.lp-vert-banners {
+  position: absolute;
+  right: 3%;
+  top: 6%;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  z-index: 3;
+}
+
+.lp-vert-banner {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  padding: 18px 8px;
+  border-radius: 14px;
+  font-family: var(--gp-font-round);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  box-shadow: 0 14px 28px rgba(23, 35, 60, 0.16);
+}
+
+.lp-vert-banner-navy {
+  background: var(--gp-navy);
+  color: #ffffff;
+}
+
+.lp-vert-banner-gold {
+  background: var(--gp-gold);
+  color: var(--gp-navy);
+  margin-top: 34px;
 }
 
 /* ------------------------------------------------------------------ */
-/* Notice（非公式アプリの明示）                                          */
+/* 5. 非公式のお知らせ(貼り紙カード)                                     */
 /* ------------------------------------------------------------------ */
 
 .lp-notice {
+  position: relative;
   display: flex;
+  flex-wrap: wrap;
   gap: 14px;
   align-items: flex-start;
-  margin-top: 22px;
-  padding: 20px 24px;
-  border: 1px solid rgba(15, 118, 110, 0.28);
-  border-radius: 20px;
-  background: rgba(15, 118, 110, 0.07);
+  margin-top: 26px;
+  padding: 24px 26px;
+  border: 1px solid rgba(15, 118, 110, 0.2);
+  border-radius: 18px;
+  background: var(--gp-cream);
+  box-shadow: 0 14px 30px rgba(23, 35, 60, 0.07);
+}
+
+.lp-notice-tape {
+  position: absolute;
+  top: -10px;
+  width: 64px;
+  height: 22px;
+  background: rgba(15, 118, 110, 0.32);
+  box-shadow: 0 2px 4px rgba(23, 35, 60, 0.08);
+}
+
+.lp-notice-tape-l { left: 26px; transform: rotate(-7deg); }
+.lp-notice-tape-r { right: 34px; transform: rotate(6deg); }
+
+.lp-notice-stamp {
+  flex: none;
+  align-self: center;
+  padding: 6px 12px;
+  border: 2px solid var(--gp-hanko);
+  border-radius: 10px;
+  outline: 1px solid var(--gp-hanko);
+  outline-offset: 2px;
+  color: var(--gp-hanko);
+  font-family: var(--gp-font-round);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  transform: rotate(-6deg);
 }
 
 .lp-notice-icon {
@@ -254,112 +405,269 @@
   width: 22px;
   height: 22px;
   margin-top: 2px;
-  color: var(--lp-teal);
+  color: var(--gp-teal);
 }
 
 .lp-notice p {
   margin: 0;
-  color: var(--lp-navy);
+  color: var(--gp-navy);
   font-size: 13.5px;
-  line-height: 1.85;
+  line-height: 1.9;
 }
 
 .lp-notice strong {
   display: block;
   margin-bottom: 4px;
-  color: var(--lp-teal);
+  color: var(--gp-teal-deep);
   font-size: 13px;
   letter-spacing: 0.04em;
 }
 
 /* ------------------------------------------------------------------ */
-/* Section 共通                                                         */
+/* 6. セクション共通                                                    */
 /* ------------------------------------------------------------------ */
 
-.lp-section {
-  margin-top: 64px;
-}
+.lp-section { margin-top: 84px; }
 
 .lp-section-head {
-  margin: 0 0 30px;
+  margin: 0 0 34px;
   text-align: center;
 }
 
 .lp-section-eyebrow {
   display: block;
   margin: 0 0 8px;
-  color: var(--lp-teal);
+  color: var(--gp-teal);
+  font-family: var(--gp-font-round);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.14em;
 }
 
 .lp-section-title {
   margin: 0;
-  color: var(--lp-navy);
-  font-family: var(--lp-serif);
-  font-weight: 600;
-  font-size: clamp(22px, 4vw, 30px);
+  color: var(--gp-navy);
+  font-weight: 900;
+  font-size: clamp(21px, 3.6vw, 28px);
 }
 
 /* ------------------------------------------------------------------ */
-/* Showcase（スクリーンショット）                                        */
+/* 7. お悩みセクション(吹き出し+ハンコ)                                  */
 /* ------------------------------------------------------------------ */
 
-.lp-showcase-grid {
+/* ページ全体のセクションリズムを 淡背景→クリーム→白 の交互にするため、
+   お悩みセクションはクリームの面(パネル)として見せる */
+.lp-worries {
+  padding: clamp(32px, 4.4vw, 52px) clamp(24px, 4vw, 48px);
+  border-radius: 34px;
+  background: var(--gp-cream);
+}
+
+.lp-worries-title {
+  margin: 0 0 44px;
+  color: var(--gp-navy);
+  font-weight: 900;
+  font-size: clamp(21px, 3.8vw, 29px);
+  text-align: center;
+  transform: rotate(-2deg);
+}
+
+.lp-bubbles {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 22px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 26px 20px;
+  margin: 0 0 48px;
+  padding: 12px 0 0;
+  list-style: none;
 }
 
-.lp-shot {
+.lp-bubble {
+  position: relative;
+  padding: 28px 22px 26px;
+  border-radius: 22px;
+  font-size: 14.5px;
+  line-height: 1.8;
+  color: var(--gp-navy);
+  box-shadow: 0 14px 26px rgba(23, 35, 60, 0.1);
+}
+
+.lp-bubble::after {
+  content: "";
+  position: absolute;
+  bottom: -12px;
+  left: 34px;
+  width: 24px;
+  height: 24px;
+  background: inherit;
+  border-radius: 0 0 0 8px;
+  transform: rotate(45deg);
+}
+
+.lp-bubble-leaf { background: var(--gp-leaf-pale); }
+.lp-bubble-gold { background: var(--gp-gold-pale); margin-top: 26px; }
+.lp-bubble-coral { background: var(--gp-coral-pale); }
+
+/* ミニ顔アバターは吹き出しの左上からはみ出させ、
+   「キャラが話している」ような佇まいにする */
+.lp-mini-face {
+  position: absolute;
+  top: -16px;
+  left: -14px;
+  width: 44px;
+  height: 44px;
+  padding: 3px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 8px 16px rgba(23, 35, 60, 0.18);
+  z-index: 1;
+}
+
+.lp-bubble p { position: relative; z-index: 0; margin: 0; font-weight: 700; }
+
+.lp-hanko {
+  display: flex;
+  justify-content: center;
   margin: 0;
+}
+
+.lp-hanko span {
+  display: grid;
+  place-items: center;
+  width: 148px;
+  height: 148px;
+  border: 3px solid var(--gp-hanko);
+  border-radius: 50%;
+  outline: 2px solid var(--gp-hanko);
+  outline-offset: 6px;
+  color: var(--gp-hanko);
+  font-family: var(--gp-font-round);
+  font-weight: 900;
+  font-size: 16px;
+  line-height: 1.5;
+  text-align: center;
+  opacity: 0.86;
+  transform: rotate(8deg);
+}
+
+/* ------------------------------------------------------------------ */
+/* 8. 3ステップ(色分けセクション)                                       */
+/* ------------------------------------------------------------------ */
+
+.lp-step-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
   display: flex;
   flex-direction: column;
+  gap: 28px;
+}
+
+.lp-step {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 400px);
   align-items: center;
-  text-align: center;
+  gap: clamp(24px, 4vw, 44px);
+  padding: clamp(22px, 3.2vw, 34px);
+  border-radius: 30px;
 }
 
-.lp-shot:nth-child(2) { transform: translateY(22px); }
-.lp-shot:nth-child(4) { transform: translateY(22px); }
+.lp-step:nth-child(even) { grid-template-columns: minmax(0, 400px) minmax(0, 1fr); }
+.lp-step:nth-child(even) .lp-step-copy { order: 2; }
+.lp-step:nth-child(even) .lp-step-art { order: 1; }
 
-.lp-phone {
-  width: 100%;
-  aspect-ratio: 600 / 1304;
-  overflow: hidden;
-  border-radius: 26px;
-  border: 6px solid var(--lp-navy);
-  box-shadow: 0 18px 36px rgba(23, 35, 60, 0.18);
-  background: var(--lp-navy);
+.lp-step-teal { background: var(--gp-teal-pale); }
+.lp-step-gold { background: var(--gp-gold-pale); }
+.lp-step-coral { background: var(--gp-coral-pale); }
+
+.lp-step-copy { position: relative; }
+
+/* 番号バッジ+縦書きラベル帯(tabinukiの「知る/巡る/楽しむ」風)を
+   コピー列の先頭にまとめる */
+.lp-step-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
-.lp-phone img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.lp-step-num {
+  display: inline-grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #ffffff;
+  color: var(--gp-navy);
+  font-family: var(--gp-font-round);
+  font-weight: 900;
+  font-size: 17px;
+  box-shadow: 0 10px 22px rgba(23, 35, 60, 0.12);
 }
 
-.lp-shot figcaption {
-  margin-top: 16px;
-  color: var(--lp-navy);
-  font-size: 13px;
+.lp-step-kanji {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  padding: 10px 8px;
+  border-radius: 14px;
+  color: #ffffff;
+  font-family: var(--gp-font-round);
   font-weight: 700;
-  line-height: 1.6;
+  font-size: 15px;
+  letter-spacing: 0.12em;
+  box-shadow: 0 8px 18px rgba(23, 35, 60, 0.16);
 }
 
-.lp-shot-num {
+.lp-step-teal .lp-step-kanji { background: var(--gp-teal-deep); }
+.lp-step-gold .lp-step-kanji { background: var(--gp-gold-deep); }
+.lp-step-coral .lp-step-kanji { background: var(--gp-coral-deep); }
+
+.lp-step h3 {
+  margin: 0 0 10px;
+  color: var(--gp-navy);
+  font-weight: 900;
+  font-size: 22px;
+}
+
+.lp-step p {
+  margin: 0 0 10px;
+  max-width: 44ch;
+  color: var(--gp-ink);
+  font-size: 14.5px;
+  line-height: 1.85;
+}
+
+.lp-step-note { color: var(--gp-muted) !important; font-size: 13px !important; }
+
+.lp-step-art {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.lp-step-art .lp-shot { flex: 1; }
+
+/* ------------------------------------------------------------------ */
+/* 9. スクリーンショット                                                 */
+/* ------------------------------------------------------------------ */
+
+/* assets/shots/ の4枚はダーク帯の見出し+デバイスモックが焼き込み済みの
+   マーケ用コンポジット画像。CSSで電話枠を足すと二重フレームになるため、
+   角丸+シャドウだけを画像本体に与え、そのままカードとして見せる。 */
+.lp-shot {
+  margin: 0;
   display: block;
-  margin-bottom: 4px;
-  color: var(--lp-teal-light);
-  font-family: var(--lp-serif);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
+}
+
+.lp-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 20px;
+  box-shadow: 0 18px 36px rgba(23, 35, 60, 0.2);
 }
 
 /* ------------------------------------------------------------------ */
-/* Features                                                             */
+/* 10. できること                                                       */
 /* ------------------------------------------------------------------ */
 
 .lp-feature-grid {
@@ -373,9 +681,9 @@
 
 .lp-feature {
   padding: 26px 24px;
-  border: 1px solid rgba(23, 35, 60, 0.07);
+  border: 1px solid var(--gp-line);
   border-radius: 22px;
-  background: #ffffff;
+  background: var(--gp-cream);
   box-shadow: 0 10px 26px rgba(23, 35, 60, 0.05);
 }
 
@@ -387,71 +695,301 @@
   height: 42px;
   margin-bottom: 14px;
   border-radius: 13px;
-  background: rgba(15, 118, 110, 0.1);
-  color: var(--lp-teal);
+  background: rgba(15, 118, 110, 0.12);
+  color: var(--gp-teal);
 }
 
 .lp-feature-icon svg { width: 22px; height: 22px; }
 
 .lp-feature h3 {
   margin: 0 0 6px;
-  color: var(--lp-navy);
+  color: var(--gp-navy);
   font-size: 15.5px;
+  font-weight: 900;
 }
 
 .lp-feature p {
   margin: 0;
-  color: var(--lp-muted);
+  color: var(--gp-muted);
   font-size: 13px;
-  line-height: 1.75;
+  line-height: 1.8;
 }
 
 /* ------------------------------------------------------------------ */
-/* Legal cards ヘッダー（カード自体は共通 .cards / .card を流用）           */
+/* 11. Web版                                                           */
 /* ------------------------------------------------------------------ */
 
-.lp-legal { margin-top: 64px; }
+.lp-web-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+  gap: clamp(24px, 4vw, 40px);
+  align-items: center;
+  padding: clamp(24px, 4vw, 34px);
+  border: 1px solid var(--gp-line);
+  border-radius: 26px;
+  background: #ffffff;
+}
+
+.lp-web-browser {
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid var(--gp-line);
+  box-shadow: 0 14px 30px rgba(23, 35, 60, 0.1);
+}
+
+.lp-web-browser-bar {
+  display: flex;
+  gap: 6px;
+  padding: 10px 12px;
+  background: var(--gp-cream);
+}
+
+.lp-web-browser-bar span {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(23, 35, 60, 0.18);
+}
+
+.lp-web-browser-body {
+  display: grid;
+  place-items: center;
+  padding: 14px;
+  background: var(--gp-sky);
+}
+
+.lp-web-browser-body svg { display: block; width: 100%; height: auto; }
+
+.lp-web-chip {
+  display: inline-block;
+  margin-bottom: 12px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(15, 118, 110, 0.1);
+  color: var(--gp-teal-deep);
+  font-family: var(--gp-font-round);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.lp-web-panel-copy p {
+  margin: 0 0 14px;
+  max-width: 64ch;
+  color: var(--gp-muted);
+  font-size: 15px;
+  line-height: 1.85;
+}
+
+.lp-web-panel-note { font-size: 13.5px !important; }
 
 /* ------------------------------------------------------------------ */
-/* Responsive                                                           */
+/* 12. アウトロCTA                                                      */
 /* ------------------------------------------------------------------ */
+
+.lp-outro-inner {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    "mascot bubble"
+    "ctas   ctas";
+  align-items: center;
+  gap: 20px 26px;
+  padding: clamp(28px, 4vw, 44px);
+  border-radius: 30px;
+  background: linear-gradient(150deg, var(--gp-cream), #ffffff 70%);
+  box-shadow: 0 20px 48px rgba(23, 35, 60, 0.08);
+}
+
+.lp-outro .lp-mascot-wave {
+  grid-area: mascot;
+  width: clamp(120px, 14vw, 160px);
+  height: auto;
+  animation: lpBreathe 4s ease-in-out infinite;
+}
+
+.lp-wave-hand { animation: lpWave 1.6s ease-in-out infinite; transform-origin: 168px 88px; }
+
+.lp-outro-bubble {
+  grid-area: bubble;
+  position: relative;
+  max-width: 520px;
+  padding: 18px 24px;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 12px 24px rgba(23, 35, 60, 0.1);
+}
+
+.lp-outro-bubble::before {
+  content: "";
+  position: absolute;
+  left: -10px;
+  top: 30px;
+  width: 20px;
+  height: 20px;
+  background: #ffffff;
+  clip-path: polygon(100% 0, 100% 100%, 0 50%);
+}
+
+.lp-outro-bubble p {
+  margin: 0;
+  color: var(--gp-navy);
+  font-weight: 700;
+  font-size: 15.5px;
+  line-height: 1.7;
+}
+
+.lp-outro-ctas {
+  grid-area: ctas;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--gp-line);
+}
+
+/* ------------------------------------------------------------------ */
+/* 13. 法務カード                                                       */
+/* ------------------------------------------------------------------ */
+
+.lp-legal { margin-top: 84px; }
+
+.lp-legal .card {
+  border-radius: 22px;
+  background: var(--gp-cream);
+  border-color: var(--gp-line);
+}
+
+.lp-legal .card h2 { color: var(--gp-navy); font-family: var(--gp-font-round); }
+
+/* ------------------------------------------------------------------ */
+/* 14. モーション(キーフレーム)                                          */
+/* ------------------------------------------------------------------ */
+
+@keyframes lpRise {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes lpBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes lpDrift {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(22px); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes lpBreathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.015); }
+}
+
+@keyframes lpTwinkle {
+  0%, 100% { opacity: 0.5; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+@keyframes lpWave {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-16deg); }
+  75% { transform: rotate(10deg); }
+}
+
+/* ------------------------------------------------------------------ */
+/* 15. レスポンシブ                                                      */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 980px) {
+  /* シーンを常時アスペクト比固定のフルブリードにするのは横幅に余裕がある
+     デスクトップのみ。タブレット以下ではパネル→シーンの2枚のカードを
+     縦に積む構成に切り替える(元スペックの「横書きの帯」相当)。 */
+  .lp-hero {
+    flex-direction: column;
+    align-items: stretch;
+    width: auto;
+    aspect-ratio: auto;
+    min-height: 0;
+    padding: 0;
+    border-radius: 0;
+    overflow: visible;
+    isolation: auto;
+    gap: clamp(20px, 3vw, 28px);
+  }
+  .lp-hero-panel { width: 100%; order: 1; }
+  .lp-hero-scene {
+    position: relative;
+    inset: auto;
+    order: 2;
+    width: 100%;
+    aspect-ratio: 1400 / 780;
+    min-height: 320px;
+    border-radius: 30px;
+    overflow: hidden;
+  }
+  .lp-bubbles { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+}
 
 @media (max-width: 860px) {
   .lp-feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lp-step { grid-template-columns: 1fr !important; }
+  .lp-step-copy { order: 1 !important; }
+  .lp-step-art { order: 2 !important; max-width: 380px; margin: 0 auto; }
+  .lp-web-panel { grid-template-columns: 1fr; }
+  .lp-web-browser { max-width: 260px; margin: 0 auto; }
 }
 
 @media (max-width: 700px) {
-  .lp-hero {
-    grid-template-columns: 1fr;
-    padding: 30px 24px;
-    border-radius: 28px;
-  }
+  .lp-main { width: min(680px, calc(100% - 28px)); margin: 30px auto 64px; }
 
-  .lp-hero-art { display: none; }
-
+  .lp-hero-panel { padding: 26px 22px; border-radius: 24px; }
   .lp-store { justify-content: center; }
   .lp-hero-lead { max-width: none; }
 
-  .lp-showcase-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 16px; }
-  .lp-shot:nth-child(2),
-  .lp-shot:nth-child(4) { transform: translateY(22px); }
+  .lp-hero-scene { min-height: 260px; border-radius: 24px; }
+  .lp-vert-banners { right: 4%; top: 5%; gap: 8px; }
+  .lp-vert-banner { font-size: 13px; padding: 14px 6px; }
+  .lp-mascot-wrap { left: 54%; top: 78%; width: clamp(120px, 30vw, 170px); margin-left: calc(clamp(120px, 30vw, 170px) / -2); margin-top: calc(clamp(120px, 30vw, 170px) / -2); }
+  .lp-chip { width: 36px; height: 36px; margin: -18px; }
+  .lp-chip svg { width: 17px; height: 17px; }
+
+  .lp-worries { padding: 30px 22px; border-radius: 26px; }
+  .lp-worries-title { font-size: 20px; }
+  .lp-bubbles { grid-template-columns: 1fr; }
+  .lp-bubble-gold { margin-top: 0; }
 
   .lp-feature-grid { grid-template-columns: 1fr; }
 
-  .lp-section { margin-top: 48px; }
+  .lp-outro-inner {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "mascot"
+      "bubble"
+      "ctas";
+    text-align: center;
+    justify-items: center;
+  }
+  .lp-outro-bubble::before { display: none; }
+  .lp-outro-ctas { justify-content: center; border-top: none; padding-top: 0; }
+
+  .lp-section { margin-top: 56px; }
 }
 
 @media (max-width: 420px) {
-  .lp-showcase-grid { grid-template-columns: 1fr; }
-  .lp-shot:nth-child(2),
-  .lp-shot:nth-child(4) { transform: none; }
+  .lp-step-art { flex-direction: column; align-items: stretch; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .lp-badge-link { transition: none; }
-}
-
-/* ヒーロー見出しは語の途中で折り返さないよう、読点で明示的に改行する */
-.lp-hero-tagline span {
-  display: block;
+  .lp-badge-link,
+  .lp-hero-panel,
+  .lp-hero-scene { transition: none; animation: none !important; }
+  .lp-cloud,
+  .lp-sparkle,
+  .lp-chip,
+  .lp-mascot-wrap,
+  .lp-outro .lp-mascot-wave,
+  .lp-wave-hand { animation: none !important; }
+  html.js .lp-reveal { opacity: 1; transform: none; transition: none; }
 }

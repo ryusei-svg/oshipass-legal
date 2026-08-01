@@ -67,9 +67,10 @@ body {
 
 .lp-h1-line { display: inline-block; }
 
-/* マーカー(蛍光ペン) */
-.mk { background: linear-gradient(transparent 64%, var(--gp-gold-pale) 64%); padding: 0 0.06em; }
-.mk-coral { background: linear-gradient(transparent 64%, var(--gp-coral-pale) 64%); padding: 0 0.06em; }
+/* マーカー(蛍光ペン)。狭い画面でマーカーの途中で改行され
+   「3ステ/ップ」のように割れるのを防ぐため、内部では折り返さない。 */
+.mk { background: linear-gradient(transparent 64%, var(--gp-gold-pale) 64%); padding: 0 0.06em; white-space: nowrap; }
+.mk-coral { background: linear-gradient(transparent 64%, var(--gp-coral-pale) 64%); padding: 0 0.06em; white-space: nowrap; }
 
 /* スクロール演出(JSなしでも全要素が見える) */
 html.js .lp-reveal { opacity: 0; transform: translateY(24px); transition: opacity 700ms ease, transform 700ms ease; }
@@ -700,14 +701,6 @@ html.js .lp-reveal.is-visible { opacity: 1; transform: none; }
   .lp-browser { width: 100%; max-width: 560px; margin: 0 auto; }
 }
 
-/* 狭い画面ではアイコン脇の余白が足りず、きらめき(-44px/-38px のはみ出し)が
-   左右のスタンプに重なる。スタンプを一回り小さくし、きらめきは取り下げる。 */
-@media (max-width: 520px) {
-  .lp-stamp { width: 72px; font-size: 11px; }
-  .lp-stamp svg { width: 20px; height: 20px; }
-  .lp-hero-spark-l, .lp-hero-spark-r { display: none; }
-}
-
 @media (max-width: 640px) {
   .lp-hero h1 { font-size: clamp(30px, 8.6vw, 38px); }
   .lp-stamp-b { display: none; }
@@ -715,4 +708,21 @@ html.js .lp-reveal.is-visible { opacity: 1; transform: none; }
   .lp-solve { flex-direction: column; gap: 26px; }
   .lp-phone-back { display: none; }
   .lp-extra-grid { grid-template-columns: 1fr; }
+}
+
+/* スマホ幅の詰め。640px の指定を上書きするため、必ずこの順序で置く。 */
+@media (max-width: 520px) {
+  /* アイコン脇の余白が足りず、きらめき(-44px/-38px のはみ出し)が
+     左右のスタンプに重なるため、スタンプを縮めきらめきは取り下げる。 */
+  .lp-stamp { width: 72px; font-size: 11px; }
+  .lp-stamp svg { width: 20px; height: 20px; }
+  .lp-hero-spark-l, .lp-hero-spark-r { display: none; }
+
+  /* 「…プログラムア/プリ」と割れるため字送りと級数を詰めて1行に収める */
+  .lp-eyebrow { padding: 7px 14px; font-size: 12px; letter-spacing: 0.04em; }
+
+  /* ハンコを本文左の余白から上部へ出し、テキストに全幅を使わせる。
+     absolute 前提の translateY(-50%) が残ると浮くので transform も上書きする。 */
+  .lp-notice { padding: 22px 20px; }
+  .lp-notice-stamp { position: static; margin: 0 0 14px; transform: rotate(-8deg); }
 }

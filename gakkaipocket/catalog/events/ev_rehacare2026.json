@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-07-24T18:18:50+09:00",
+  "generated_at": "2026-08-03T17:08:58+09:00",
   "event": {
     "id": "ev_rehacare2026",
     "name": "リハビリテーション・ケア合同研究大会 高知2026",
     "name_reading": "りはびりてーしょんけあごうどうけんきゅうたいかいこうち",
     "official_url": "https://rehacarekochi2026.com/",
-    "note": "本アプリは大会主催者・運営とは関係のない非公式アプリです。公式サイトで公開されているプログラム情報(2026-07-23時点)をもとに作成しています。内容は変更される場合があるため、最新情報は必ず公式サイトをご確認ください。",
+    "note": "本アプリは大会主催者・運営とは関係のない非公式アプリです。公式サイトで公開されているプログラム情報(2026-08-03時点)をもとに作成しています。内容は変更される場合があるため、最新情報は必ず公式サイトをご確認ください。",
     "days": [
       {
         "id": "dy_rk20261008",
@@ -115,14 +115,14 @@
             "id": "ln_rkd216ba8e47",
             "name": "第5会場 蘭の間N",
             "kind": "stage",
-            "venue_id": "vn_rksansuien",
+            "venue_id": "vn_rkcrownpalace",
             "sort_order": 5
           },
           {
             "id": "ln_rk4ab9335f64",
             "name": "第6会場 蘭の間S",
             "kind": "stage",
-            "venue_id": "vn_rksansuien",
+            "venue_id": "vn_rkcrownpalace",
             "sort_order": 6
           },
           {
@@ -210,14 +210,21 @@
             "capacity": 1500
           },
           {
-            "id": "ac_rk2aa0aea2ae",
+            "id": "ac_rk206cd51003",
             "lane_id": "ln_rk49d474b5ba",
             "kind": "other",
-            "title": "（演題未定）",
+            "title": "演題1: ポータブルAI統合型筋電応答手指運動支援ロボットシステムの使用経験 ―入院から在宅への展開で見えた課題と展望― / 演題2: ポータブルAI統合型筋電応答手指運動支援ロボットシステムを用いた在宅自主トレーニングの実施可能性の検討 －生活期単一事例報告－",
             "start": "2026-10-08T12:10:00+09:00",
             "end": "2026-10-08T13:10:00+09:00",
             "session_kind": "luncheon",
             "presentations": [],
+            "artist_ids": [
+              "ar_rk0d5a3f75a9",
+              "ar_rk0bab01dfb7"
+            ],
+            "chair_ids": [
+              "ar_rk27edc51b29"
+            ],
             "session_code": "ランチョンセミナー1",
             "capacity": 500,
             "note": "主催・共催: FrontAct株式会社"
@@ -5081,14 +5088,14 @@
             "id": "ln_rkd216ba8e47",
             "name": "第5会場 蘭の間N",
             "kind": "stage",
-            "venue_id": "vn_rksansuien",
+            "venue_id": "vn_rkcrownpalace",
             "sort_order": 5
           },
           {
             "id": "ln_rk4ab9335f64",
             "name": "第6会場 蘭の間S",
             "kind": "stage",
-            "venue_id": "vn_rksansuien",
+            "venue_id": "vn_rkcrownpalace",
             "sort_order": 6
           },
           {
@@ -5129,17 +5136,17 @@
         ],
         "acts": [
           {
-            "id": "ac_rk154ccdf2a8",
+            "id": "ac_rkb7abf62f2e",
             "lane_id": "ln_rkeb02e01ec7",
             "kind": "other",
-            "title": "未定",
+            "title": "脳損傷者の社会参加を促す当事者研究",
             "start": "2026-10-09T09:50:00+09:00",
             "end": "2026-10-09T11:20:00+09:00",
             "session_kind": "symposium",
             "presentations": [],
             "artist_ids": [
               "ar_rkfbee649508",
-              "ar_rk1714578fb9"
+              "ar_rk5fc8deca3c"
             ],
             "chair_ids": [
               "ar_rk42558b6df7"
@@ -6150,10 +6157,10 @@
             "session_code": "ポスター05"
           },
           {
-            "id": "ac_rkf4cc9b33fb",
+            "id": "ac_rkfc7c1cee4e",
             "lane_id": "ln_rk9bceabf6ad",
             "kind": "other",
-            "title": "DX（仮）",
+            "title": "リハビリテーション医療DXが拓く新たな価値創造",
             "start": "2026-10-09T10:00:00+09:00",
             "end": "2026-10-09T11:30:00+09:00",
             "session_kind": "symposium",
@@ -6171,10 +6178,10 @@
             "capacity": 1500
           },
           {
-            "id": "ac_rkfc3c40402b",
+            "id": "ac_rkbe9b41436b",
             "lane_id": "ln_rk49d474b5ba",
             "kind": "other",
-            "title": "未定",
+            "title": "「あるがままに生きる」を支える専門職連携ーコンフリクト・マネジメントから始める専門職連携」",
             "start": "2026-10-09T10:00:00+09:00",
             "end": "2026-10-09T11:30:00+09:00",
             "session_kind": "symposium",
@@ -6191,16 +6198,15 @@
             "note": "主催・共催: 一般社団法人 回復期リハビリテーション病棟協会"
           },
           {
-            "id": "ac_rk2c6d1c8049",
+            "id": "ac_rk3399ec5182",
             "lane_id": "ln_rk09022444e7",
             "kind": "other",
-            "title": "高知県におけるLGBTQ＋の方々への取り組み（仮）",
+            "title": "LGBTQ+のいじめ被害・不登校・自傷行為・自殺未遂経験の現状",
             "start": "2026-10-09T11:00:00+09:00",
             "end": "2026-10-09T12:10:00+09:00",
             "session_kind": "symposium",
             "presentations": [],
             "artist_ids": [
-              "ar_rk57d2ed2a48",
               "ar_rk1b3d7883b5",
               "ar_rk0e02a11abf"
             ],
@@ -9112,7 +9118,8 @@
               "ar_rk1d3e9df16f",
               "ar_rkcec0a18997",
               "ar_rk8d79662911",
-              "ar_rk361b2e0938"
+              "ar_rk361b2e0938",
+              "ar_rk4a87d192fd"
             ],
             "chair_ids": [
               "ar_rk8d79662911",

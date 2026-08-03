@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-07-24T18:18:50+09:00",
+  "generated_at": "2026-08-03T17:08:58+09:00",
   "artists": [
     {
       "id": "ar_rk6c57d66149",
@@ -1183,6 +1183,11 @@
       "aliases": []
     },
     {
+      "id": "ar_rk0bab01dfb7",
+      "name": "小林直樹",
+      "aliases": []
+    },
+    {
       "id": "ar_rk4711c87509",
       "name": "小楠 郷加",
       "aliases": []
@@ -1803,6 +1808,11 @@
       "aliases": []
     },
     {
+      "id": "ar_rk27edc51b29",
+      "name": "木村浩彰",
+      "aliases": []
+    },
+    {
       "id": "ar_rk7a1a4cdf16",
       "name": "本多 彩",
       "aliases": []
@@ -2195,6 +2205,11 @@
     {
       "id": "ar_rk2beb224332",
       "name": "水野 幹也",
+      "aliases": []
+    },
+    {
+      "id": "ar_rk4a87d192fd",
+      "name": "水間 正澄",
       "aliases": []
     },
     {
@@ -2778,13 +2793,13 @@
       "aliases": []
     },
     {
-      "id": "ar_rk291439fb73",
-      "name": "福島 宏美",
+      "id": "ar_rk5fc8deca3c",
+      "name": "福島 とみお",
       "aliases": []
     },
     {
-      "id": "ar_rk1714578fb9",
-      "name": "福島 富雄",
+      "id": "ar_rk291439fb73",
+      "name": "福島 宏美",
       "aliases": []
     },
     {
@@ -2955,6 +2970,11 @@
     {
       "id": "ar_rk86874d89d8",
       "name": "緑川 学",
+      "aliases": []
+    },
+    {
+      "id": "ar_rk0d5a3f75a9",
+      "name": "緒方練人",
       "aliases": []
     },
     {
@@ -3773,7 +3793,7 @@
     },
     {
       "id": "vn_rkcrownpalace",
-      "name": "ザ クラウンパレス高知",
+      "name": "ANAクラウンプラザ高知",
       "zones": [],
       "zone_walk": [],
       "default_walk_minutes": 5

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-07-24T18:18:50+09:00",
+  "generated_at": "2026-08-03T17:08:58+09:00",
   "events": [
     {
       "id": "ev_rehacare2026",
@@ -11,12 +11,12 @@
       ],
       "venue_names": [
         "高知県立県民文化ホール",
-        "ザ クラウンパレス高知",
+        "ANAクラウンプラザ高知",
         "三翠園",
         "高知会館"
       ],
       "timetable_status": "published",
-      "updated_at": "2026-07-24T18:18:50+09:00",
+      "updated_at": "2026-08-03T17:08:58+09:00",
       "path": "catalog/events/ev_rehacare2026.json"
     }
   ]
